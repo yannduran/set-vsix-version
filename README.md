@@ -70,7 +70,7 @@ debug-messages:
   default: "false"
 ```
 
-## Inputs
+## Outputs
 
 There are no outputs from this action.
 

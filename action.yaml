@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
+name: "Set VSIX Version Number"
+description: "Sets the supplied VSIX version number in the VSIX manifest and generated code-behind file (if one exists)"
+branding:
+  icon: hash
+  color: purple
+
+inputs:
+  version-number:
+    description: "Version number to set"
+    required: true
+    type: string
+    default: 0.1
+  vsix-manifest-file:
+    description: "Path to VSIX manifest file (source.extension.vsixmanifest)"
+    required: true
+    type: string
+    default: src\vsix\source.extension.vsixmanifest
+  vsix-code-file:
+    description: "Path to generated code file (source.extension.vs)"
+    required: false
+    type: string
+    default: ""
+  debug-messages:
+    description: "Show debug messages"
+    required: false
+    type: booleaan
+    default: false
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Set version in VSIX manifest file
+      shell: pwsh
+
+      run: |
+        try {
+          Write-Host -ForegroundColor Yellow "Version to set: '${{ inputs.version-number }}'"
+
+          $filePath = "${{ inputs.vsix-manifest-file }}"
+          $replacement = 'Version="${{ inputs.version-number }}" Language='
+          $content = [string]::join([environment]::newline, (get-content $filePath))
+          $regex = New-Object System.Text.RegularExpressions.Regex 'Version="([0-9\\.]+)" Language='
+          $regex.Replace($content, $replacement) | Out-File $FilePath
+
+          Get-Content ${{ inputs.vsix-manifest-file }}
+        }
+        catch {
+          Write-Host -ForegroundColor Red "An error occurred:"
+          Write-Host -ForegroundColor Red $_.ScriptStackTrace
+        }
+
+    - name: Set version in VSIX code-behind file
+      if: inputs.vsix-code-file != '' && inputs.vsix-code-file != null
+      shell: pwsh
+
+      run: |
+        try {
+          Write-Host -ForegroundColor Yellow "Version to set: '${{ inputs.version-number }}'"
+
+          $filePath = "${{ inputs.vsix-code-file }}"
+          $replacement = 'Version = "${{ inputs.version-number }}"'
+          $content = [string]::join([environment]::newline, (get-content $filePath))
+          $regex = New-Object System.Text.RegularExpressions.Regex 'Version = "([0-9\\.]+)"'
+          $regex.Replace($content, $replacement) | Out-File $FilePath
+
+          Get-Content ${{ inputs.vsix-code-file }}
+        }
+        catch {
+          Write-Host -ForegroundColor Red "An error occurred:"
+          Write-Host -ForegroundColor Red $_.ScriptStackTrace
+        }
