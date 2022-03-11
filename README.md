@@ -6,7 +6,7 @@ Sets the supplied VSIX version number in the VSIX manifest and generated code-be
 
 This action doesn't NOT increment the existing version number for you. If you want a simple version incrementing action, you may find the [timheuer/vsix-version-stamp](https://github.com/timheuer/vsix-version-stamp/blob/main/README.md) action might suffice for your needs.
 
-The main difference between that action and this one is that it relies on you using some form of calculating your version number PRIOR to using the `set-vsix-version` action. This gives you more flexability than simply incrementing the `patch` version.
+The main difference between that action and this one is that this action relies on you using some method of calculating the version number to set PRIOR to using the `set-vsix-version` action. This gives you more flexability than simply incrementing the `patch` version.
 
 I wanted to use Server-compatible versions, and Tim's action didn't suit my needs, so I wrote this one.
 
@@ -50,24 +50,30 @@ In the future I hope to combine the logic for the two methods above into a singl
 
 ## Inputs
 
+```yaml
 version-number:
-description: 'Version number to set'
-required: true
-vsix-manifest-file:
-description: 'Path to VSIX manifest file (source.extension.vsixmanifest)'
-required: true
-vsix-code-file:
-description: 'Path to generated code file (source.extension.vs)'
-required: false
-default: ''
-debug-messages:
-description: 'Show debug messages'
-required: false
-default: 'false'
+  description: "Version number to set"
+  required: true
 
-## Secrets the action uses
+vsix-manifest-file:
+  description: "Path to VSIX manifest file (source.extension.vsixmanifest)"
+  required: true
+
+vsix-code-file:
+  description: "Path to generated code file (source.extension.vs)"
+  required: false
+  default: ""
+
+debug-messages:
+  description: "Show debug messages"
+  required: false
+  default: "false"
+```
+
+## Inputs
+
+There are no outputs from this action.
+
+## Secrets
 
 There are no secrets required for this action.
-
-Environment variables the action uses
-An example of how to use your action in a workflow
