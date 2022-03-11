@@ -9,23 +9,19 @@ inputs:
   version-number:
     description: "Version number to set"
     required: true
-    type: string
-    default: 0.1
+    default: "0.1"
   vsix-manifest-file:
     description: "Path to VSIX manifest file (source.extension.vsixmanifest)"
     required: true
-    type: string
-    default: src\vsix\source.extension.vsixmanifest
+    default: "src/vsix/source.extension.vsixmanifest"
   vsix-code-file:
     description: "Path to generated code file (source.extension.vs)"
     required: false
-    type: string
     default: ""
   debug-messages:
     description: "Show debug messages"
     required: false
-    type: booleaan
-    default: false
+    default: "false"
 
 runs:
   using: "composite"
