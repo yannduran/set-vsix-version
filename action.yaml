@@ -20,12 +20,7 @@ inputs:
     description: "Path to generated code file (source.extension.vs)"
     required: false
     type: string
-    default: ""
-  debug-messages:
-    description: "Show debug messages"
-    required: false
-    type: booleaan
-    default: false
+    default: src\vsix\source.extension.cs
 
 runs:
   using: "composite"
