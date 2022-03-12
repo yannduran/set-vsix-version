@@ -10,7 +10,7 @@ The main difference between that action and this one is that this action relies 
 
 I wanted to use Server-compatible versions, and Tim's action didn't suit my needs, so I wrote this one.
 
-In this example below, I'm currently using `GitVersion`, to generate an appropriate `SemVer` compatible version, but you can use whatever method suits you and your circumstnces.
+In this example below, I'm currently using `GitVersion` to generate an appropriate `SemVer` compatible version, but you can use whatever method suits you and your circumstnces.
 
 ```yaml
 on:
@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set Staging VSIX version
-        if: github.ref != 'refs/heads/master' # this step will only run when the braanch is not master
+        if: github.ref != 'refs/heads/master' # this step will only run when the branch IS NOT `master`
 
         uses: yannduran/set-vsix-version@v1
         with:
@@ -37,7 +37,7 @@ jobs:
           vsix-code-file: src\vsix\source.extension.cs # # use your path to the file
 
       - name: Set Production VSIX version
-        if: github.ref == 'refs/heads/master' # this step will only run when the braanch is master
+        if: github.ref == 'refs/heads/master' # this step will only run when the branch IS `master`
 
         uses: yannduran/set-vsix-version@v1
         with:
