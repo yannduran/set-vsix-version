@@ -8,14 +8,46 @@ branding:
 inputs:
   version-number:
     description: "Version number to set"
-    required: true
+    required: false
     type: string
-    default: 0.1
+    default: ""
+
+  development-version:
+    description: "Development version number"
+    required: false
+    type: string
+    default: ""
+
+  production-version:
+    description: "Production version number"
+    required: false
+    type: string
+    default: ""
+
+  git-ref:
+    description: "The repo's git ref"
+    required: false
+    type: string
+    default: ""
+
+  # tag-is-production:
+  #   description: "A tag ref indicates production"
+  #   required: false
+  #   type: boolean
+  #   default: false
+
+  production-tag:
+    description: "A regex expression that defines a valid production tag"
+    required: false
+    type: string
+    default: "**"
+
   vsix-manifest-file:
     description: "Path to VSIX manifest file (source.extension.vsixmanifest)"
     required: true
     type: string
     default: src\vsix\source.extension.vsixmanifest
+
   vsix-code-file:
     description: "Path to generated code file (source.extension.vs)"
     required: false
@@ -31,14 +63,33 @@ runs:
 
       run: |
         try {
-          Write-Host -ForegroundColor Yellow "Version to set: '${{ inputs.version-number }}'"
+          $versionNumber = ${{ inputs.version-number}}
+          $development = ${{ inputs.development-version}}
+          $production = ${{ inputs.production-version}}
+          $gitRef = ${{ inputs.git-ref}}
+          $tagIsProduction = ${{ inputs.tag-is-production }}
+
+          if ($version == '') {
+            # no version value specified, so $development, $production and $gitref are required
+            if ($development == '') || ($production = '') || ($gitRef != '') {
+                Write-Host -ForegroundColor Orange 'If a version is not specified, development-version, production-version and gitref are required'
+            } else {  
+              if ($tagIsProduction == true){
+              } else{
+
+              }
+            }
+          }
+
+          Write-Host -ForegroundColor Yellow 'Version to set: "$versionNumber"'
 
           $filePath = "${{ inputs.vsix-manifest-file }}"
-          $replacement = 'Version="${{ inputs.version-number }}" Language='
+          $replacement = 'Version="$versionNumber" Language='
           $content = [string]::join([environment]::newline, (get-content $filePath))
           $regex = New-Object System.Text.RegularExpressions.Regex 'Version="([0-9\\.]+)" Language='
           $regex.Replace($content, $replacement) | Out-File $FilePath
 
+          # display the contents of the manifest file
           Get-Content ${{ inputs.vsix-manifest-file }}
         }
         catch {
