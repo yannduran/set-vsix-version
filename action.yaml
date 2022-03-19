@@ -188,7 +188,6 @@ runs:
               WriteInfo("After (code): $codeVersion")  
               }
           }
-          }
         # }
         # catch [System.ArgumentException]
         # {
