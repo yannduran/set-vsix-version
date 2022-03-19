@@ -76,7 +76,7 @@ runs:
           $development = ${{ inputs.development-version }}
           $production = ${{ inputs.production-version }}
           $productionTag = "${{ inputs.production-tag }}"
-          $gitRef = "${{ inputs.git-ref }}"
+          $gitRef = "/refs/heads/master" # ${{ inputs.git-ref }}"
           $manifestFile = ${{ inputs.manifest-file }}
           $codeFile = ${{ inputs.code-file }}
 
