@@ -58,17 +58,17 @@ runs:
       run: |
         function WriteInfo {
           param([string]$message)
-          Write-Host $message -ForegroundColor Magenta
+          Write-Host ${message} -ForegroundColor Magenta
         }
 
         function WriteError {
           param([string]$message)
-          Write-Host $message -ForegroundColor Yellow
+          Write-Host ${message} -ForegroundColor Yellow
         }
 
         function WriteException {
           param([string]$message)
-          Write-Host $message -ForegroundColor Red
+          Write-Host ${message} -ForegroundColor Red
         }
 
         # try {
