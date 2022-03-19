@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-action.json
 name: "Set VSIX Version Number"
-description: "Sets the supplied VSIX version number in the VSIX manifest and generated code-behind file (if one exists)"
+description: "Sets the version number in the VSIX manifest and generated code-behind file (if one exists)"
 branding:
   icon: hash
   color: purple
@@ -30,12 +30,6 @@ inputs:
     type: string
     default: ""
 
-  # tag-is-production:
-  #   description: "A tag ref indicates production"
-  #   required: false
-  #   type: boolean
-  #   default: false
-
   production-tag:
     description: "A regex expression that defines a valid production tag"
     required: false
@@ -63,57 +57,179 @@ runs:
 
       run: |
         try {
-          $versionNumber = ${{ inputs.version-number}}
-          $development = ${{ inputs.development-version}}
-          $production = ${{ inputs.production-version}}
-          $gitRef = ${{ inputs.git-ref}}
-          $tagIsProduction = ${{ inputs.tag-is-production }}
+          $versionNumber = ${{ inputs.version-number }}
+          $development = ${{ inputs.development-version }}
+          $production = ${{ inputs.production-version }}
+          $gitRef = ${{ inputs.git-ref }}
+          $productionTag = ${{ inputs.production-tag }}
+          $manifestFile = ${{ inputs.manifest-file }}
+          $codeFile = ${{ inputs.code-file }}
 
-          if ($version == '') {
-            # no version value specified, so $development, $production and $gitref are required
-            if ($development == '') || ($production = '') || ($gitRef != '') {
-                Write-Host -ForegroundColor Orange 'If a version is not specified, development-version, production-version and gitref are required'
-            } else {  
-              if ($tagIsProduction == true){
-              } else{
+          $tags = 'refs/tags/'
+          $heads = 'refs/heads/'
+          $valid = $false
 
+          if ($versionNumber -ne '')
+          {
+            # use specified version
+            $valid = $true
+          }
+          else
+          {
+            if (($development -eq '') -or ($production -eq '') -or ($gitRef -eq '')) 
+            {
+              $message = 'No version number was specified, so development-version, production-version and git-ref are all required'
+
+              throw new-object System.ArgumentException $message
+            } 
+
+            if ($gitRef.StartsWith($heads))
+            {
+              $branch = $gitRef.Replace($heads,'')
+
+              WriteInfo "Ref: $gitRef"
+              WriteInfo "Branch: $branch"
+              $versionNumber = $development
+              $valid = $true
+            }
+
+            if ($gitRef.StartsWith($tags))
+            {
+              $tag = $gitRef.Replace($tags,'')
+
+              WriteInfo "Ref: $gitRef"
+              WriteInfo "Regex: $productionTag"
+
+              if ($tag -match $productionTag)
+              {
+                WriteInfo "'$tag' IS a production tag"
+                $versionNumber = $production
               }
+              else
+              {
+                WriteInfo "'$tag' IS NOT a production tag"
+                $versionNumber = $development
+              }
+              $valid = $true
+            }  
+            
+            if ($valid -ne $true)
+            {
+              throw new-object System.InvalidOperationException "'$gitref' is not currently supported"  
             }
           }
 
-          Write-Host -ForegroundColor Yellow 'Version to set: "$versionNumber"'
+          function GetManifestVersion{
+            param([string]$path)
+            $regex = New-Object System.Text.RegularExpressions.Regex 'Version="([0-9\\.]+)" Language='
+            $value = select-string -Path $path -Pattern $regex -AllMatches `
+              | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
 
-          $filePath = "${{ inputs.vsix-manifest-file }}"
-          $replacement = 'Version="$versionNumber" Language='
-          $content = [string]::join([environment]::newline, (get-content $filePath))
-          $regex = New-Object System.Text.RegularExpressions.Regex 'Version="([0-9\\.]+)" Language='
-          $regex.Replace($content, $replacement) | Out-File $FilePath
+            return $value
+          }
 
-          # display the contents of the manifest file
-          Get-Content ${{ inputs.vsix-manifest-file }}
+          function GetCodeVersion{
+            param([string]$path)
+            $regex = New-Object System.Text.RegularExpressions.Regex 'Version = "([0-9\\.]+)"'
+            $value = select-string -Path $path -Pattern $regex -AllMatches `
+              | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
+
+            return $value
+          }
+
+          if ($valid -eq $true)
+          {
+            WriteInfo "Version to set: $versionNumber"
+
+            $manifestVersion = GetManifestVersion($manifestFile)
+            WriteInfo("Manifest before: $manifestVersion")
+
+            # set version number in manifest file
+            $replacement = 'Version="' + $versionNumber + '" Language='
+            $content = [string]::join([environment]::newline, (get-content $manifestFile))
+            $regex = New-Object System.Text.RegularExpressions.Regex 'Version="([0-9\\.]+)" Language='
+            $regex.Replace($content, $replacement) | Out-File $manifestFile
+
+            if ([System.IO.File]::Exists($codeFile))
+            {
+              $codeVersion = GetCodeVersion($codeFile)
+              WriteInfo("Code before: $codeVersion")  
+
+              # set version number in code file (if it exists)
+              $replacement = 'Version = "' + $versionNumber +'"'
+              $content = [string]::join([environment]::newline, (get-content $codeFile))
+              $regex = New-Object System.Text.RegularExpressions.Regex 'Version = "([0-9\\.]+)"'
+              $regex.Replace($content, $replacement) | Out-File $codeFile
+            }
+          }
         }
-        catch {
-          Write-Host -ForegroundColor Red "An error occurred:"
-          Write-Host -ForegroundColor Red $_.ScriptStackTrace
+        catch [System.ArgumentException]
+        {
+          WriteError $_
+        }
+        catch [System.InvalidOperationException]
+        {
+          WriteError $_
+        }
+        catch
+        {
+          WriteException "An unexpected error occurred: $_"
+          WriteException $_.ScriptStackTrace
         }
 
-    - name: Set version in VSIX code-behind file
-      if: inputs.vsix-code-file != '' && inputs.vsix-code-file != null
+    - name: Show results
       shell: pwsh
 
       run: |
-        try {
-          Write-Host -ForegroundColor Yellow "Version to set: '${{ inputs.version-number }}'"
-
-          $filePath = "${{ inputs.vsix-code-file }}"
-          $replacement = 'Version = "${{ inputs.version-number }}"'
-          $content = [string]::join([environment]::newline, (get-content $filePath))
-          $regex = New-Object System.Text.RegularExpressions.Regex 'Version = "([0-9\\.]+)"'
-          $regex.Replace($content, $replacement) | Out-File $FilePath
-
-          Get-Content ${{ inputs.vsix-code-file }}
+        function WriteInfo {
+          param([string]$message)
+          Write-Host $message -ForegroundColor Magenta
         }
-        catch {
-          Write-Host -ForegroundColor Red "An error occurred:"
-          Write-Host -ForegroundColor Red $_.ScriptStackTrace
+
+        function WriteError {
+          param([string]$message)
+          Write-Host $message -ForegroundColor Yellow
+        }
+
+        function WriteException {
+          param([string]$message)
+          Write-Host $message -ForegroundColor Red
+        }
+
+        try
+        {
+          $manifestFile = ${{ inputs.manifest-file }}
+          $codeFile = ${{ inputs.code-file }}
+
+          function GetManifestVersion{
+            param([string]$path)
+            $regex = New-Object System.Text.RegularExpressions.Regex 'Version="([0-9\\.]+)" Language='
+            $value = select-string -Path $path -Pattern $regex -AllMatches `
+              | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
+
+            return $value
+          }
+
+          function GetCodeVersion{
+            param([string]$path)
+            $regex = New-Object System.Text.RegularExpressions.Regex 'Version = "([0-9\\.]+)"'
+            $value = select-string -Path $path -Pattern $regex -AllMatches `
+              | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
+
+            return $value
+          }
+
+          $manifestVersion = GetManifestVersion($manifestFile)
+          WriteInfo("Manifest after: $manifestVersion")
+
+          if ([System.IO.File]::Exists($codeFile))
+          {
+            $codeVersion = GetCodeVersion($codeFile)
+            WriteInfo("Code after: $codeVersion")  
+            }
+        }
+        catch
+        {
+          WriteException "An unexpected error occurred: $_"
+          WriteException $_.ScriptStackTrace
         }
