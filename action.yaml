@@ -40,13 +40,13 @@ inputs:
     description: "Path to VSIX manifest file (source.extension.vsixmanifest)"
     required: true
     type: string
-    default: src\vsix\source.extension.vsixmanifest
+    default: src/vsix/source.extension.vsixmanifest
 
   vsix-code-file:
     description: "Path to generated code file (source.extension.vs)"
     required: false
     type: string
-    default: src\vsix\source.extension.cs
+    default: src/vsix/source.extension.cs
 
 runs:
   using: "composite"
@@ -76,7 +76,7 @@ runs:
           $development = ${{ inputs.development-version }}
           $production = ${{ inputs.production-version }}
           $productionTag = "${{ inputs.production-tag }}"
-          $gitRef = "/refs/heads/master" # ${{ inputs.git-ref }}"
+          $gitRef = "${{ inputs.git-ref }}"
           $manifestFile = ${{ inputs.manifest-file }}
           $codeFile = ${{ inputs.code-file }}
 
