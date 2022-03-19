@@ -56,6 +56,21 @@ runs:
       shell: pwsh
 
       run: |
+        function WriteInfo {
+          param([string]$message)
+          Write-Host $message -ForegroundColor Magenta
+        }
+
+        function WriteError {
+          param([string]$message)
+          Write-Host $message -ForegroundColor Yellow
+        }
+
+        function WriteException {
+          param([string]$message)
+          Write-Host $message -ForegroundColor Red
+        }
+
         try {
           $versionNumber = ${{ inputs.version-number }}
           $development = ${{ inputs.development-version }}
