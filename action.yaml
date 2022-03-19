@@ -139,6 +139,8 @@ runs:
           
           function GetManifestVersion{
             param([string]$path)
+            
+            WriteInfo("Path: $path")
             $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
             $value = select-string -Path $path -Pattern $regex -AllMatches `
               | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
@@ -148,6 +150,8 @@ runs:
 
           function GetCodeVersion{
             param([string]$path)
+            
+            WriteInfo("Path: $path")
             $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
             $value = select-string -Path $path -Pattern $regex -AllMatches `
               | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
@@ -159,6 +163,7 @@ runs:
           {
             WriteInfo "Version to set: $versionNumber"
 
+            WriteInfo("Manifest file path: $manifestFile")
             $manifestVersion = GetManifestVersion($manifestFile)
             WriteInfo("Before (manifest): $manifestVersion")
 
@@ -175,6 +180,7 @@ runs:
 
             if ([System.IO.File]::Exists($codeFile))
             {
+              WriteInfo("Code file path: $codeFile")
               $codeVersion = GetCodeVersion($codeFile)
               WriteInfo("Before (code): $codeVersion")  
 
@@ -229,6 +235,8 @@ runs:
 
           function GetManifestVersion{
             param([string]$path)
+
+            WriteInfo("Path: $path")
             $regex = New-Object System.Text.RegularExpressions.Regex 'Version="([0-9\\.]+)" Language='
             $value = select-string -Path $path -Pattern $regex -AllMatches `
               | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
@@ -238,6 +246,8 @@ runs:
 
           function GetCodeVersion{
             param([string]$path)
+
+            WriteInfo("Path: $path")
             $regex = New-Object System.Text.RegularExpressions.Regex 'Version = "([0-9\\.]+)"'
             $value = select-string -Path $path -Pattern $regex -AllMatches `
               | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
@@ -245,11 +255,13 @@ runs:
             return $value
           }
 
+          WriteInfo("Manifest file path: $manifestFile")
           $manifestVersion = GetManifestVersion($manifestFile)
           WriteInfo("After (manifest): $manifestVersion")
 
           if ([System.IO.File]::Exists($codeFile))
           {
+            WriteInfo("Code file path: $codeFile")
             $codeVersion = GetCodeVersion($codeFile)
             WriteInfo("After (code): $codeVersion")  
             }
