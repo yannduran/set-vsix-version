@@ -24,17 +24,17 @@ inputs:
     type: string
     default: ""
 
-  git-ref:
-    description: "The repo's git ref"
-    required: false
-    type: string
-    default: ""
-
   production-tag:
     description: "A regex expression that defines a valid production tag"
     required: false
     type: string
     default: "**"
+
+  git-ref:
+    description: "The repo's git ref"
+    required: false
+    type: string
+    default: ""
 
   vsix-manifest-file:
     description: "Path to VSIX manifest file (source.extension.vsixmanifest)"
@@ -52,7 +52,7 @@ runs:
   using: "composite"
 
   steps:
-    - name: Set version in VSIX manifest file
+    - name: Set version in VSIX manifest and file (if it exists)
       shell: pwsh
 
       run: |
@@ -71,12 +71,12 @@ runs:
           Write-Host $message -ForegroundColor Red
         }
 
-        try {
+        # try {
           $versionNumber = ${{ inputs.version-number }}
           $development = ${{ inputs.development-version }}
           $production = ${{ inputs.production-version }}
-          $gitRef = ${{ inputs.git-ref }}
           $productionTag = ${{ inputs.production-tag }}
+          $gitRef = ${{ inputs.git-ref }}
           $manifestFile = ${{ inputs.manifest-file }}
           $codeFile = ${{ inputs.code-file }}
 
@@ -134,9 +134,12 @@ runs:
             }
           }
 
+          $manifestRegex = 'Version="([0-9\\.]+)" Language='
+          $codeRegex = 'Version = "([0-9\\.]+)"'
+          
           function GetManifestVersion{
             param([string]$path)
-            $regex = New-Object System.Text.RegularExpressions.Regex 'Version="([0-9\\.]+)" Language='
+            $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
             $value = select-string -Path $path -Pattern $regex -AllMatches `
               | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
 
@@ -145,7 +148,7 @@ runs:
 
           function GetCodeVersion{
             param([string]$path)
-            $regex = New-Object System.Text.RegularExpressions.Regex 'Version = "([0-9\\.]+)"'
+            $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
             $value = select-string -Path $path -Pattern $regex -AllMatches `
               | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
 
@@ -157,40 +160,49 @@ runs:
             WriteInfo "Version to set: $versionNumber"
 
             $manifestVersion = GetManifestVersion($manifestFile)
-            WriteInfo("Manifest before: $manifestVersion")
+            WriteInfo("Before (manifest): $manifestVersion")
 
             # set version number in manifest file
             $replacement = 'Version="' + $versionNumber + '" Language='
             $content = [string]::join([environment]::newline, (get-content $manifestFile))
-            $regex = New-Object System.Text.RegularExpressions.Regex 'Version="([0-9\\.]+)" Language='
+            $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
             $regex.Replace($content, $replacement) | Out-File $manifestFile
+
+            $manifestVersion = GetManifestVersion($manifestFile)
+            WriteInfo("After (manifest): $manifestVersion")
+
+            # Get-Content $manifestFile
 
             if ([System.IO.File]::Exists($codeFile))
             {
               $codeVersion = GetCodeVersion($codeFile)
-              WriteInfo("Code before: $codeVersion")  
+              WriteInfo("Before (code): $codeVersion")  
 
               # set version number in code file (if it exists)
               $replacement = 'Version = "' + $versionNumber +'"'
               $content = [string]::join([environment]::newline, (get-content $codeFile))
-              $regex = New-Object System.Text.RegularExpressions.Regex 'Version = "([0-9\\.]+)"'
+              $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
               $regex.Replace($content, $replacement) | Out-File $codeFile
-            }
+
+              $codeVersion = GetCodeVersion($codeFile)
+              WriteInfo("After (code): $codeVersion")  
+              }
           }
-        }
-        catch [System.ArgumentException]
-        {
-          WriteError $_
-        }
-        catch [System.InvalidOperationException]
-        {
-          WriteError $_
-        }
-        catch
-        {
-          WriteException "An unexpected error occurred: $_"
-          WriteException $_.ScriptStackTrace
-        }
+          }
+        # }
+        # catch [System.ArgumentException]
+        # {
+        #   WriteError $_
+        # }
+        # catch [System.InvalidOperationException]
+        # {
+        #   WriteError $_
+        # }
+        # catch
+        # {
+        #   WriteException "An unexpected error occurred: $_"
+        #   WriteException $_.ScriptStackTrace
+        # }
 
     - name: Show results
       shell: pwsh
@@ -235,12 +247,12 @@ runs:
           }
 
           $manifestVersion = GetManifestVersion($manifestFile)
-          WriteInfo("Manifest after: $manifestVersion")
+          WriteInfo("After (manifest): $manifestVersion")
 
           if ([System.IO.File]::Exists($codeFile))
           {
             $codeVersion = GetCodeVersion($codeFile)
-            WriteInfo("Code after: $codeVersion")  
+            WriteInfo("After (code): $codeVersion")  
             }
         }
         catch
