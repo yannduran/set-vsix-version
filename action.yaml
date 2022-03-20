@@ -36,13 +36,13 @@ inputs:
     type: string
     default: ""
 
-  vsix-manifest-file:
+  manifest-file-path:
     description: "Path to VSIX manifest file (source.extension.vsixmanifest)"
     required: true
     type: string
     default: src/vsix/source.extension.vsixmanifest
 
-  vsix-code-file:
+  code-file-path:
     description: "Path to generated code file (source.extension.vs)"
     required: false
     type: string
@@ -99,11 +99,13 @@ runs:
           $heads = 'refs/heads/'
           $valid = $false
 
-          LogInfo $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss')
+          $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
+
+          LogInfo $(Get-Date -Format $dateFormat)
 
           if ($versionNumber -ne '')
           {
-            # use specified version
+            # just use specified version number
             $valid = $true
           }
           else
@@ -166,9 +168,10 @@ runs:
             LogInfo("Path: $path")
             $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
             $value = select-string -Path $path -Pattern $regex -AllMatches `
-              | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
+              | ForEach-Object { $_.Matches } `
+              | ForEach-Object { $_.Value }
 
-            return $value
+            return $value.Replace(' Language=','')
           }
 
           function GetCodeVersion{
@@ -281,7 +284,7 @@ runs:
             )
 
             LogInfo("Path: $path")
-            $regex = New-Object System.Text.RegularExpressions.Regex 'Version="([0-9\\.]+)" Language='
+            $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
             $value = select-string -Path $path -Pattern $regex -AllMatches `
               | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
 
@@ -296,7 +299,7 @@ runs:
             )
 
             LogInfo("Path: $path")
-            $regex = New-Object System.Text.RegularExpressions.Regex 'Version = "([0-9\\.]+)"'
+            $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
             $value = select-string -Path $path -Pattern $regex -AllMatches `
               | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
 
@@ -314,7 +317,7 @@ runs:
             LogInfo("After (code): $codeVersion")  
           }
 
-          LogInfo "Ended: $(Get-Date -Format u)"       
+          LogInfo $(Get-Date -Format $dateFormat)
         }
         catch
         {
