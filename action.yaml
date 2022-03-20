@@ -99,7 +99,7 @@ runs:
           $heads = 'refs/heads/'
           $valid = $false
 
-          LogInfo "Started: $(Get-Date -Format u)"
+          LogInfo $(Get-Date -Format 'yyyy-MMM-dd HH:mm:ss')
 
           if ($versionNumber -ne '')
           {
