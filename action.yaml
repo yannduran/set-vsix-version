@@ -110,7 +110,9 @@ runs:
           {
             if (($development -eq '') -or ($production -eq '') -or ($gitRef -eq '')) 
             {
-              $message = 'No version number was specified, so development-version, production-version and git-ref are all required'
+              $message = "Input 'version-number' was not specified
+                Therefore 'development-version', 'production-version' and 'git-ref'
+                inputs are all required"
 
               throw new-object System.ArgumentException $message
             } 
