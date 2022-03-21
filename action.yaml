@@ -42,7 +42,7 @@ inputs:
     type: string
     default: src/vsix/source.extension.vsixmanifest
 
-  vsix-code-file:
+  code-file-path:
     description: "Path to generated code file (source.extension.vs)"
     required: false
     type: string
