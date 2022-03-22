@@ -134,13 +134,13 @@ runs:
         #endregion
 
         #region these variables will be passed to the action
-          $versionNumber = '' # need to validate
-          $development = '1.2.4.6' # need to validate
-          $production = '1.2.5' # this isn't needed, just tag value from the tag
-          $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
-          $gitRef = 'refs/pr/master'
-          $manifestFile = '../scripts/test.vsixmanifest'
-          $codeFile = '../scripts/test.cs'
+          $versionNumber = ${{ inputs.version-number }}
+          $development = ${{ inputs.development-version }}
+          $production = ${{ inputs.production-version }}
+          $productionTag = ${{ inputs.production-tag }}
+          $gitRef = ${{ inputs.git-ref }}
+          $manifestFile = ${{ inputs.manifest-file-path }}
+          $codeFile = ${{ inputs.code-file-path }}
         #endregion
 
         #region constants
