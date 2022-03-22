@@ -137,7 +137,7 @@ runs:
           $versionNumber = ${{ inputs.version-number }}
           $development = ${{ inputs.development-version }}
           $production = ${{ inputs.production-version }}
-          $productionTag = ${{ inputs.production-tag }}
+          $productionTag = "${{ inputs.production-tag }}"
           $gitRef = ${{ inputs.git-ref }}
           $manifestFile = ${{ inputs.manifest-file-path }}
           $codeFile = ${{ inputs.code-file-path }}
