@@ -19,7 +19,7 @@ jobs:
           version-number: "'1.2.3'"
           manifest-file-path: "'test.vsixmanifest'"
           code-file-path: "'test.cs'"
-      - run: echo "Supply version: ${{ steps.supply-version.outputs.version-number }}"
+      - run: echo "Version is '${{ steps.supply-version.outputs.version-number }}'"
 
       # - name: development
       # - uses: yannduran/set-vsix-version@master
