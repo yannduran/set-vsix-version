@@ -2,8 +2,9 @@ name: Test Action
 
 on:
   push:
-    - master
-    - release/v**
+    branches:
+      - master
+      - release/v**
 
 jobs:
   log:
