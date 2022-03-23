@@ -317,7 +317,7 @@ runs:
           ShowResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
         }
 
-        ::set-output name=version-number::$versionToSet
+        echo "::set-output name=version-number::$versionToSet"
 
         LogInfo "Ended at $(Get-Date -Format $dateFormat)"
         #endregion
