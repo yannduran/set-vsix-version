@@ -4,14 +4,14 @@ on:
   push:
     branches:
       - master
-      # - release/v**
+      - release/v**
 
 jobs:
   log:
     runs-on: ubuntu-latest
     steps:
       - name: Supply version number to set
-        uses: yannduran/set-vsix-version@master
+        uses: ./
         with:
           version-number: "'1.2.3'"
           manifest-file-path: "'test.vsixmanifest'"
