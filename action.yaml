@@ -62,137 +62,162 @@ runs:
       shell: pwsh
 
       run: |
-        #region init
-        LogDate "Started at"  
-
-        #region inputs
-        $versionNumber = ${{ inputs.version-number }}
-        $development = ${{ inputs.development-version }}
-        $production = ${{ inputs.production-version }}
-        $productionTag = ${{ inputs.production-tag }}
-        $gitRef = "'${{ inputs.git-ref }}'"
-        $manifestFile = ${{ inputs.manifest-file-path }}
-        $codeFile = ${{ inputs.code-file-path }}
-
-        LogInfo "------"
-        LogInfo "Inputs"
-        LogInfo "------"
-
-        if ($versionSpecified -eq $true) { 
-          LogInfo " - version-number      = $versionNumber" 
-        }
-        else { 
-          LogInfo " - version-number      = ''"
-        }
-
-        LogInfo " - development-version = $development"
-        LogInfo " - production-version  = $production"
-        LogInfo " - production-tag      = $productionTag"
-        LogInfo " - git-ref             = $gitRef"
-        LogInfo " - manifest-file-path  = $manifestFile"
-        LogInfo " - code-file-path      = $codeFile"
-        #endregion
-
-        #region constants
-          $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
-          $tags = 'refs/tags/'
-          $heads = 'refs/heads/'
-          $versionRegex = '([0-9\\.]+)'
-          $manifestRegex = 'Version="' + $versionRegex + '" Language='
-          $codeRegex = 'Version = "' + $versionRegex + '"'
-          $versionSpecified = ($versionNumber -ne '')
-          $isBranch = $gitRef.StartsWith($heads)
-          $isTag = $gitRef.StartsWith($tags)
-          $types = ('development', 'production')
-        #endregion
-
-        #region variables
-          $valid = $false
-          $versionToSet = ''
-        #endregion
-
         #region functions
-          function LogInfo {
-            [CmdletBinding()]
-            param(
-              [Parameter(Mandatory=$true, Position=0)]
-              [string]$message
-              )
-            
-            Write-Host "INFO: ${message}" -ForegroundColor Magenta
-          }
-          
-          function LogError {
-            [CmdletBinding()]
-            param(
-              [Parameter(Mandatory=$true, Position=0)]
-              [string]
-              $message
-              )
-            
-            Write-Host "ERROR: ${message}" -ForegroundColor Yellow
-          }
-          
-          function LogException {
-            [CmdletBinding()]
-            param(
-              [Parameter(Mandatory=$true, Position=0)]
-              [string]$message
-              )
-            
-            Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
-          }
-          
-          function LogDate {
-            [CmdletBinding()]
-            param(
-              [Parameter(Mandatory=$true, Position=0)]
-              [string]$prefix
-              )
-            
-            Write-Host "INFO: ${prefix} $(Get-Date -Format $dateFormat)" -ForegroundColor Magenta
-          }
-
-          function GetTextBetween {
-            # https://powershellone.wordpress.com/2021/02/24/using-powershell-and-regex-to-extract-text-between-delimiters/
-
-            [CmdletBinding()]
-            param( 
-              [Parameter(Mandatory, ValueFromPipeline = $true, Position = 0)]   
-              [string]$Text,
-              [Parameter(Position = 1)] 
-              [char]$delimeter = '"'
-            )
-            $pattern = "(?<=\$delimeter).+?(?=\$delimeter)"
-
-            return [regex]::Matches($Text, $pattern).Value
-          }
-
-          function GetManifestVersion {
-            param([string]$path)
-
-            $value = select-string -Path $path -Pattern $manifestRegex -AllMatches `
-              | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
-
-            if ($value -eq $n) {
-              return ''
-            } else {
-              return $value.Replace(' Language=','')
+            function LogInfo {
+              [CmdletBinding()]
+              param(
+                [Parameter(Mandatory=$true, Position=0)]
+                [string]$message
+                )
+              
+              Write-Host "INFO: ${message}" -ForegroundColor Magenta
             }
-          }
-
-          function GetCodeVersion {
-            param([string]$path)
-            $value = select-string -Path $path -Pattern $codeRegex -AllMatches `
-              | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
-
-            if ($value -eq '') {
-              return ''
-            } else {
-              return $value
+            
+            function LogError {
+              [CmdletBinding()]
+              param(
+                [Parameter(Mandatory=$true, Position=0)]
+                [string]
+                $message
+                )
+              
+              Write-Host "ERROR: ${message}" -ForegroundColor Yellow
             }
+            
+            function LogException {
+              [CmdletBinding()]
+              param(
+                [Parameter(Mandatory=$true, Position=0)]
+                [string]$message
+                )
+              
+              Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
+            }
+            
+            function LogDate {
+              [CmdletBinding()]
+              param(
+                [Parameter(Mandatory=$true, Position=0)]
+                [string]$prefix
+                )
+              
+              Write-Host "INFO: ${prefix} $(Get-Date -Format $dateFormat)" -ForegroundColor Magenta
+            }
+
+            function GetTextBetween {
+              # https://powershellone.wordpress.com/2021/02/24/using-powershell-and-regex-to-extract-text-between-delimiters/
+
+              [CmdletBinding()]
+              param( 
+                [Parameter(Mandatory, ValueFromPipeline = $true, Position = 0)]   
+                [string]$Text,
+                [Parameter(Position = 1)] 
+                [char]$delimeter = '"'
+              )
+              $pattern = "(?<=\$delimeter).+?(?=\$delimeter)"
+
+              return [regex]::Matches($Text, $pattern).Value
+            }
+
+            function GetManifestVersion {
+              param([string]$path)
+
+              $value = select-string -Path $path -Pattern $manifestRegex -AllMatches `
+                | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
+
+              if ($value -eq $n) {
+                return ''
+              } else {
+                return $value.Replace(' Language=','')
+              }
+            }
+
+            function GetCodeVersion {
+              param([string]$path)
+              $value = select-string -Path $path -Pattern $codeRegex -AllMatches `
+                | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
+
+              if ($value -eq '') {
+                return ''
+              } else {
+                return $value
+              }
+            }
+
+            function ShowResults {
+              [CmdletBinding()]
+              param (
+                [string] $manifestVersionBefore = '?',
+                [string] $manifestVersionAfter = '?', 
+                [bool]   $codeFileExists = $true,
+                [string] $codeVersionBefore = '?',
+                [string] $codeVersionAfter = '?'
+              )
+              
+              LogInfo("-------------")
+              LogInfo("Manifest file")
+              LogInfo("-------------")
+              LogInfo(" - before: $manifestVersionBefore")
+              LogInfo(" - after : $manifestVersionAfter")
+
+              if ($codeFileExists -eq $true) {
+                LogInfo("---------")
+                LogInfo("Code file")
+                LogInfo("---------")
+                LogInfo(" - before: $codeVersionBefore")
+                LogInfo(" - after : $codeVersionAfter")
+              }
+            }
+          #endregion
+
+        #region init
+          LogDate "Started at"  
+
+          #region inputs
+          $versionNumber = ${{ inputs.version-number }}
+          $development = ${{ inputs.development-version }}
+          $production = ${{ inputs.production-version }}
+          $productionTag = ${{ inputs.production-tag }}
+          $gitRef = "'${{ inputs.git-ref }}'"
+          $manifestFile = ${{ inputs.manifest-file-path }}
+          $codeFile = ${{ inputs.code-file-path }}
+
+          LogInfo "------"
+          LogInfo "Inputs"
+          LogInfo "------"
+
+          if ($versionSpecified -eq $true) { 
+            LogInfo " - version-number      = $versionNumber" 
           }
-        #endregion
+          else { 
+            LogInfo " - version-number      = ''"
+          }
+
+          LogInfo " - development-version = $development"
+          LogInfo " - production-version  = $production"
+          LogInfo " - production-tag      = $productionTag"
+          LogInfo " - git-ref             = $gitRef"
+          LogInfo " - manifest-file-path  = $manifestFile"
+          LogInfo " - code-file-path      = $codeFile"
+          #endregion
+
+          #region constants
+            $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
+            $tags = 'refs/tags/'
+            $heads = 'refs/heads/'
+            $versionRegex = '([0-9\\.]+)'
+            $manifestRegex = 'Version="' + $versionRegex + '" Language='
+            $codeRegex = 'Version = "' + $versionRegex + '"'
+            $versionSpecified = ($versionNumber -ne '')
+            $isBranch = $gitRef.StartsWith($heads)
+            $isTag = $gitRef.StartsWith($tags)
+            $types = ('development', 'production')
+          #endregion
+
+          #region variables
+            $valid = $false
+            $versionToSet = ''
+          #endregion
         #endregion
 
         #region process
@@ -265,60 +290,36 @@ runs:
           $valid = $false
         }
         #endregion
+
         #region end
-
-        #region functions
-          function ShowResults {
-            [CmdletBinding()]
-            param (
-              [string] $manifestVersionBefore = '?',
-              [string] $manifestVersionAfter = '?', 
-              [bool]   $codeFileExists = $true,
-              [string] $codeVersionBefore = '?',
-              [string] $codeVersionAfter = '?'
-            )
-            
-            LogInfo("-------------")
-            LogInfo("Manifest file")
-            LogInfo("-------------")
-            LogInfo(" - before: $manifestVersionBefore")
-            LogInfo(" - after : $manifestVersionAfter")
-
-            if ($codeFileExists -eq $true) {
-              LogInfo("---------")
-              LogInfo("Code file")
-              LogInfo("---------")
-              LogInfo(" - before: $codeVersionBefore")
-              LogInfo(" - after : $codeVersionAfter")
-            }
-          }
+          #region functions
         #endregion
 
-        if ($valid -eq $true) {
-          LogInfo " - version = $versionToSet"                    
+          if ($valid -eq $true) {
+            LogInfo " - version = $versionToSet"                    
 
-          $manifestVersionBefore = $(GetTextBetween(GetManifestVersion($manifestFile)))
-          $manifestReplacement = 'Version="' + $versionToSet + '" Language='
-          $content = [string]::join([environment]::newline, (get-content $manifestFile))
-          $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
-          $regex.Replace($content, $manifestReplacement) | Out-File $manifestFile
-          $manifestVersionAfter = $(GetTextBetween(GetManifestVersion($manifestFile)))
+            $manifestVersionBefore = $(GetTextBetween(GetManifestVersion($manifestFile)))
+            $manifestReplacement = 'Version="' + $versionToSet + '" Language='
+            $content = [string]::join([environment]::newline, (get-content $manifestFile))
+            $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
+            $regex.Replace($content, $manifestReplacement) | Out-File $manifestFile
+            $manifestVersionAfter = $(GetTextBetween(GetManifestVersion($manifestFile)))
 
-          $codeFileExists = [System.IO.File]::Exists($codeFile)
+            $codeFileExists = [System.IO.File]::Exists($codeFile)
 
-          if ($codeFileExists -eq $true) {
-            $codeVersionBefore = $(GetTextBetween(GetCodeVersion($codeFile)))
-            $codeReplacement = 'Version = "' + $versionToSet +'"'
-            $content = [string]::join([environment]::newline, (get-content $codeFile))
-            $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
-            $regex.Replace($content, $codeReplacement) | Out-File $codeFile
-            $codeVersionAfter =$(GetTextBetween(GetCodeVersion($codeFile)))
+            if ($codeFileExists -eq $true) {
+              $codeVersionBefore = $(GetTextBetween(GetCodeVersion($codeFile)))
+              $codeReplacement = 'Version = "' + $versionToSet +'"'
+              $content = [string]::join([environment]::newline, (get-content $codeFile))
+              $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
+              $regex.Replace($content, $codeReplacement) | Out-File $codeFile
+              $codeVersionAfter =$(GetTextBetween(GetCodeVersion($codeFile)))
+            }
+
+            ShowResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
+
+            echo "::set-output name=version-number::$versionToSet"
           }
 
-          ShowResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
-        }
-
-        echo "::set-output name=version-number::$versionToSet"
-
-        LogInfo "Ended at $(Get-Date -Format $dateFormat)"
+          LogInfo "Ended at $(Get-Date -Format $dateFormat)"
         #endregion
