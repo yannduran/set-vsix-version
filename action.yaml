@@ -51,7 +51,7 @@ inputs:
 
 outputs:
   version-number:
-  description: "The version that was set in the VSIX manifest/code file(s)"
+    description: "The version that was set in the VSIX manifest/code file(s)"
 
 runs:
   using: "composite"
