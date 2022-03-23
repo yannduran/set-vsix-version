@@ -17,8 +17,8 @@ jobs:
         uses: ./
         with:
           version-number: 1.2.3
-          manifest-file-path: test.vsixmanifest
-          code-file-path: test.cs
+          manifest-file-path: ./.github/workflows/test.vsixmanifest
+          code-file-path: ./.github/workflows/test.cs
       - run: echo "Version is '${{ steps.supply-version.outputs.version-number }}'"
 
       # - name: development
