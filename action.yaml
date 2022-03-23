@@ -63,6 +63,36 @@ runs:
 
       run: |
         #region init
+        LogDate "Started at"  
+
+        #region inputs
+        $versionNumber = ${{ inputs.version-number }}
+        $development = ${{ inputs.development-version }}
+        $production = ${{ inputs.production-version }}
+        $productionTag = ${{ inputs.production-tag }}
+        $gitRef = "'${{ inputs.git-ref }}'"
+        $manifestFile = ${{ inputs.manifest-file-path }}
+        $codeFile = ${{ inputs.code-file-path }}
+
+        LogInfo "------"
+        LogInfo "Inputs"
+        LogInfo "------"
+
+        if ($versionSpecified -eq $true) { 
+          LogInfo " - version-number      = $versionNumber" 
+        }
+        else { 
+          LogInfo " - version-number      = ''"
+        }
+
+        LogInfo " - development-version = $development"
+        LogInfo " - production-version  = $production"
+        LogInfo " - production-tag      = $productionTag"
+        LogInfo " - git-ref             = $gitRef"
+        LogInfo " - manifest-file-path  = $manifestFile"
+        LogInfo " - code-file-path      = $codeFile"
+        #endregion
+
         #region constants
           $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
           $tags = 'refs/tags/'
@@ -74,6 +104,11 @@ runs:
           $isBranch = $gitRef.StartsWith($heads)
           $isTag = $gitRef.StartsWith($tags)
           $types = ('development', 'production')
+        #endregion
+
+        #region variables
+          $valid = $false
+          $versionToSet = ''
         #endregion
 
         #region functions
@@ -108,16 +143,6 @@ runs:
             Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
           }
           
-          function LogException {
-            [CmdletBinding()]
-            param(
-              [Parameter(Mandatory=$true, Position=0)]
-              [string]$message
-              )
-            
-            Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
-          }
-          
           function LogDate {
             [CmdletBinding()]
             param(
@@ -140,69 +165,47 @@ runs:
             )
             $pattern = "(?<=\$delimeter).+?(?=\$delimeter)"
 
-            return [string]([regex]::Matches($Text, $pattern).Value)
+            return [regex]::Matches($Text, $pattern).Value
           }
 
           function GetManifestVersion {
             param([string]$path)
-            $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
-            $value = select-string -Path $path -Pattern $regex -AllMatches `
+
+            $value = select-string -Path $path -Pattern $manifestRegex -AllMatches `
               | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
 
-            return $value.Replace(' Language=','')
+            if ($value -eq $n) {
+              return ''
+            } else {
+              return $value.Replace(' Language=','')
+            }
           }
 
           function GetCodeVersion {
             param([string]$path)
-            $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
-            $value = select-string -Path $path -Pattern $regex -AllMatches `
+            $value = select-string -Path $path -Pattern $codeRegex -AllMatches `
               | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
 
-            return $value
+            if ($value -eq '') {
+              return ''
+            } else {
+              return $value
+            }
           }
         #endregion
-
-        #region inputs
-          $versionNumber = ${{ inputs.version-number }}
-          $development = ${{ inputs.development-version }}
-          $production = ${{ inputs.production-version }}
-          $productionTag = ${{ inputs.production-tag }}
-          $gitRef = "'${{ inputs.git-ref }}'"
-          $manifestFile = ${{ inputs.manifest-file-path }}
-          $codeFile = ${{ inputs.code-file-path }}
-        #endregion
-
-        #region variables
-          $valid = $false
-          $versionToSet = ''
-        #endregion
-
-        LogDate "Started at"  
         #endregion
 
         #region process
-        LogInfo "------"
-        LogInfo "Inputs"
-        LogInfo "------"
-
-        if ($versionSpecified -eq $true) { 
-          LogInfo " - version-number      = $versionNumber" 
-        }
-        else { 
-          LogInfo " - version-number      = ''"
-        }
-
-        LogInfo " - development-version = $development"
-        LogInfo " - production-version  = $production"
-        LogInfo " - production-tag      = $productionTag"
-        LogInfo " - git-ref             = $gitRef"
-        LogInfo " - manifest-file-path  = $manifestFile"
-        LogInfo " - code-file-path      = $codeFile"
-
         try {
+          LogInfo "------"
+          LogInfo "Values"
+          LogInfo "------"
+
           if ($versionSpecified -eq $true) {
             $valid = $true
             $versionToSet = $versionNumber
+
+            LogInfo " - type    =   specified"
           }
           else {
             $valid = ($development -ne '') -and ($production -ne '') -and ($gitRef -ne '')
@@ -214,57 +217,56 @@ runs:
 
               throw new-object System.ArgumentException $message
             }  
-          } 
 
-          if ($valid -eq $true) {
-            LogInfo "------"
-            LogInfo "Values"
-            LogInfo "------"
-          }
-
-          if (!$valid -and !$isBranch -and !$isTag) {
-            throw new-object System.InvalidOperationException "'$gitref' is not currently supported"  
-          }
-
-          if (!$valid -and $isBranch) {
-            $valid = $true
-            $versionToSet = $development
-            $branch = $gitRef.Replace($heads,'')
-
-            LogInfo " - branch  = $branch"
-            LogInfo " - type    = development"
+            if (!$isBranch -and !$isTag) {
+              throw new-object System.InvalidOperationException "'$gitref' is not currently supported"  
             }
 
-          if (!$valid -and $isTag) {
-            $valid = $true
-            $tag = $gitRef.Replace($tags,'')
-            $isProduction = ($tag -match $productionTag)
+            # use a switch here?
 
-            LogInfo " - tag     = $tag"
+            if ($isBranch) {
+              $valid = $true
+              $versionToSet = $development
+              $branch = $gitRef.Replace($heads,'')
 
-            if ($isProduction -eq $true) {
-              LogInfo " - type    = production"
-              $versionNumber = $production
-            }
-            else {
+              LogInfo " - branch  = $branch"
               LogInfo " - type    = development"
-              $versionNumber = $development
-            }            
+            }
+
+            if ($isTag) {
+              $valid = $true
+              $tag = $gitRef.Replace($tags,'')
+              $isProduction = ($tag -match $productionTag)
+              
+              LogInfo " - tag     = $tag"
+
+              if ($isProduction -eq $true) {
+                LogInfo " - type    = production"
+                $versionToSet = $production
+              }
+              else {
+                LogInfo " - type    = development"
+                $versionToSet = $development
+              } 
+            }
           }  
         }
         catch [System.ArgumentException] {
           LogError $_
+          $valid = $false
         }
         catch [System.InvalidOperationException] {
           LogError $_
+          $valid = $false
         }
         catch {
           LogException "An unexpected error occurred: $_"
           LogException $_.ScriptStackTrace
+          $valid = $false
         }
         #endregion
-
         #region end
+
         #region functions
           function ShowResults {
             [CmdletBinding()]
