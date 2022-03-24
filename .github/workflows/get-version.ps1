@@ -80,21 +80,22 @@ function GetManifestVersion {
 
   if ($value -eq '') {
     return ''
-  } else {
-    return $value.Replace(' Language=','')
-  }
+  } 
+
+  return $(GetTextBetween($value.Replace(' Language=','')))
 }
 
 function GetCodeVersion {
   param([string]$path)
+
   $value = select-string -Path $path -Pattern $codeRegex -AllMatches `
     | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
 
   if ($value -eq '') {
     return ''
-  } else {
-    return $value
   }
+  
+  return $(GetTextBetween($value))
 }
 
 function ShowResults {
@@ -217,8 +218,8 @@ function ShowResults {
   #endregion
 #endregion
 
-#region process
-  try {
+try {
+  #region process
     LogInfo "------"
     LogInfo "Values"
     LogInfo "------"
@@ -272,47 +273,50 @@ function ShowResults {
         } 
       }
     }  
-  }
-  catch [System.ArgumentException] {
-    LogError $_
-    $valid = $false
-  }
-  catch [System.InvalidOperationException] {
-    LogError $_
-    $valid = $false
-  }
-  catch {
-    LogException "An unexpected error occurred: $_"
-    LogException $_.ScriptStackTrace
-    $valid = $false
-  }
-#endregion
+  #endregion
 
-#region end
+  #region end
   if ($valid -eq $true) {
     LogInfo " - version = $versionToSet"                    
 
-    $manifestVersionBefore = $(GetTextBetween(GetManifestVersion($manifestFilePath)))
-    $manifestReplacement = 'Version="' + $versionToSet + '" Language='
-    $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
-    $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
-    $regex.Replace($content, $manifestReplacement) | Out-File $manifestFilePath
-    $manifestVersionAfter = $(GetTextBetween(GetManifestVersion($manifestFilePath)))
+    if ($versionToSet -ne '') {
+      $manifestVersionBefore = GetManifestVersion($manifestFilePath)
+      $manifestReplacement = 'Version="' + $versionToSet + '" Language='
 
-    $codeFilePathExists = [System.IO.File]::Exists($codeFilePath)
+      $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
+      $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
+      $regex.Replace($content, $manifestReplacement) | Out-File $manifestFilePath
+      $manifestVersionAfter = GetManifestVersion($manifestFilePath)
 
-    if ($codeFilePathExists -eq $true)
-    {
-      $codeVersionBefore = $(GetTextBetween(GetCodeVersion($codeFilePath)))
-      $codeReplacement = 'Version = "' + $versionToSet +'"'
-      $content = [string]::join([environment]::newline, (get-content $codeFilePath))
-      $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
-      $regex.Replace($content, $codeReplacement) | Out-File $codeFilePath
-      $codeVersionAfter =$(GetTextBetween(GetCodeVersion($codeFilePath)))
+      $codeFilePathExists = [System.IO.File]::Exists($codeFilePath)
+
+      if ($codeFilePathExists -eq $true)
+      {
+        $codeVersionBefore = GetCodeVersion($codeFilePath)
+        $codeReplacement = 'Version = "' + $versionToSet +'"'
+        $content = [string]::join([environment]::newline, (get-content $codeFilePath))
+        $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
+        $regex.Replace($content, $codeReplacement) | Out-File $codeFilePath
+        $codeVersionAfter = GetCodeVersion($codeFilePath)
+      }
+
+      ShowResults $manifestVersionBefore $manifestVersionAfter $codeFilePathExists $codeVersionBefore $codeVersionAfter
     }
-
-    ShowResults $manifestVersionBefore $manifestVersionAfter $codeFilePathExists $codeVersionBefore $codeVersionAfter
   }
 
   LogDate "Ended at"
-#endregion
+  #endregion
+}
+catch [System.ArgumentException] {
+  LogError $_
+  $valid = $false
+}
+catch [System.InvalidOperationException] {
+  LogError $_
+  $valid = $false
+}
+catch {
+  LogException "An unexpected error occurred: $_"
+  LogException $_.ScriptStackTrace
+  $valid = $false
+}
