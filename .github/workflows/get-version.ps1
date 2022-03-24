@@ -123,81 +123,82 @@ function ShowResults {
 }  
 #endregion
 
-#region init
-  LogDate "Started at"  
+try {
+  #region init
+    LogDate "Started at"  
 
-  #region inputs
-  # # version supplied
-  # $versionNumber = '1.0.0'
-  # $developmentVersion = ''
-  # $productionVersion = ''
-  # $productionTag = ''
-  # $gitRef = ''
-  # $manifestFilePath = 
-  # $codeFilePath = './.github/workflows/test.cs'
+    #region inputs
+    # # version supplied
+    # $versionNumber = '1.0.0'
+    # $developmentVersion = ''
+    # $productionVersion = ''
+    # $productionTag = ''
+    # $gitRef = ''
+    # $manifestFilePath = 
+    # $codeFilePath = './.github/workflows/test.cs'
 
-  # # branch with missing data
-  # $versionNumber = ''
-  # $developmentVersion = ''
-  # $productionVersion = ''
-  # $productionTag = ''
-  # $gitRef = 'refs/heads/master'
-  # $manifestFilePath = './.github/workflows/test.vsixmanifest'
-  # $codeFilePath = './.github/workflows/test.cs'
+    # # branch with missing data
+    # $versionNumber = ''
+    # $developmentVersion = ''
+    # $productionVersion = ''
+    # $productionTag = ''
+    # $gitRef = 'refs/heads/master'
+    # $manifestFilePath = './.github/workflows/test.vsixmanifest'
+    # $codeFilePath = './.github/workflows/test.cs'
 
-  # # branch with data
-  # $versionNumber = ''
-  # $developmentVersion = '1.2.0.1'
-  # $productionVersion = '1.3.0' 
-  # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
-  # $gitRef = 'refs/heads/master'
-  # $manifestFilePath = './.github/workflows/test.vsixmanifest'
-  # $codeFilePath = './.github/workflows/test.cs'
-  
-  # # non-production tag
-  # $versionNumber = ''
-  # $developmentVersion = '1.2.0.1'
-  # $productionVersion = '1.3.0' 
-  # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
-  # $gitRef = 'refs/tags/1.4.0'
-  # $manifestFilePath = './.github/workflows/test.vsixmanifest'
-  # $codeFilePath = './.github/workflows/test.cs'
-  
-  # production tag
-  $versionNumber = ''
-  $developmentVersion = '1.2.0.1'
-  $productionVersion = '1.3.0' 
-  $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
-  $gitRef = 'refs/tags/v1.4.0'
-  $manifestFilePath = './.github/workflows/test.vsixmanifest'
-  $codeFilePath = './.github/workflows/test.cs'
-  
-  # # unsupported gitref
-  # $versionNumber = ''
-  # $developmentVersion = '1.2.0.1'
-  # $productionVersion = '1.3.0' 
-  # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
-  # $gitRef = 'refs/pr/v1.4.0'
-  # $manifestFilePath = './.github/workflows/test.vsixmanifest'
-  # $codeFilePath = './.github/workflows/test.cs'
-  
-  LogInfo "------"
-  LogInfo "Inputs"
-  LogInfo "------"
+    # # branch with data
+    # $versionNumber = ''
+    # $developmentVersion = '1.2.0.1'
+    # $productionVersion = '1.3.0' 
+    # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
+    # $gitRef = 'refs/heads/master'
+    # $manifestFilePath = './.github/workflows/test.vsixmanifest'
+    # $codeFilePath = './.github/workflows/test.cs'
+    
+    # # non-production tag
+    # $versionNumber = ''
+    # $developmentVersion = '1.2.0.1'
+    # $productionVersion = '1.3.0' 
+    # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
+    # $gitRef = 'refs/tags/1.4.0'
+    # $manifestFilePath = './.github/workflows/test.vsixmanifest'
+    # $codeFilePath = './.github/workflows/test.cs'
+    
+    # production tag
+    $versionNumber = ''
+    $developmentVersion = '1.2.0.1'
+    $productionVersion = '1.3.0' 
+    $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
+    $gitRef = 'refs/tags/v1.4.0'
+    $manifestFilePath = './.github/workflows/test.vsixmanifest'
+    $codeFilePath = './.github/workflows/test.cs'
+    
+    # # unsupported gitref
+    # $versionNumber = ''
+    # $developmentVersion = '1.2.0.1'
+    # $productionVersion = '1.3.0' 
+    # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
+    # $gitRef = 'refs/pr/v1.4.0'
+    # $manifestFilePath = './.github/workflows/test.vsixmanifest'
+    # $codeFilePath = './.github/workflows/test.cs'
+    
+    LogInfo "------"
+    LogInfo "Inputs"
+    LogInfo "------"
 
-  if ($versionSpecified -eq $true) { 
-    LogInfo " - version-number      = $versionNumber" 
-  }
-  else { 
-    LogInfo " - version-number      = ''"
-  }
+    if ($versionSpecified -eq $true) { 
+      LogInfo " - version-number      = $versionNumber" 
+    }
+    else { 
+      LogInfo " - version-number      = ''"
+    }
 
-  LogInfo " - development-version = $developmentVersion"
-  LogInfo " - production-version  = $productionVersion"
-  LogInfo " - production-tag      = $productionTag"
-  LogInfo " - git-ref             = $gitRef"
-  LogInfo " - manifest-file-path  = $manifestFilePath"
-  LogInfo " - code-file-path      = $codeFilePath"
+    LogInfo " - development-version = $developmentVersion"
+    LogInfo " - production-version  = $productionVersion"
+    LogInfo " - production-tag      = $productionTag"
+    LogInfo " - git-ref             = $gitRef"
+    LogInfo " - manifest-file-path  = $manifestFilePath"
+    LogInfo " - code-file-path      = $codeFilePath"
   #endregion
 
   #region constants
@@ -218,7 +219,6 @@ function ShowResults {
   #endregion
 #endregion
 
-try {
   #region process
     LogInfo "------"
     LogInfo "Values"

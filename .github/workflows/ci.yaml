@@ -13,20 +13,31 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Supply version number to set
-        id: supply-version
+        id: version-supplied
         uses: ./
         with:
           version-number: 1.2.3
+          development-version: ""
+          production-version: ""
+          production-tag: ""
+          github-ref: ""
           manifest-file-path: ./.github/workflows/test.vsixmanifest
           code-file-path: ./.github/workflows/test.cs
-      - run: echo "Version is '${{ steps.supply-version.outputs.version-number }}'"
 
-      # - name: development
-      # - uses: yannduran/set-vsix-version@master
-      #   with:
-      #     development-version: "'1.2.3.4'"
-      #     production-version: "'4.5.0'"
-      #     production-tag: "'^v[0-9]+.[0-9]+.[0-9]+$'"
-      #     git-ref: "'refs/heads/master'"
-      #     manifest-file-path: "'test.vsixmanifest'"
-      #     code-file-path: "'test.cs'"
+      - run: echo "Version is '${{ steps.version-supplied.outputs.version-number }}'"
+
+      - uses: actions/checkout@v2
+
+      - name: Missing data
+        id: mssing-data
+        uses: ./
+        with:
+          version-number: ""
+          development-version: ""
+          production-version: ""
+          production-tag: ""
+          github-ref: ""
+          manifest-file-path: ./.github/workflows/test.vsixmanifest
+          code-file-path: ./.github/workflows/test.cs
+
+      - run: echo "Version is '${{ steps.missing-data.outputs.version-number }}'"
