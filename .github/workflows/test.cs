@@ -12,7 +12,7 @@ namespace CiTest_GitVersion
         public const string Name = "CI Test - GitVersion";
         public const string Description = @"A project to test using GitVersion in Github Actions";
         public const string Language = "en-US";
-        public const string Version = "1.3.0";
+        public const string Version = "0.1";
         public const string Author = "Yann Duran";
         public const string Tags = "";
     }
