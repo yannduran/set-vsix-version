@@ -149,7 +149,7 @@ runs:
               param (
                 [string] $manifestVersionBefore = '?',
                 [string] $manifestVersionAfter = '?', 
-                [bool]   $codeFileExists = $true,
+                [bool]   $codeFilePathExists = $true,
                 [string] $codeVersionBefore = '?',
                 [string] $codeVersionAfter = '?'
               )
@@ -160,7 +160,7 @@ runs:
               LogInfo(" - before: $manifestVersionBefore")
               LogInfo(" - after : $manifestVersionAfter")
 
-              if ($codeFileExists -eq $true) {
+              if ($codeFilePathExists -eq $true) {
                 LogInfo("---------")
                 LogInfo("Code file")
                 LogInfo("---------")
@@ -175,12 +175,12 @@ runs:
 
           #region inputs
           $versionNumber = "'${{ inputs.version-number }}'"
-          $development = "'${{ inputs.development-version }}'"
-          $production = "'${{ inputs.production-version }}'"
+          $developmentVersion = "'${{ inputs.development-version }}'"
+          $productionVersion = "'${{ inputs.production-version }}'"
           $productionTag = "'${{ inputs.production-tag }}'"
           $gitRef = "'${{ inputs.git-ref }}'"
-          $manifestFile = "${{ inputs.manifest-file-path }}"
-          $codeFile = "${{ inputs.code-file-path }}"
+          $manifestFilePath = "${{ inputs.manifest-file-path }}"
+          $codeFilePath = "${{ inputs.code-file-path }}"
 
           LogInfo "------"
           LogInfo "Inputs"
@@ -193,12 +193,12 @@ runs:
             LogInfo " - version-number      = ''"
           }
 
-          LogInfo " - development-version = $development"
-          LogInfo " - production-version  = $production"
+          LogInfo " - development-version = $developmentVersion"
+          LogInfo " - production-version  = $productionVersion"
           LogInfo " - production-tag      = $productionTag"
           LogInfo " - git-ref             = $gitRef"
-          LogInfo " - manifest-file-path  = $manifestFile"
-          LogInfo " - code-file-path      = $codeFile"
+          LogInfo " - manifest-file-path  = $manifestFilePath"
+          LogInfo " - code-file-path      = $codeFilePath"
           #endregion
 
           #region constants
@@ -233,7 +233,7 @@ runs:
             LogInfo " - type    =   specified"
           }
           else {
-            $valid = ($development -ne '') -and ($production -ne '') -and ($gitRef -ne '')
+            $valid = ($developmentVersion -ne '') -and ($productionVersion-ne '') -and ($gitRef -ne '')
 
             if ($valid -eq $false) {
               $message = "Input 'version-number' was not specified
@@ -251,7 +251,7 @@ runs:
 
             if ($isBranch) {
               $valid = $true
-              $versionToSet = $development
+              $versionToSet = $developmentVersion
               $branch = $gitRef.Replace($heads,'')
 
               LogInfo " - branch  = $branch"
@@ -267,11 +267,11 @@ runs:
 
               if ($isProduction -eq $true) {
                 LogInfo " - type    = production"
-                $versionToSet = $production
+                $versionToSet = $productionVersion
               }
               else {
                 LogInfo " - type    = development"
-                $versionToSet = $development
+                $versionToSet = $developmentVersion
               } 
             }
           }  
@@ -291,32 +291,30 @@ runs:
         }
         #endregion
 
-        #region end
-          #region functions
-        #endregion
-
           if ($valid -eq $true) {
             LogInfo " - version = $versionToSet"                    
 
-            $manifestVersionBefore = $(GetTextBetween(GetManifestVersion($manifestFile)))
+            $manifestVersionBefore = $(GetTextBetween(GetManifestVersion($manifestFilePath)))
             $manifestReplacement = 'Version="' + $versionToSet + '" Language='
-            $content = [string]::join([environment]::newline, (get-content $manifestFile))
+            $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
             $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
-            $regex.Replace($content, $manifestReplacement) | Out-File $manifestFile
-            $manifestVersionAfter = $(GetTextBetween(GetManifestVersion($manifestFile)))
+            $regex.Replace($content, $manifestReplacement) | Out-File $manifestFilePath
+            $manifestVersionAfter = $(GetTextBetween(GetManifestVersion($manifestFilePath)))
 
-            $codeFileExists = [System.IO.File]::Exists($codeFile)
+            $codeFilePathExists = [System.IO.File]::Exists($codeFilePath)
 
-            if ($codeFileExists -eq $true) {
-              $codeVersionBefore = $(GetTextBetween(GetCodeVersion($codeFile)))
+            if ($codeFilePathExists -eq $true) {
+              $codeVersionBefore = $(GetTextBetween(GetCodeVersion($codeFilePath)))
               $codeReplacement = 'Version = "' + $versionToSet +'"'
-              $content = [string]::join([environment]::newline, (get-content $codeFile))
+              $content = [string]::join([environment]::newline, (get-content $codeFilePath))
               $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
-              $regex.Replace($content, $codeReplacement) | Out-File $codeFile
-              $codeVersionAfter =$(GetTextBetween(GetCodeVersion($codeFile)))
+              $regex.Replace($content, $codeReplacement) | Out-File $codeFilePath
+              $codeVersionAfter =$(GetTextBetween(GetCodeVersion($codeFilePath)))
             }
 
-            ShowResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
+            ShowResults `
+              $manifestVersionBefore $manifestVersionAfter `
+              $codeFilePathExists $codeVersionBefore $codeVersionAfter
 
             echo "::set-output name=version-number::$versionToSet"
           }
