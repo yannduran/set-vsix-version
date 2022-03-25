@@ -35,11 +35,11 @@ jobs:
         id: missing-data
         uses: yannduran/set-vsix-version@v0.2.15 #./
         with:
-          version-number: ""
-          development-version: ""
-          production-version: ""
-          production-tag: ""
-          github-ref: ""
+          version-number: "''"
+          development-version: "''"
+          production-version: "''"
+          production-tag: "''"
+          github-ref: "''"
           manifest-file-path: ./.github/workflows/test.vsixmanifest
           code-file-path: ./.github/workflows/test.cs
 
