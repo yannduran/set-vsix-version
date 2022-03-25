@@ -124,100 +124,100 @@ function ShowResults {
 #endregion
 
 try {
-  #region init
+  #region begin
     LogDate "Started at"  
 
     #region inputs
-    # # version supplied
-    # $versionNumber = '1.0.0'
-    # $developmentVersion = ''
-    # $productionVersion = ''
-    # $productionTag = ''
-    # $gitRef = ''
-    # $manifestFilePath = 
-    # $codeFilePath = './.github/workflows/test.cs'
+      # # version supplied
+      # $versionNumber = '1.0.0'
+      # $developmentVersion = ''
+      # $productionVersion = ''
+      # $productionTag = ''
+      # $gitRef = ''
+      # $manifestFilePath = 
+      # $codeFilePath = './.github/workflows/test.cs'
 
-    # # branch with missing data
-    # $versionNumber = ''
-    # $developmentVersion = ''
-    # $productionVersion = ''
-    # $productionTag = ''
-    # $gitRef = 'refs/heads/master'
-    # $manifestFilePath = './.github/workflows/test.vsixmanifest'
-    # $codeFilePath = './.github/workflows/test.cs'
+      # # branch with missing data
+      # $versionNumber = ''
+      # $developmentVersion = ''
+      # $productionVersion = ''
+      # $productionTag = ''
+      # $gitRef = 'refs/heads/master'
+      # $manifestFilePath = './.github/workflows/test.vsixmanifest'
+      # $codeFilePath = './.github/workflows/test.cs'
 
-    # # branch with data
-    # $versionNumber = ''
-    # $developmentVersion = '1.2.0.1'
-    # $productionVersion = '1.3.0' 
-    # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
-    # $gitRef = 'refs/heads/master'
-    # $manifestFilePath = './.github/workflows/test.vsixmanifest'
-    # $codeFilePath = './.github/workflows/test.cs'
-    
-    # # non-production tag
-    # $versionNumber = ''
-    # $developmentVersion = '1.2.0.1'
-    # $productionVersion = '1.3.0' 
-    # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
-    # $gitRef = 'refs/tags/1.4.0'
-    # $manifestFilePath = './.github/workflows/test.vsixmanifest'
-    # $codeFilePath = './.github/workflows/test.cs'
-    
-    # production tag
-    $versionNumber = ''
-    $developmentVersion = '1.2.0.1'
-    $productionVersion = '1.3.0' 
-    $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
-    $gitRef = 'refs/tags/v1.4.0'
-    $manifestFilePath = './.github/workflows/test.vsixmanifest'
-    $codeFilePath = './.github/workflows/test.cs'
-    
-    # # unsupported gitref
-    # $versionNumber = ''
-    # $developmentVersion = '1.2.0.1'
-    # $productionVersion = '1.3.0' 
-    # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
-    # $gitRef = 'refs/pr/v1.4.0'
-    # $manifestFilePath = './.github/workflows/test.vsixmanifest'
-    # $codeFilePath = './.github/workflows/test.cs'
-    
-    LogInfo "------"
-    LogInfo "Inputs"
-    LogInfo "------"
+      # # branch with data
+      # $versionNumber = ''
+      # $developmentVersion = '1.2.0.1'
+      # $productionVersion = '1.3.0' 
+      # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
+      # $gitRef = 'refs/heads/master'
+      # $manifestFilePath = './.github/workflows/test.vsixmanifest'
+      # $codeFilePath = './.github/workflows/test.cs'
+      
+      # # non-production tag
+      # $versionNumber = ''
+      # $developmentVersion = '1.2.0.1'
+      # $productionVersion = '1.3.0' 
+      # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
+      # $gitRef = 'refs/tags/1.4.0'
+      # $manifestFilePath = './.github/workflows/test.vsixmanifest'
+      # $codeFilePath = './.github/workflows/test.cs'
+      
+      # production tag
+      $versionNumber = ''
+      $developmentVersion = '1.2.0.1'
+      $productionVersion = '1.3.0' 
+      $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
+      $gitRef = 'refs/tags/v1.4.0'
+      $manifestFilePath = './.github/workflows/test.vsixmanifest'
+      $codeFilePath = './.github/workflows/test.cs'
+      
+      # # unsupported gitref
+      # $versionNumber = ''
+      # $developmentVersion = '1.2.0.1'
+      # $productionVersion = '1.3.0' 
+      # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
+      # $gitRef = 'refs/pr/v1.4.0'
+      # $manifestFilePath = './.github/workflows/test.vsixmanifest'
+      # $codeFilePath = './.github/workflows/test.cs'
+      
+      LogInfo "------"
+      LogInfo "Inputs"
+      LogInfo "------"
 
-    if ($versionSpecified -eq $true) { 
-      LogInfo " - version-number      = $versionNumber" 
-    }
-    else { 
-      LogInfo " - version-number      = ''"
-    }
+      if ($versionSpecified -eq $true) { 
+        LogInfo " - version-number      = $versionNumber" 
+      }
+      else { 
+        LogInfo " - version-number      = ''"
+      }
 
-    LogInfo " - development-version = $developmentVersion"
-    LogInfo " - production-version  = $productionVersion"
-    LogInfo " - production-tag      = $productionTag"
-    LogInfo " - git-ref             = $gitRef"
-    LogInfo " - manifest-file-path  = $manifestFilePath"
-    LogInfo " - code-file-path      = $codeFilePath"
-  #endregion
+      LogInfo " - development-version = $developmentVersion"
+      LogInfo " - production-version  = $productionVersion"
+      LogInfo " - production-tag      = $productionTag"
+      LogInfo " - git-ref             = $gitRef"
+      LogInfo " - manifest-file-path  = $manifestFilePath"
+      LogInfo " - code-file-path      = $codeFilePath"
+    #endregion inputs
 
-  #region constants
-    $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
-    $tags = 'refs/tags/'
-    $heads = 'refs/heads/'
-    $versionRegex = '([0-9\\.]+)'
-    $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
-    $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
-    $versionSpecified = ($versionNumber -ne '')
-    $isBranch = $gitRef.StartsWith($heads)
-    $isTag = $gitRef.StartsWith($tags)
-  #endregion
+    #region constants
+      $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
+      $tags = 'refs/tags/'
+      $heads = 'refs/heads/'
+      $versionRegex = '([0-9\\.]+)'
+      $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
+      $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
+      $versionSpecified = ($versionNumber -ne '')
+      $isBranch = $gitRef.StartsWith($heads)
+      $isTag = $gitRef.StartsWith($tags)
+    #endregion constants
 
-  #region variables
-  $valid = $false
-  $versionToSet = '0.1'
-  #endregion
-#endregion
+    #region variables
+    $valid = $false
+    $versionToSet = '0.1'
+    #endregion variables
+  #endregion begin
 
   #region process
     LogInfo "------"
@@ -273,39 +273,43 @@ try {
         } 
       }
     }  
-  #endregion
+  #endregion process
 
   #region end
   if ($valid -eq $true) {
     LogInfo " - version = $versionToSet"                    
 
     if ($versionToSet -ne '') {
-      $manifestVersionBefore = GetManifestVersion($manifestFilePath)
-      $manifestReplacement = 'Version="' + $versionToSet + '" Language='
+      #region manifest file
+        $manifestVersionBefore = GetManifestVersion($manifestFilePath)
+        $manifestReplacement = 'Version="' + $versionToSet + '" Language='
 
-      $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
-      $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
-      $regex.Replace($content, $manifestReplacement) | Out-File $manifestFilePath
-      $manifestVersionAfter = GetManifestVersion($manifestFilePath)
+        $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
+        $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
+        $regex.Replace($content, $manifestReplacement) | Out-File $manifestFilePath
+        $manifestVersionAfter = GetManifestVersion($manifestFilePath)
+      #endregion manfest file
 
-      $codeFilePathExists = [System.IO.File]::Exists($codeFilePath)
+      #region code file
+        $codeFilePathExists = [System.IO.File]::Exists($codeFilePath)
 
-      if ($codeFilePathExists -eq $true)
-      {
-        $codeVersionBefore = GetCodeVersion($codeFilePath)
-        $codeReplacement = 'Version = "' + $versionToSet +'"'
-        $content = [string]::join([environment]::newline, (get-content $codeFilePath))
-        $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
-        $regex.Replace($content, $codeReplacement) | Out-File $codeFilePath
-        $codeVersionAfter = GetCodeVersion($codeFilePath)
-      }
+        if ($codeFilePathExists -eq $true)
+        {
+          $codeVersionBefore = GetCodeVersion($codeFilePath)
+          $codeReplacement = 'Version = "' + $versionToSet +'"'
+          $content = [string]::join([environment]::newline, (get-content $codeFilePath))
+          $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
+          $regex.Replace($content, $codeReplacement) | Out-File $codeFilePath
+          $codeVersionAfter = GetCodeVersion($codeFilePath)
+        }
+      #endregion
 
       ShowResults $manifestVersionBefore $manifestVersionAfter $codeFilePathExists $codeVersionBefore $codeVersionAfter
     }
   }
 
   LogDate "Ended at"
-  #endregion
+  #endregion end
 }
 catch [System.ArgumentException] {
   LogError $_
