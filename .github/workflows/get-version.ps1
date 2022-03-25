@@ -5,125 +5,125 @@
 # - use https://github.com/ebekker/pwsh-github-action-tools
 # - return an empty string if version is null (done?)
 
-#region functions
-function LogInfo {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory=$true, Position=0)]
-    [string]$message
-    )
-  
-  Write-Host "INFO: ${message}" -ForegroundColor Magenta
-}
-
-function LogError {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory=$true, Position=0)]
-    [string]
-    $message
-    )
-  
-  Write-Host "ERROR: ${message}" -ForegroundColor Yellow
-}
-
-function LogException {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory=$true, Position=0)]
-    [string]$message
-    )
-  
-  Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
-}
-
-function LogException {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory=$true, Position=0)]
-    [string]$message
-    )
-  
-  Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
-}
-
-function LogDate {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory=$true, Position=0)]
-    [string]$prefix
-    )
-  
-  Write-Host "INFO: ${prefix} $(Get-Date -Format $dateFormat)" -ForegroundColor Magenta
-}
-
-function GetTextBetween {
-  # https://powershellone.wordpress.com/2021/02/24/using-powershell-and-regex-to-extract-text-between-delimiters/
-
-  [CmdletBinding()]
-  param( 
-    [Parameter(Mandatory, ValueFromPipeline = $true, Position = 0)]   
-    [string]$Text,
-    [Parameter(Position = 1)] 
-    [char]$delimeter = '"'
-  )
-  $pattern = "(?<=\$delimeter).+?(?=\$delimeter)"
-
-  return [regex]::Matches($Text, $pattern).Value
-}
-
-function GetManifestVersion {
-  param([string]$path)
-
-  $value = select-string -Path $path -Pattern $manifestRegex -AllMatches `
-    | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
-
-  if ($value -eq '') {
-    return ''
-  } 
-
-  return $(GetTextBetween($value.Replace(' Language=','')))
-}
-
-function GetCodeVersion {
-  param([string]$path)
-
-  $value = select-string -Path $path -Pattern $codeRegex -AllMatches `
-    | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
-
-  if ($value -eq '') {
-    return ''
-  }
-  
-  return $(GetTextBetween($value))
-}
-
-function ShowResults {
-  param(
-  [string] $manifestVersionBefore = '?',
-  [string] $manifestVersionAfter = '?', 
-  [bool]   $codeFilePathExists = $true,
-  [string] $codeVersionBefore = '?',
-  [string] $codeVersionAfter = '?'
-  )
-
-  LogInfo("-------------")
-  LogInfo("Manifest file")
-  LogInfo("-------------")
-  LogInfo(" - before: $manifestVersionBefore")
-  LogInfo(" - after : $manifestVersionAfter")
-
-  if ($codeFilePathExists -eq $true) {
-    LogInfo("---------")
-    LogInfo("Code file")
-    LogInfo("---------")
-    LogInfo(" - before: $codeVersionBefore")
-    LogInfo(" - after : $codeVersionAfter")
-  }
-}  
-#endregion
-
 try {
+  #region functions
+  function LogInfo {
+    [CmdletBinding()]
+    param(
+      [Parameter(Mandatory=$true, Position=0)]
+      [string]$message
+      )
+    
+    Write-Host "INFO: ${message}" -ForegroundColor Magenta
+  }
+  
+  function LogError {
+    [CmdletBinding()]
+    param(
+      [Parameter(Mandatory=$true, Position=0)]
+      [string]
+      $message
+      )
+    
+    Write-Host "ERROR: ${message}" -ForegroundColor Yellow
+  }
+  
+  function LogException {
+    [CmdletBinding()]
+    param(
+      [Parameter(Mandatory=$true, Position=0)]
+      [string]$message
+      )
+    
+    Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
+  }
+  
+  function LogException {
+    [CmdletBinding()]
+    param(
+      [Parameter(Mandatory=$true, Position=0)]
+      [string]$message
+      )
+    
+    Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
+  }
+  
+  function LogDate {
+    [CmdletBinding()]
+    param(
+      [Parameter(Mandatory=$true, Position=0)]
+      [string]$prefix
+      )
+    
+    Write-Host "INFO: ${prefix} $(Get-Date -Format $dateFormat)" -ForegroundColor Magenta
+  }
+  
+  function GetTextBetween {
+    # https://powershellone.wordpress.com/2021/02/24/using-powershell-and-regex-to-extract-text-between-delimiters/
+  
+    [CmdletBinding()]
+    param( 
+      [Parameter(Mandatory, ValueFromPipeline = $true, Position = 0)]   
+      [string]$Text,
+      [Parameter(Position = 1)] 
+      [char]$delimeter = '"'
+    )
+    $pattern = "(?<=\$delimeter).+?(?=\$delimeter)"
+  
+    return [regex]::Matches($Text, $pattern).Value
+  }
+  
+  function GetManifestVersion {
+    param([string]$path)
+  
+    $value = select-string -Path $path -Pattern $manifestRegex -AllMatches `
+      | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
+  
+    if ($value -eq '') {
+      return ''
+    } 
+  
+    return $(GetTextBetween($value.Replace(' Language=','')))
+  }
+  
+  function GetCodeVersion {
+    param([string]$path)
+  
+    $value = select-string -Path $path -Pattern $codeRegex -AllMatches `
+      | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
+  
+    if ($value -eq '') {
+      return ''
+    }
+    
+    return $(GetTextBetween($value))
+  }
+  
+  function ShowResults {
+    param(
+    [string] $manifestVersionBefore = '?',
+    [string] $manifestVersionAfter = '?', 
+    [bool]   $codeFilePathExists = $true,
+    [string] $codeVersionBefore = '?',
+    [string] $codeVersionAfter = '?'
+    )
+  
+    LogInfo("-------------")
+    LogInfo("Manifest file")
+    LogInfo("-------------")
+    LogInfo(" - before: $manifestVersionBefore")
+    LogInfo(" - after : $manifestVersionAfter")
+  
+    if ($codeFilePathExists -eq $true) {
+      LogInfo("---------")
+      LogInfo("Code file")
+      LogInfo("---------")
+      LogInfo(" - before: $codeVersionBefore")
+      LogInfo(" - after : $codeVersionAfter")
+    }
+  }  
+  #endregion functions
+  
   #region begin
     LogDate "Started at"  
 
