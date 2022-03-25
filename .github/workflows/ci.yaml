@@ -14,6 +14,9 @@ jobs:
 
       - name: Supply version number to set
         id: version-supplied
+
+        if: false
+
         uses: yannduran/set-vsix-version@v0.2.15 #./
         with:
           version-number: 1.2.3
