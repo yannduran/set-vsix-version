@@ -15,9 +15,7 @@ jobs:
       - name: Supply version number to set
         id: version-supplied
 
-        if: false
-
-        uses: yannduran/set-vsix-version@v0.2.15 #./
+        uses: ./
         with:
           version-number: 1.2.3
           development-version: ""
@@ -33,7 +31,8 @@ jobs:
 
       - name: Missing data
         id: missing-data
-        uses: yannduran/set-vsix-version@v0.2.15 #./
+
+        uses: ./
         with:
           version-number: "''"
           development-version: "''"
