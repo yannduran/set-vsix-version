@@ -137,14 +137,14 @@ try {
       # $manifestFilePath = 
       # $codeFilePath = './.github/workflows/test.cs'
 
-      # # branch with missing data
-      # $versionNumber = ''
-      # $developmentVersion = ''
-      # $productionVersion = ''
-      # $productionTag = ''
-      # $gitRef = 'refs/heads/master'
-      # $manifestFilePath = './.github/workflows/test.vsixmanifest'
-      # $codeFilePath = './.github/workflows/test.cs'
+      # missing data
+      $versionNumber = ''
+      $developmentVersion = ''
+      $productionVersion = ''
+      $productionTag = ''
+      $gitRef = ''
+      $manifestFilePath = './.github/workflows/test.vsixmanifest'
+      $codeFilePath = './.github/workflows/test.cs'
 
       # # branch with data
       # $versionNumber = ''
@@ -164,14 +164,14 @@ try {
       # $manifestFilePath = './.github/workflows/test.vsixmanifest'
       # $codeFilePath = './.github/workflows/test.cs'
       
-      # production tag
-      $versionNumber = ''
-      $developmentVersion = '1.2.0.1'
-      $productionVersion = '1.3.0' 
-      $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
-      $gitRef = 'refs/tags/v1.4.0'
-      $manifestFilePath = './.github/workflows/test.vsixmanifest'
-      $codeFilePath = './.github/workflows/test.cs'
+      # # production tag
+      # $versionNumber = ''
+      # $developmentVersion = '1.2.0.1'
+      # $productionVersion = '1.3.0' 
+      # $productionTag = '^v[0-9]+.[0-9]+.[0-9]+$'
+      # $gitRef = 'refs/tags/v1.4.0'
+      # $manifestFilePath = './.github/workflows/test.vsixmanifest'
+      # $codeFilePath = './.github/workflows/test.cs'
       
       # # unsupported gitref
       # $versionNumber = ''
@@ -185,14 +185,7 @@ try {
       LogInfo "------"
       LogInfo "Inputs"
       LogInfo "------"
-
-      if ($versionSpecified -eq $true) { 
-        LogInfo " - version-number      = $versionNumber" 
-      }
-      else { 
-        LogInfo " - version-number      = ''"
-      }
-
+      LogInfo " - version-number      = $versionNumber"
       LogInfo " - development-version = $developmentVersion"
       LogInfo " - production-version  = $productionVersion"
       LogInfo " - production-tag      = $productionTag"
@@ -234,9 +227,9 @@ try {
       $valid = ($developmentVersion -ne '') -and ($productionVersion -ne '') -and ($gitRef -ne '')
 
       if ($valid -eq $false) {
-        $message = "Input 'version-number' was not specified
-        Therefore 'development-version', 'production-version' and 'git-ref'
-        inputs are all required"
+        $message = "The 'version-number' was not specified,
+       therefore 'development-version', 'production-version' and 'git-ref'
+       are all required"
   
         throw new-object System.ArgumentException $message
       }  
@@ -276,39 +269,39 @@ try {
   #endregion process
 
   #region end
-  if ($valid -eq $true) {
-    LogInfo " - version = $versionToSet"                    
+    if ($valid -eq $true) {
+      LogInfo " - version = $versionToSet"                    
 
-    if ($versionToSet -ne '') {
-      #region manifest file
-        $manifestVersionBefore = GetManifestVersion($manifestFilePath)
-        $manifestReplacement = 'Version="' + $versionToSet + '" Language='
+      if ($versionToSet -ne '') {
+        #region manifest file
+          $manifestVersionBefore = GetManifestVersion($manifestFilePath)
+          $manifestReplacement = 'Version="' + $versionToSet + '" Language='
 
-        $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
-        $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
-        $regex.Replace($content, $manifestReplacement) | Out-File $manifestFilePath
-        $manifestVersionAfter = GetManifestVersion($manifestFilePath)
-      #endregion manfest file
+          $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
+          $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
+          $regex.Replace($content, $manifestReplacement) | Out-File $manifestFilePath
+          $manifestVersionAfter = GetManifestVersion($manifestFilePath)
+        #endregion manfest file
 
-      #region code file
-        $codeFilePathExists = [System.IO.File]::Exists($codeFilePath)
+        #region code file
+          $codeFilePathExists = [System.IO.File]::Exists($codeFilePath)
 
-        if ($codeFilePathExists -eq $true)
-        {
-          $codeVersionBefore = GetCodeVersion($codeFilePath)
-          $codeReplacement = 'Version = "' + $versionToSet +'"'
-          $content = [string]::join([environment]::newline, (get-content $codeFilePath))
-          $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
-          $regex.Replace($content, $codeReplacement) | Out-File $codeFilePath
-          $codeVersionAfter = GetCodeVersion($codeFilePath)
-        }
-      #endregion
+          if ($codeFilePathExists -eq $true)
+          {
+            $codeVersionBefore = GetCodeVersion($codeFilePath)
+            $codeReplacement = 'Version = "' + $versionToSet +'"'
+            $content = [string]::join([environment]::newline, (get-content $codeFilePath))
+            $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
+            $regex.Replace($content, $codeReplacement) | Out-File $codeFilePath
+            $codeVersionAfter = GetCodeVersion($codeFilePath)
+          }
+        #endregion
 
-      ShowResults $manifestVersionBefore $manifestVersionAfter $codeFilePathExists $codeVersionBefore $codeVersionAfter
+        ShowResults $manifestVersionBefore $manifestVersionAfter $codeFilePathExists $codeVersionBefore $codeVersionAfter
+      }
     }
-  }
 
-  LogDate "Ended at"
+    LogDate "Ended at"
   #endregion end
 }
 catch [System.ArgumentException] {
@@ -320,7 +313,7 @@ catch [System.InvalidOperationException] {
   $valid = $false
 }
 catch {
-  LogException "An unexpected error occurred: $_"
+  LogException $_
   LogException $_.ScriptStackTrace
   $valid = $false
 }

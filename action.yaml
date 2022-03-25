@@ -196,14 +196,7 @@ runs:
               LogInfo "------"
               LogInfo "Inputs"
               LogInfo "------"
-
-              if ($versionSpecified -eq $true) { 
-                LogInfo " - version-number      = $versionNumber" 
-              }
-              else { 
-                LogInfo " - version-number      = ''"
-              }
-
+              LogInfo " - version-number      = $versionNumber" 
               LogInfo " - development-version = $developmentVersion"
               LogInfo " - production-version  = $productionVersion"
               LogInfo " - production-tag      = $productionTag"
@@ -245,9 +238,9 @@ runs:
               $valid = ($developmentVersion -ne '') -and ($productionVersion -ne '') -and ($gitRef -ne '')
 
               if ($valid -eq $false) {
-                $message = "Input 'version-number' was not specified
-                Therefore 'development-version', 'production-version' and 'git-ref'
-                inputs are all required"
+                $message = "The 'version-number' was not specified,
+               therefore 'development-version', 'production-version' and 'git-ref'
+               are all required"
           
                 throw new-object System.ArgumentException $message
               }  
@@ -331,7 +324,7 @@ runs:
           $valid = $false
         }
         catch {
-          LogException "An unexpected error occurred: $_"
+          LogException $_
           LogException $_.ScriptStackTrace
           $valid = $false
         }
