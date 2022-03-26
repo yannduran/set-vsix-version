@@ -25,11 +25,11 @@ inputs:
     type: string
     default: ""
 
-  production-tag:
+  production-regex:
     description: "A regex expression that defines a valid production tag"
     required: false
     type: string
-    default: "**"
+    default: ""
 
   github-ref:
     description: "The repo's git ref"
@@ -181,14 +181,14 @@ runs:
             }  
           #endregion functions
 
-          #region begin
+          #region start
             LogDate "Started at"  
 
             #region inputs
               $versionNumber = "'${{ inputs.version-number }}'"
               $development = "'${{ inputs.development-version }}'"
               $production = "'${{ inputs.production-version }}'"
-              $productionTag = "'${{ inputs.production-tag }}'"
+              $productionRegex = "'${{ inputs.production-regex }}'"
               $gitRef = "'${{ inputs.git-ref }}'"
               $manifestFile = "'${{ inputs.manifest-file-path }}'"
               $codeFile = "'${{ inputs.code-file-path }}'"
@@ -199,7 +199,7 @@ runs:
               LogInfo " - version-number      = $versionNumber" 
               LogInfo " - development-version = $developmentVersion"
               LogInfo " - production-version  = $productionVersion"
-              LogInfo " - production-tag      = $productionTag"
+              LogInfo " - production-regex    = $productionRegex"
               LogInfo " - git-ref             = $gitRef"
               LogInfo " - manifest-file-path  = $manifestFilePath"
               LogInfo " - code-file-path      = $codeFilePath"
@@ -221,18 +221,47 @@ runs:
               $valid = $false
               $versionToSet = '0.1'
             #endregion variables
-          #endregion begin
+          #endregion start
 
           #region process
+    #region fail fast
+                if ($manifestFilePathExists -eq $false) {
+                    $message = "The 'manifest-file-path' MUST be specified, or no version mumber can be set"
+
+                    throw new-object System.ArgumentException $message
+                }
+                    
+                $missingInputs = ($versionSpecified -eq $true) `
+                    -and (($developmentVersion -eq '') -or ($productionVersion -eq '') -or ($gitRef -eq ''))
+
+                if ($missingInputs -eq $true) {
+                    $message = "The 'version-number' was not specified,
+                therefore 'development-version', 'production-version' and 'git-ref'
+                are all required"
+                
+                    throw new-object System.ArgumentException $message
+                }  
+                
+                if (($isTag -eq $true) -and ($productionRegex -eq '')) {
+                    $message = "When pushing a tag, 'production-regex' must be specified"
+                    throw new-object System.ArgumentException $message
+                }
+                
+                if (!$isBranch -and !$isTag) {
+                    throw new-object System.InvalidOperationException "'$gitref' is not currently supported"  
+                }
+            #endregion fail fast
+
             LogInfo "------"
             LogInfo "Values"
             LogInfo "------"
+
 
             if ($versionSpecified -eq $true) {
               $valid = $true
               $versionToSet = $versionNumber
 
-              LogInfo " - type    =   specified"
+              LogInfo " - type    = specified"
             }
             else {
               $valid = ($developmentVersion -ne '') -and ($productionVersion -ne '') -and ($gitRef -ne '')
@@ -264,7 +293,6 @@ runs:
                 $valid = $true
                 $tag = $gitRef.Replace($tags,'')
                 $isProduction = ($tag -match $productionTag)
-                
                 LogInfo " - tag     = $tag"
 
                 if ($isProduction -eq $true) {
