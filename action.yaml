@@ -45,7 +45,7 @@ inputs:
 outputs:
   version-number:
     description: "The version that was set in the VSIX manifest/code file(s)"
-    value: ${{ steps.set-version.outputs. }}
+    value: ${{ steps.set-version.outputs.version-number }}
 
 runs:
   using: "composite"
