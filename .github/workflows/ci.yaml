@@ -20,7 +20,7 @@ jobs:
           version-number: 1.2.3
           development-version: ""
           production-version: ""
-          production-tag: ""
+          production-regex: ""
           github-ref: ""
           manifest-file-path: ./.github/workflows/test.vsixmanifest
           code-file-path: ./.github/workflows/test.cs
@@ -37,7 +37,7 @@ jobs:
           version-number: "''"
           development-version: "''"
           production-version: "''"
-          production-tag: "''"
+          production-regex: "''"
           github-ref: "''"
           manifest-file-path: ./.github/workflows/test.vsixmanifest
           code-file-path: ./.github/workflows/test.cs
