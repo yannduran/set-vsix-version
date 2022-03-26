@@ -230,24 +230,25 @@ try {
   #region process
     #region fail fast
       if ($manifestFilePathExists -eq $false) {
-        $message = "The 'manifest-file-path' MUST be specified, or no version mumber can be set"
+        $message = "The 'manifest-file-path' MUST be specified, so no version mumber can be set"
 
         throw new-object System.ArgumentException $message
       }
           
-      $missingInputs = ($versionSpecified -eq $true) `
-        -and (($developmentVersion -eq '') -or ($productionVersion -eq '') -or ($gitRef -eq ''))
+      $missingInputs = ($versionSpecified -eq $false) `
+        -and (($developmentVersion -eq '') -or ($productionVersion -eq '') -or ($productionRegex -eq '') -or ($gitRef -eq ''))
 
       if ($missingInputs -eq $true) {
         $message = "The 'version-number' was not specified,
-       therefore 'development-version', 'production-version' and 'git-ref'
+       therefore 'development-version', 'production-version', 'production-regex' and 'git-ref'
        are all required"
       
         throw new-object System.ArgumentException $message
       }  
       
-      if (($isTag -eq $true) -and ($productionRegex -eq '')) {
+      if ($isTag -eq $true -and $productionRegex -eq '') {
         $message = "When pushing a tag, 'production-regex' must be specified"
+
         throw new-object System.ArgumentException $message
       }
       
@@ -261,12 +262,12 @@ try {
     LogInfo "------"
 
     if ($versionSpecified -eq $true) {
+      $valid = $true
       $versionToSet = $versionNumber
 
       LogInfo " - type    = specified"
     } 
     else {
-      # use a switch here?
       if ($isBranch) {
         $valid = $true
         $versionToSet = $developmentVersion

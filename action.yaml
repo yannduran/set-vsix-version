@@ -10,48 +10,42 @@ inputs:
   version-number:
     description: "Version number to set"
     required: false
-    type: string
     default: ""
 
   development-version:
     description: "Development version number"
     required: false
-    type: string
     default: ""
 
   production-version:
     description: "Production version number"
     required: false
-    type: string
     default: ""
 
   production-regex:
     description: "A regex expression that defines a valid production tag"
     required: false
-    type: string
     default: ""
 
   github-ref:
     description: "The repo's git ref"
     required: false
-    type: string
     default: ""
 
   manifest-file-path:
     description: "Path to VSIX manifest file (source.extension.vsixmanifest)"
     required: true
-    type: string
     default: src/vsix/source.extension.vsixmanifest
 
   code-file-path:
     description: "Path to generated code file (source.extension.vs)"
     required: false
-    type: string
     default: src/vsix/source.extension.cs
 
 outputs:
   version-number:
     description: "The version that was set in the VSIX manifest/code file(s)"
+    value: ${{ steps.set-version.outputs. }}
 
 runs:
   using: "composite"
@@ -224,38 +218,34 @@ runs:
           #endregion start
 
           #region process
-    #region fail fast
-                if ($manifestFilePathExists -eq $false) {
-                    $message = "The 'manifest-file-path' MUST be specified, or no version mumber can be set"
+            #region fail fast
+              if ($manifestFilePathExists -eq $false) {
+                  $message = "The 'manifest-file-path' MUST be specified, so no version mumber can be set"
 
-                    throw new-object System.ArgumentException $message
-                }
-                    
-                $missingInputs = ($versionSpecified -eq $true) `
-                    -and (($developmentVersion -eq '') -or ($productionVersion -eq '') -or ($gitRef -eq ''))
+                  throw new-object System.ArgumentException $message
+              }
+                  
+              $missingInputs = ($versionSpecified -eq $true) `
+                  -and (($developmentVersion -eq '') -or ($productionVersion -eq '') -or ($gitRef -eq ''))
 
-                if ($missingInputs -eq $true) {
-                    $message = "The 'version-number' was not specified,
-                therefore 'development-version', 'production-version' and 'git-ref'
-                are all required"
-                
-                    throw new-object System.ArgumentException $message
-                }  
-                
-                if (($isTag -eq $true) -and ($productionRegex -eq '')) {
-                    $message = "When pushing a tag, 'production-regex' must be specified"
-                    throw new-object System.ArgumentException $message
-                }
-                
-                if (!$isBranch -and !$isTag) {
-                    throw new-object System.InvalidOperationException "'$gitref' is not currently supported"  
-                }
+              if ($missingInputs -eq $true) {
+                  $message = "'version-number' was not specified, therefore
+                  'development-version', 'production-version', 'production-regex' and 'git-ref'
+                  are all required"
+              
+                  throw new-object System.ArgumentException $message
+              }  
+              
+              if ($isTag -eq $true -and $productionRegex -eq '') {
+                  $message = "When pushing a tag, 'production-regex' must be specified"
+
+                  throw new-object System.ArgumentException $message
+              }
             #endregion fail fast
 
             LogInfo "------"
             LogInfo "Values"
             LogInfo "------"
-
 
             if ($versionSpecified -eq $true) {
               $valid = $true
@@ -264,22 +254,6 @@ runs:
               LogInfo " - type    = specified"
             }
             else {
-              $valid = ($developmentVersion -ne '') -and ($productionVersion -ne '') -and ($gitRef -ne '')
-
-              if ($valid -eq $false) {
-                $message = "The 'version-number' was not specified,
-               therefore 'development-version', 'production-version' and 'git-ref'
-               are all required"
-          
-                throw new-object System.ArgumentException $message
-              }  
-
-              if (!$isBranch -and !$isTag) {
-                throw new-object System.InvalidOperationException "'$gitref' is not currently supported"  
-              }
-          
-              # use a switch here?
-          
               if ($isBranch) {
                 $valid = $true
                 $versionToSet = $developmentVersion
@@ -305,39 +279,39 @@ runs:
                 } 
               }
             }  
+
+            if ($versionToSet -ne '') {
+              LogInfo " - version = $versionToSet"                    
+
+              #region manifest file
+                $manifestVersionBefore = GetManifestVersion($manifestFilePath)
+                $manifestReplacement = 'Version="' + $versionToSet + '" Language='
+
+                $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
+                $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
+                $regex.Replace($content, $manifestReplacement) | Out-File $manifestFilePath
+
+                $manifestVersionAfter = GetManifestVersion($manifestFilePath)
+              #endregion manfest file
+
+              #region code file
+                if ($codeFilePathExists -eq $true) {
+                  $codeVersionBefore = GetCodeVersion($codeFilePath)
+                  $codeReplacement = 'Version = "' + $versionToSet +'"'
+
+                  $content = [string]::join([environment]::newline, (get-content $codeFilePath))
+                  $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
+                  $regex.Replace($content, $codeReplacement) | Out-File $codeFilePath
+                  
+                  $codeVersionAfter = GetCodeVersion($codeFilePath)
+                }
+              #endregion
+            }
           #endregion process
 
           #region end
             if ($valid -eq $true) {
-              LogInfo " - version = $versionToSet"                    
-
-              if ($versionToSet -ne '') {
-                #region manifest file
-                  $manifestVersionBefore = GetManifestVersion($manifestFilePath)
-                  $manifestReplacement = 'Version="' + $versionToSet + '" Language='
-
-                  $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
-                  $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
-                  $regex.Replace($content, $manifestReplacement) | Out-File $manifestFilePath
-                  $manifestVersionAfter = GetManifestVersion($manifestFilePath)
-                #endregion manifest file
-
-                #region code file
-                  $codeFilePathExists = [System.IO.File]::Exists($codeFilePath)
-
-                  if ($codeFilePathExists -eq $true)
-                  {
-                    $codeVersionBefore = GetCodeVersion($codeFilePath)
-                    $codeReplacement = 'Version = "' + $versionToSet +'"'
-                    $content = [string]::join([environment]::newline, (get-content $codeFilePath))
-                    $regex = New-Object System.Text.RegularExpressions.Regex $codeRegex
-                    $regex.Replace($content, $codeReplacement) | Out-File $codeFilePath
-                    $codeVersionAfter = GetCodeVersion($codeFilePath)
-                  }
-                #endregion code file
-
-                ShowResults $manifestVersionBefore $manifestVersionAfter $codeFilePathExists $codeVersionBefore $codeVersionAfter
-              }
+              ShowResults $manifestVersionBefore $manifestVersionAfter $codeFilePathExists $codeVersionBefore $codeVersionAfter
             }
 
             LogDate "Ended at"
