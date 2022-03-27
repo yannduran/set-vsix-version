@@ -56,6 +56,8 @@ runs:
       shell: pwsh
 
       run: |
+        # Import-Module ./.github/workflows/Functions.psm1
+
         try {
           #region functions
             function LogInfo {
@@ -320,13 +322,16 @@ runs:
         catch [System.ArgumentException] {
           LogError $_
           $valid = $false
+          Exit 1
         }
         catch [System.InvalidOperationException] {
           LogError $_
           $valid = $false
+          Exit 1
         }
         catch {
           LogException $_
           LogException $_.ScriptStackTrace
           $valid = $false
+          Exit 1
         }
