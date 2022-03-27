@@ -289,8 +289,10 @@ runs:
 
               #region manifest file
                 $manifestVersionBefore = GetManifestVersion($manifestFilePath)
+                echo "Path = "'$manifestFilePath'"
                 echo "Before = $manifestVersionBefore"
                 $manifestReplacement = 'Version="' + $versionToSet + '" Language='
+                echo "Replacement = $manifestReplacement"
 
                 $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
                 $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
