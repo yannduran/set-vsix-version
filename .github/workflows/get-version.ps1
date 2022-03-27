@@ -324,6 +324,8 @@ try {
 
   #region end   
     if ($valid -eq $true) {
+      echo "::set-output name=version-number::$versionToSet"
+
       ShowResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
     }
 
