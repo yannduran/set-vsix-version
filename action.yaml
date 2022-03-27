@@ -184,8 +184,8 @@ runs:
               $production = "'${{ inputs.production-version }}'"
               $productionRegex = "'${{ inputs.production-regex }}'"
               $gitRef = "'${{ inputs.git-ref }}'"
-              $manifestFilePath = "'${{ inputs.manifest-file-path }}'"
-              $codeFilePath = "'${{ inputs.code-file-path }}'"
+              $manifestFilePath = "${{ inputs.manifest-file-path }}"
+              $codeFilePath = "${{ inputs.code-file-path }}"
             
               LogInfo "------"
               LogInfo "Inputs"
