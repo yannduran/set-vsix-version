@@ -38,8 +38,6 @@ jobs:
 
       - run: echo "Version is '${{ steps.version-supplied.outputs.version-number }}'"
 
-      # - uses: actions/checkout@v2
-
       - name: No version number, missing inputs
         id: missing-data
 
@@ -54,3 +52,18 @@ jobs:
           code-file-path: ./.github/workflows/test.cs
 
       - run: echo "Version is '${{ steps.missing-data.outputs.version-number }}'"
+
+      - name: No version number, missing deveopment version
+        id: missing-development-version
+
+        uses: ./
+        with:
+          version-number: ""
+          development-version: ""
+          production-version: "1.3.0"
+          production-regex: "^v[0-9]+.[0-9]+.[0-9]+$"
+          github-ref: "/refs/heads/master"
+          manifest-file-path: ./.github/workflows/test.vsixmanifest
+          code-file-path: ./.github/workflows/test.cs
+
+      - run: echo "Version is '${{ steps.missing-development-version.outputs.development-version }}'"
