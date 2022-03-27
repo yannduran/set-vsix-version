@@ -23,7 +23,7 @@ jobs:
       # - name: Get result
       #   run: echo "${{steps.set-result.outputs.result}}"
 
-      - name: Supply version number to set
+      - name: Version number supplied
         id: version-supplied
 
         uses: ./
@@ -38,7 +38,7 @@ jobs:
 
       - run: echo "Version is '${{ steps.version-supplied.outputs.version-number }}'"
 
-      - uses: actions/checkout@v2
+      # - uses: actions/checkout@v2
 
       - name: No version number, missing inputs
         id: missing-data
