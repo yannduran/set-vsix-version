@@ -12,6 +12,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Set Result
+        id: set-result
+
+        uses: actions/github-script@v6
+        with:
+          script: return "Hello!"
+          result-encoding: string
+
+      - name: Get result
+        run: echo "${{steps.set-result.outputs.result}}"
+
       - name: Supply version number to set
         id: version-supplied
 
