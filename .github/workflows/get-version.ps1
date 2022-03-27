@@ -105,7 +105,7 @@ try {
       param(
       [string] $manifestVersionBefore = '?',
       [string] $manifestVersionAfter = '?', 
-      [bool]   $codeFilePathExists = $true,
+      [bool]   $codeFileExists = $true,
       [string] $codeVersionBefore = '?',
       [string] $codeVersionAfter = '?'
       )
@@ -116,7 +116,7 @@ try {
       LogInfo(" - before: $manifestVersionBefore")
       LogInfo(" - after : $manifestVersionAfter")
     
-      if ($codeFilePathExists -eq $true) {
+      if ($codeFileExists -eq $true) {
         LogInfo("---------")
         LogInfo("Code file")
         LogInfo("---------")
@@ -148,14 +148,14 @@ try {
       # $manifestFilePath = ''
       # $codeFilePath = './.github/workflows/test.cs'
 
-      # # no version supplied, missing data
-      # $versionNumber = ''
-      # $developmentVersion = ''
-      # $productionVersion = ''
-      # $productionRegex = ''
-      # $gitRef = ''
-      # $manifestFilePath = './.github/workflows/test.vsixmanifest'
-      # $codeFilePath = ''
+      # no version supplied, missing data
+      $versionNumber = ''
+      $developmentVersion = ''
+      $productionVersion = ''
+      $productionRegex = ''
+      $gitRef = ''
+      $manifestFilePath = './.github/workflows/test.vsixmanifest'
+      $codeFilePath = ''
 
       # # branch
       # $versionNumber = ''
@@ -184,16 +184,17 @@ try {
       # $manifestFilePath = './.github/workflows/test.vsixmanifest'
       # $codeFilePath = './.github/workflows/test.cs'
            
-      # production tag
-      $versionNumber = ''
-      $developmentVersion = '1.2.0.1'
-      $productionVersion = '1.3.0' 
-      $productionRegex = '^v[0-9]+.[0-9]+.[0-9]+$'
-      $gitRef = 'refs/tags/v1.4.0'
-      $manifestFilePath = './.github/workflows/test.vsixmanifest'
-      $codeFilePath = './.github/workflows/test.cs'
-      $codeFileExists = [System.IO.File]::Exists($codeFilePath)
+      # # production tag
+      # $versionNumber = ''
+      # $developmentVersion = '1.2.0.1'
+      # $productionVersion = '1.3.0' 
+      # $productionRegex = '^v[0-9]+.[0-9]+.[0-9]+$'
+      # $gitRef = 'refs/tags/v1.4.0'
+      # $manifestFilePath = './.github/workflows/test.vsixmanifest'
+      # $codeFilePath = './.github/workflows/test.cs'
       
+      $codeFileExists = [System.IO.File]::Exists($codeFilePath)
+
       LogInfo "------"
       LogInfo "Inputs"
       LogInfo "------"
@@ -219,7 +220,6 @@ try {
       $manifestFilePathExists = [System.IO.File]::Exists($manifestFilePath) # can this be $manifestFilePath.Exists() ?
       
       $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
-      $codeFilePathExists = [System.IO.File]::Exists($codeFilePath)
     #endregion constants
 
     #region variables
@@ -311,7 +311,7 @@ try {
       #endregion manfest file
 
       #region code file
-        if ($codeFilePathExists -eq $true) {
+        if ($codeFileExists -eq $true) {
           $codeVersionBefore = GetCodeVersion($codeFilePath)
           $codeReplacement = 'Version = "' + $versionToSet +'"'
 
@@ -327,7 +327,7 @@ try {
 
   #region end   
     if ($valid -eq $true) {
-      ShowResults $manifestVersionBefore $manifestVersionAfter $codeFilePathExists $codeVersionBefore $codeVersionAfter
+      ShowResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
     }
 
     LogDate "Ended at"
