@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-action.json
 name: "Set VSIX Version Number"
 description: "Sets the version number in the VSIX manifest and generated code-behind file (if one exists)"
-author: "Yann Duran <>"
+author: "Yann Duran <set-vsix-version@yannduran.com>"
 branding:
   icon: hash
   color: purple
