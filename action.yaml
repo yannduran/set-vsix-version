@@ -181,7 +181,7 @@ runs:
             LogDate "Started at"  
 
             #region inputs
-              $versionNumber = "'${{ inputs.version-number }}'"
+              $versionNumber = "${{ inputs.version-number }}"
               $development = "'${{ inputs.development-version }}'"
               $production = "'${{ inputs.production-version }}'"
               $productionRegex = "'${{ inputs.production-regex }}'"
