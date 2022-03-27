@@ -152,11 +152,11 @@ runs:
 
             function ShowResults {
               param(
-              [string] $manifestVersionBefore = '?',
-              [string] $manifestVersionAfter = '?', 
-              [bool]   $codeFilePathExists = $true,
-              [string] $codeVersionBefore = '?',
-              [string] $codeVersionAfter = '?'
+              [string] $manifestVersionBefore = '',
+              [string] $manifestVersionAfter = '', 
+              [bool]   $codeFilePathExists = $false,
+              [string] $codeVersionBefore = '',
+              [string] $codeVersionAfter = ''
               )
 
               LogInfo("-------------")
