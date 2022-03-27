@@ -289,17 +289,17 @@ runs:
 
               #region manifest file
                 $manifestVersionBefore = GetManifestVersion($manifestFilePath)
-                echo "Path = "'$manifestFilePath'"
-                echo "Before = $manifestVersionBefore"
+                echo "Path = '$manifestFilePath'"
+                echo "Before = '$manifestVersionBefore'"
                 $manifestReplacement = 'Version="' + $versionToSet + '" Language='
-                echo "Replacement = $manifestReplacement"
+                echo "Replacement = '$manifestReplacement'"
 
                 $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
                 $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
                 $regex.Replace($content, $manifestReplacement) | Out-File $manifestFilePath
 
                 $manifestVersionAfter = GetManifestVersion($manifestFilePath)
-                echo "After = $manifestVersionBefore"
+                echo "After = '$manifestVersionBefore'"
               #endregion manfest file
 
               #region code file
