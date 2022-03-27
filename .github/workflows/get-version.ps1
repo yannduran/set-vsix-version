@@ -205,24 +205,29 @@ try {
       LogInfo " - code-file-path      = $codeFilePath"
     #endregion inputs
 
-    #region constants
+    #region constant values
       $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
-      $versionSpecified = ($versionNumber -ne '')
+
       $tags = 'refs/tags/'
       $heads = 'refs/heads/'
+      
       $isBranch = $gitRef.StartsWith($heads)
       $isTag = $gitRef.StartsWith($tags)
+      
       $versionRegex = '([0-9\\.]+)'
+      $versionSpecified = ($versionNumber -ne '')
+      
       $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
       $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
+      
       $manifestFileExists = [System.IO.File]::Exists($manifestFilePath)
       $codeFileExists = [System.IO.File]::Exists($codeFilePath)
-    #endregion constants
+    #endregion constant values
 
-    #region variables
+    #region variable values
       $valid = $false
       $versionToSet = '0.1'
-    #endregion variables
+    #endregion variable values
   #endregion start
 
   #region process
@@ -234,12 +239,12 @@ try {
       }
           
       $missingInputs = ($versionSpecified -eq $false) `
-        -and (($developmentVersion -eq '') -or ($productionVersion -eq '') -or ($productionRegex -eq '') -or ($gitRef -eq ''))
+        -and ($developmentVersion -eq '' -or $productionVersion -eq '' -or $productionRegex -eq '' -or $gitRef -eq '')
 
       if ($missingInputs -eq $true) {
-        $message = "The 'version-number' was not specified,
-       therefore 'development-version', 'production-version', 'production-regex' and 'git-ref'
-       are all required"
+        $message = "The 'version-number' was not specified, therefore
+        'development-version', 'production-version', 'production-regex' and 'git-ref'
+        are all required"
       
         throw new-object System.ArgumentException $message
       }  

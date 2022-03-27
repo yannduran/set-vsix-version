@@ -201,24 +201,29 @@ runs:
               LogInfo " - code-file-path      = $codeFilePath"
             #endregion inputs
 
-            #region constants
+            #region constant values
               $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
-              $versionSpecified = ($versionNumber -ne '')
+
               $tags = 'refs/tags/'
               $heads = 'refs/heads/'
+              
               $isBranch = $gitRef.StartsWith($heads)
               $isTag = $gitRef.StartsWith($tags)
+              
               $versionRegex = '([0-9\\.]+)'
+              $versionSpecified = ($versionNumber -ne '')
+              
               $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
               $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
+              
               $manifestFileExists = [System.IO.File]::Exists($manifestFilePath)
               $codeFileExists = [System.IO.File]::Exists($codeFilePath)
-            #endregion constants
+            #endregion constant values
 
-            #region variables
+            #region variable values
               $valid = $false
               $versionToSet = '0.1'
-            #endregion variables
+            #endregion variable values
           #endregion start
 
           #region process
@@ -289,17 +294,13 @@ runs:
 
               #region manifest file
                 $manifestVersionBefore = GetManifestVersion($manifestFilePath)
-                echo "Path = '$manifestFilePath'"
-                echo "Before = '$manifestVersionBefore'"
                 $manifestReplacement = 'Version="' + $versionToSet + '" Language='
-                echo "Replacement = '$manifestReplacement'"
 
                 $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
                 $regex = New-Object System.Text.RegularExpressions.Regex $manifestRegex
                 $regex.Replace($content, $manifestReplacement) | Out-File $manifestFilePath
 
                 $manifestVersionAfter = GetManifestVersion($manifestFilePath)
-                echo "After = '$manifestVersionBefore'"
               #endregion manfest file
 
               #region code file
