@@ -139,23 +139,23 @@ try {
       # $manifestFilePath = './.github/workflows/test.vsixmanifest'
       # $codeFilePath = ''
 
-      # # version supplied, no manifest file
-      # $versionNumber = '1.0.0'
-      # $developmentVersion = ''
-      # $productionVersion = ''
-      # $productionRegex = ''
-      # $gitRef = ''
-      # $manifestFilePath = ''
-      # $codeFilePath = './.github/workflows/test.cs'
-
-      # no version supplied, missing data
-      $versionNumber = ''
+      # version supplied, no manifest file
+      $versionNumber = '1.0.0'
       $developmentVersion = ''
       $productionVersion = ''
       $productionRegex = ''
       $gitRef = ''
-      $manifestFilePath = './.github/workflows/test.vsixmanifest'
-      $codeFilePath = ''
+      $manifestFilePath = ''
+      $codeFilePath = './.github/workflows/test.cs'
+
+      # # no version supplied, missing data
+      # $versionNumber = ''
+      # $developmentVersion = ''
+      # $productionVersion = ''
+      # $productionRegex = ''
+      # $gitRef = ''
+      # $manifestFilePath = './.github/workflows/test.vsixmanifest'
+      # $codeFilePath = ''
 
       # # branch
       # $versionNumber = ''
@@ -193,8 +193,6 @@ try {
       # $manifestFilePath = './.github/workflows/test.vsixmanifest'
       # $codeFilePath = './.github/workflows/test.cs'
       
-      $codeFileExists = [System.IO.File]::Exists($codeFilePath)
-
       LogInfo "------"
       LogInfo "Inputs"
       LogInfo "------"
@@ -209,17 +207,16 @@ try {
 
     #region constants
       $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
+      $versionSpecified = ($versionNumber -ne '')
       $tags = 'refs/tags/'
       $heads = 'refs/heads/'
-      $versionRegex = '([0-9\\.]+)'
-      $versionSpecified = ($versionNumber -ne '')
       $isBranch = $gitRef.StartsWith($heads)
       $isTag = $gitRef.StartsWith($tags)
-
+      $versionRegex = '([0-9\\.]+)'
       $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
-      $manifestFilePathExists = [System.IO.File]::Exists($manifestFilePath) # can this be $manifestFilePath.Exists() ?
-      
       $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
+      $manifestFileExists = [System.IO.File]::Exists($manifestFilePath)
+      $codeFileExists = [System.IO.File]::Exists($codeFilePath)
     #endregion constants
 
     #region variables
@@ -230,8 +227,8 @@ try {
 
   #region process
     #region fail fast
-      if ($manifestFilePathExists -eq $false) {
-        $message = "The 'manifest-file-path' MUST be specified, so no version mumber can be set"
+      if ($manifestFileExists -eq $false) {
+        $message = "A valid 'manifest-file-path' MUST be specified to be able to set the version mumber"
 
         throw new-object System.ArgumentException $message
       }

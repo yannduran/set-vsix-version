@@ -188,7 +188,6 @@ runs:
               $gitRef = "'${{ inputs.git-ref }}'"
               $manifestFilePath = "${{ inputs.manifest-file-path }}"
               $codeFilePath = "${{ inputs.code-file-path }}"
-              $codeFileExists = [System.IO.File]::Exists($codeFilePath)
             
               LogInfo "------"
               LogInfo "Inputs"
@@ -204,14 +203,16 @@ runs:
 
             #region constants
               $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
+              $versionSpecified = ($versionNumber -ne '')
               $tags = 'refs/tags/'
               $heads = 'refs/heads/'
+              $isBranch = $gitRef.StartsWith($heads)
+              $isTag = $gitRef.StartsWith($tags)
               $versionRegex = '([0-9\\.]+)'
               $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
               $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
-              $versionSpecified = ($versionNumber -ne '')
-              $isBranch = $gitRef.StartsWith($heads)
-              $isTag = $gitRef.StartsWith($tags)
+              $manifestFileExists = [System.IO.File]::Exists($manifestFilePath)
+              $codeFileExists = [System.IO.File]::Exists($codeFilePath)
             #endregion constants
 
             #region variables
@@ -222,14 +223,14 @@ runs:
 
           #region process
             #region fail fast
-              if ($manifestFilePathExists -eq $false) {
-                  $message = "The 'manifest-file-path' MUST be specified to be able to set the version"
+              if ($manifestFileExists -eq $false) {
+                  $message = "A valid 'manifest-file-path' MUST be specified to be able to set the version"
 
                   throw new-object System.ArgumentException $message
               }
                   
               $missingInputs = ($versionSpecified -eq $false) `
-                  -and (($developmentVersion -eq '') -or ($productionVersion -eq '') -or ($gitRef -eq ''))
+                  -and ($developmentVersion -eq '' -or $productionVersion -eq '' -or $productionRegex -eq '' -or $gitRef -eq '')
 
               if ($missingInputs -eq $true) {
                   $message = "'version-number' was not specified, therefore
@@ -288,6 +289,7 @@ runs:
 
               #region manifest file
                 $manifestVersionBefore = GetManifestVersion($manifestFilePath)
+                echo "Before = $manifestVersionBefore"
                 $manifestReplacement = 'Version="' + $versionToSet + '" Language='
 
                 $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
@@ -295,6 +297,7 @@ runs:
                 $regex.Replace($content, $manifestReplacement) | Out-File $manifestFilePath
 
                 $manifestVersionAfter = GetManifestVersion($manifestFilePath)
+                echo "After = $manifestVersionBefore"
               #endregion manfest file
 
               #region code file
