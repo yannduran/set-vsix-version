@@ -229,20 +229,20 @@ runs:
           #region process
             #region fail fast
               if ($manifestFileExists -eq $false) {
-                  $message = "A valid 'manifest-file-path' MUST be specified to be able to set the version"
+                $message = "A valid 'manifest-file-path' MUST be specified to be able to set the version"
 
-                  throw new-object System.ArgumentException $message
+                throw new-object System.ArgumentException $message
               }
                   
               $missingInputs = ($versionSpecified -eq $false) `
-                  -and ($developmentVersion -eq '' -or $productionVersion -eq '' -or $productionRegex -eq '' -or $gitRef -eq '')
+                -and ($developmentVersion -eq '' -or $productionVersion -eq '' -or $productionRegex -eq '' -or $gitRef -eq '')
 
               if ($missingInputs -eq $true) {
-                  $message = "'version-number' was not specified, therefore
-                  'development-version', 'production-version', 'production-regex' and 'git-ref'
-                  are all required"
-              
-                  throw new-object System.ArgumentException $message
+                $message = "'version-number' was not specified, therefore
+                'development-version', 'production-version', 'production-regex' and 'git-ref'
+                are all required"
+            
+                throw new-object System.ArgumentException $message
               }  
               
               if ($isTag -eq $true -and $productionRegex -eq '') {
