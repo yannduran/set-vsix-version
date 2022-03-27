@@ -12,16 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set Result
-        id: set-result
+      # - name: Set Result
+      #   id: set-result
 
-        uses: actions/github-script@v6
-        with:
-          script: return "Hello!"
-          result-encoding: string
+      #   uses: actions/github-script@v6
+      #   with:
+      #     script: return "Hello!"
+      #     result-encoding: string
 
-      - name: Get result
-        run: echo "${{steps.set-result.outputs.result}}"
+      # - name: Get result
+      #   run: echo "${{steps.set-result.outputs.result}}"
 
       - name: Supply version number to set
         id: version-supplied
@@ -40,7 +40,7 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Missing data
+      - name: No version number, missing inputs
         id: missing-data
 
         uses: ./
