@@ -182,8 +182,8 @@ runs:
 
             #region inputs
               $versionNumber = "${{ inputs.version-number }}"
-              $development = "'${{ inputs.development-version }}'"
-              $production = "'${{ inputs.production-version }}'"
+              $development = "${{ inputs.development-version }}"
+              $production = "${{ inputs.production-version }}"
               $productionRegex = "'${{ inputs.production-regex }}'"
               $gitRef = "'${{ inputs.git-ref }}'"
               $manifestFilePath = "${{ inputs.manifest-file-path }}"
