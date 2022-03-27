@@ -208,6 +208,7 @@ runs:
               $versionRegex = '([0-9\\.]+)'
               $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
               $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
+              $codeFileExists = [System.IO.File]::Exists($codeFilePath)
               $versionSpecified = ($versionNumber -ne '')
               $isBranch = $gitRef.StartsWith($heads)
               $isTag = $gitRef.StartsWith($tags)
