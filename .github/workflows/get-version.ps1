@@ -192,6 +192,7 @@ try {
       $gitRef = 'refs/tags/v1.4.0'
       $manifestFilePath = './.github/workflows/test.vsixmanifest'
       $codeFilePath = './.github/workflows/test.cs'
+      $codeFileExists = [System.IO.File]::Exists($codeFilePath)
       
       LogInfo "------"
       LogInfo "Inputs"

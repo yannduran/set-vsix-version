@@ -156,7 +156,7 @@ runs:
               param(
               [string] $manifestVersionBefore = '',
               [string] $manifestVersionAfter = '', 
-              [bool]   $codeFilePathExists = $false,
+              [bool]   $codeFileExists = $false,
               [string] $codeVersionBefore = '',
               [string] $codeVersionAfter = ''
               )
@@ -167,7 +167,7 @@ runs:
               LogInfo(" - before: $manifestVersionBefore")
               LogInfo(" - after : $manifestVersionAfter")
 
-              if ($codeFilePathExists -eq $true) {
+              if ($codeFileExists -eq $true) {
                 LogInfo("---------")
                 LogInfo("Code file")
                 LogInfo("---------")
@@ -188,6 +188,7 @@ runs:
               $gitRef = "'${{ inputs.git-ref }}'"
               $manifestFilePath = "${{ inputs.manifest-file-path }}"
               $codeFilePath = "${{ inputs.code-file-path }}"
+              $codeFileExists = [System.IO.File]::Exists($codeFilePath)
             
               LogInfo "------"
               LogInfo "Inputs"
@@ -208,7 +209,6 @@ runs:
               $versionRegex = '([0-9\\.]+)'
               $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
               $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
-              $codeFileExists = [System.IO.File]::Exists($codeFilePath)
               $versionSpecified = ($versionNumber -ne '')
               $isBranch = $gitRef.StartsWith($heads)
               $isTag = $gitRef.StartsWith($tags)
@@ -298,7 +298,7 @@ runs:
               #endregion manfest file
 
               #region code file
-                if ($codeFilePathExists -eq $true) {
+                if ($codeFileExists -eq $true) {
                   $codeVersionBefore = GetCodeVersion($codeFilePath)
                   $codeReplacement = 'Version = "' + $versionToSet +'"'
 
@@ -314,7 +314,7 @@ runs:
 
           #region end
             if ($valid -eq $true) {
-              ShowResults $manifestVersionBefore $manifestVersionAfter $codeFilePathExists $codeVersionBefore $codeVersionAfter
+              ShowResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
             }
 
             LogDate "Ended at"
