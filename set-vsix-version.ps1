@@ -5,6 +5,8 @@
 #Date Created: 2022-03-28
 #######################################
 
+using module ../set-vsix-version #-Force
+
 param(   
   [string] $versionNumber,
   [string] $githubRef,
@@ -12,6 +14,7 @@ param(
   [string] $developmentVersion,
   [string] $manifestFilePath
 )
+
 $valid = $false
 
 try {
@@ -22,8 +25,8 @@ try {
       Show-InfoMessage "------"
       Show-InfoMessage "Inputs"
       Show-InfoMessage "------"
-      Show-InfoMessage " - version-number      = $versionNumber" 
-      Show-InfoMessage " - git-ref             = $githubRef"
+      Show-InfoMessage " - version-number      = " + Test-Argument($versionNumber)
+      Show-InfoMessage " - github-ref          = $githubRef"
       Show-InfoMessage " - production-regex    = $productionRegex"
       Show-InfoMessage " - development-version = $developmentVersion"
       Show-InfoMessage " - manifest-file-path  = $manifestFilePath"
@@ -51,8 +54,8 @@ try {
     $valid = Test-FileExists($manifestFilePath)
     if ($valid -eq $false) { Show-ErrorMessage $missingManifestFile }
 
-    $branch = Get-GitBranch(githubRef)
-    $tag = Get-GitTag(githubRef)
+    $branch = Get-GitBranch($githubRef)
+    $tag = Get-GitTag($githubRef)
     $codeFileExists = Test-FileExists($codeFilePath)
     $versionSpecified = ($versionNumber -ne '')
 

@@ -26,7 +26,7 @@
     param(
       [string] $gitRef
     )
-    if ($gitRef == '') { return '' }
+    if ($gitRef -eq '') { return '' }
 
     if ($gitRef.StartsWith($heads)) {
       return $gitRef.Replace($heads,'')
@@ -40,7 +40,7 @@
     param(
       [string] $gitRef
     )
-    if ($gitRef == '') { return '' }
+    if ($gitRef -eq '') { return '' }
 
     if ($gitRef.StartsWith($tags)) {
       return $gitRef.Replace($tags,'')
@@ -133,24 +133,38 @@
       }
     }  
   
-  function Test-FileExists {
-    param(
-      [string] $path
-    )
-    $result = [System.IO.File]::Exists($path)
-
-    switch ($result) {
-      $true {
-        Show-InfoMessage " - '$path'  = found"
+    function Test-Argument {
+      param(
+        [string] $argument
+      )
+      if (($argument -eq $null) -or ($argument -eq '')) {
+        return '<not supplied>'
       }
-      $false {
-        Show-InfoMessage " - '$path'  = not found"
+      else {
+        return "'$argument'"
       }
-      # Default {}
     }
-  }
-
-  function Test-Inputs {
+  
+    function Test-FileExists {
+      param(
+        [string] $path
+      )
+      $result = [System.IO.File]::Exists($path)
+  
+      # switch ($result) {
+      #   $true {
+      #     Show-InfoMessage " - '$path' was found"
+      #   }
+      #   $false {
+      #     Show-InfoMessage " - '$path' was not found"
+      #   }
+      #   # Default {}
+      # }
+    
+      return $result
+    }
+  
+      function Test-Inputs {
     param(
       [string] $versionNumber, 
       [string] $gitRef, 
@@ -171,19 +185,21 @@
 #endregion functions
 
 #region exports
-  Export-ModuleMember -Function Get-CodeVersion
-  Export-ModuleMember -Function Get-GitBranch
-  Export-ModuleMember -Function Get-GitTag
-  Export-ModuleMember -Function Get-ManifestVersion
+  Export-ModuleMember -Function '*'
+
+  # Export-ModuleMember -Function Get-CodeVersion
+  # Export-ModuleMember -Function Get-GitBranch
+  # Export-ModuleMember -Function Get-GitTag
+  # Export-ModuleMember -Function Get-ManifestVersion
   
-  Export-ModuleMember -Function Set-VsixVersion
+  # Export-ModuleMember -Function Set-VsixVersion
   
-  Export-ModuleMember -Function Show-DatedMessage
-  Export-ModuleMember -Function Show-ErrorMessage
-  Export-ModuleMember -Function Show-ExceptionMessage
-  Export-ModuleMember -Function Show-InfoMessage
-  Export-ModuleMember -Function Show-VersionResults
+  # Export-ModuleMember -Function Show-DatedMessage
+  # Export-ModuleMember -Function Show-ErrorMessage
+  # Export-ModuleMember -Function Show-ExceptionMessage
+  # Export-ModuleMember -Function Show-InfoMessage
+  # Export-ModuleMember -Function Show-VersionResults
   
-  Export-ModuleMember -Function Test-FileExists
-  Export-ModuleMember -Function Test-Inputs
+  # Export-ModuleMember -Function Test-FileExists
+  # Export-ModuleMember -Function Test-Inputs
 #endregion exports
