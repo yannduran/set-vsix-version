@@ -5,8 +5,6 @@
 #Date Created: 2022-03-28
 #######################################
 
-. vsix-version-functions
-
 param(   
   [string] $versionNumber,
   [string] $githubRef,
@@ -14,6 +12,8 @@ param(
   [string] $developmentVersion,
   [string] $manifestFilePath
 )
+
+. ./vsix-version-functions.ps1
 
 $valid = $false
 
