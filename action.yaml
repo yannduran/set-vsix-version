@@ -46,4 +46,9 @@ runs:
       shell: pwsh
 
       run: |
-        ./set-vsix-version.ps1 ${{ inputs.version-number }} ${{ inputs.github-ref }} ${{ inputs.production-regex }} ${{ inputs.development-version }} ${{ inputs.manifest-file-path }}
+        ./set-vsix-version.ps1 `
+          -version-number ${{ inputs.version-number }} `
+          -github-ref ${{ inputs.github-ref }} `
+          -production-regex ${{ inputs.production-regex }} `
+          -development-version ${{ inputs.development-version }} `
+          -manifest-file-path ${{ inputs.manifest-file-path }}
