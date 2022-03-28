@@ -46,9 +46,10 @@ runs:
       shell: pwsh
 
       run: |
-        ./set-vsix-version.ps1 `
-          -versionNumber "${{ inputs.version-number }}" `
-          -githubRef "${{ inputs.github-ref }}" `
-          -productionRegex "${{ inputs.production-regex }}" `
-          -developmentVersion "${{ inputs.development-version }}" `
-          -manifestFilePath "${{ inputs.manifest-file-path }}"
+        powershell -command "& { . ./set-vsix-version.ps1 `
+          -versionNumber ${{ inputs.version-number }} `
+          -githubRef ${{ inputs.github-ref }} `
+          -productionRegex ${{ inputs.production-regex }} `
+          -developmentVersion ${{ inputs.development-version }} `
+          -manifestFilePath ${{ inputs.manifest-file-path }} `
+          }"
