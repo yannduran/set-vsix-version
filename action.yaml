@@ -48,8 +48,8 @@ runs:
       run: |
         . ./set-vsix-version.ps1
         SetVersion `
-          ${{ inputs.version-number }} `
-          ${{ inputs.github-ref }} `
-          ${{ inputs.production-regex }} `
-          ${{ inputs.development-version }} `
-          ${{ inputs.manifest-file-path }} `
+          -versionNumber ${{ inputs.version-number }} `
+          -githubRef "${{ inputs.github-ref }}" `
+          -productionRegex "${{ inputs.production-regex }}" `
+          -developmentVersion ${{ inputs.development-version }} `
+          -manifestFilePath ${{ inputs.manifest-file-path }}
