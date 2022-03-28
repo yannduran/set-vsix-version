@@ -5,7 +5,7 @@
 #Date Created: 2022-03-28
 #######################################
 
-using module ../set-vsix-version #-Force
+. vsix-version-functions
 
 param(   
   [string] $versionNumber,

@@ -1,6 +1,4 @@
-﻿#Import-Module SomeModuleRequireByThisModule
-
-#region constants
+﻿#region constants
   $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
   $tags = 'refs/tags/'
   $heads = 'refs/heads/'
@@ -149,7 +147,7 @@
       param(
         [string] $path
       )
-      $result = [System.IO.File]::Exists($path)
+      $result = Test-Path $path # [System.IO.File]::Exists($path)
   
       # switch ($result) {
       #   $true {
@@ -183,23 +181,3 @@
     return $inputStatus
   }
 #endregion functions
-
-#region exports
-  Export-ModuleMember -Function '*'
-
-  # Export-ModuleMember -Function Get-CodeVersion
-  # Export-ModuleMember -Function Get-GitBranch
-  # Export-ModuleMember -Function Get-GitTag
-  # Export-ModuleMember -Function Get-ManifestVersion
-  
-  # Export-ModuleMember -Function Set-VsixVersion
-  
-  # Export-ModuleMember -Function Show-DatedMessage
-  # Export-ModuleMember -Function Show-ErrorMessage
-  # Export-ModuleMember -Function Show-ExceptionMessage
-  # Export-ModuleMember -Function Show-InfoMessage
-  # Export-ModuleMember -Function Show-VersionResults
-  
-  # Export-ModuleMember -Function Test-FileExists
-  # Export-ModuleMember -Function Test-Inputs
-#endregion exports
