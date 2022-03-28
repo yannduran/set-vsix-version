@@ -51,13 +51,13 @@ try {
     $valid = Test-Inputs $versionNumber, $githubRef, $productionRegex, $developmentVersion
     if ($valid -eq $false) { Show-ErrorMessage $invalidInputs }
     
-    $valid = Test-FileExists($manifestFilePath)
-    if ($valid -eq $false) { Show-ErrorMessage $missingManifestFile }
+    $manifestFileExists = Test-FileExists($manifestFilePath)
+    if ($manifestFileExists -eq $false) { Show-ErrorMessage $missingManifestFile }
 
+    $versionSpecified = ($versionNumber -ne '')
     $branch = Get-GitBranch($githubRef)
     $tag = Get-GitTag($githubRef)
     $codeFileExists = Test-FileExists($codeFilePath)
-    $versionSpecified = ($versionNumber -ne '')
 
     #temporary
     $versionToSet = $versionNumber
