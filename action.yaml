@@ -46,7 +46,6 @@ runs:
       shell: pwsh
 
       run: |
-        Import-Module ./scripts/set-vsix-version.psm1
         ./scripts/set-vsix-version.ps1 `
           ${{ inputs.version-number }} `
           ${{ inputs.github-ref }} `
