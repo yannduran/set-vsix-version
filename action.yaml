@@ -46,7 +46,7 @@ runs:
       shell: pwsh
 
       run: |
-        ./scripts/set-vsix-version.ps1 `
+        ./set-vsix-version.ps1 `
           ${{ inputs.version-number }} `
           ${{ inputs.github-ref }} `
           ${{ inputs.production-regex }} `

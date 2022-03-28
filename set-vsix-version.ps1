@@ -13,7 +13,7 @@ param(
   [string] $manifestFilePath
 )
 
-. vsix-version-functions.ps1
+. ./vsix-version-functions.ps1
 
 $valid = $false
 
