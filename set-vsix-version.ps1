@@ -26,9 +26,9 @@ try {
       Show-InfoMessage "Inputs"
       Show-InfoMessage "------"
       Show-InfoMessage " - version-number      = $(Get-ParameterValue $versionNumber)"
-      Show-InfoMessage " - github-ref          = $githubRef"
-      Show-InfoMessage " - production-regex    = $productionRegex"
-      Show-InfoMessage " - development-version = $developmentVersion"
+      Show-InfoMessage " - github-ref          = $(Get-ParameterValue $githubRef)"
+      Show-InfoMessage " - production-regex    = $(Get-ParameterValue $productionRegex)"
+      Show-InfoMessage " - development-version = $(Get-ParameterValue $developmentVersion)"
       Show-InfoMessage " - manifest-file-path  = $(Get-ParameterValue $manifestFilePath)"
     #endregion inputs
 

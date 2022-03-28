@@ -121,11 +121,11 @@ function Get-CodeVersion {
  
   function Show-VersionResults {
       param(
-        [string] $manifestVersionBefore = '?',
-        [string] $manifestVersionAfter = '?', 
+        [string] $manifestVersionBefore = '',
+        [string] $manifestVersionAfter = '', 
         [bool]   $codeFileExists = $false,
-        [string] $codeVersionBefore = '?',
-        [string] $codeVersionAfter = '?'
+        [string] $codeVersionBefore = '',
+        [string] $codeVersionAfter = ''
       )
 
       Show-InfoMessage("-------------")
