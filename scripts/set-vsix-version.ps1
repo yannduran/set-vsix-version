@@ -7,7 +7,7 @@
 
 param(   
   [string] $versionNumber,
-  [string] $gitRef,
+  [string] $githubRef,
   [string] $productionRegex,
   [string] $developmentVersion,
   [string] $manifestFilePath,
@@ -27,7 +27,7 @@ try {
       Show-InfoMessage " - development-version = $developmentVersion"
       Show-InfoMessage " - production-version  = $productionVersion"
       Show-InfoMessage " - production-regex    = $productionRegex"
-      Show-InfoMessage " - git-ref             = $gitRef"
+      Show-InfoMessage " - git-ref             = $githubRef"
       Show-InfoMessage " - manifest-file-path  = $manifestFilePath"
       Show-InfoMessage " - code-file-path      = $codeFilePath"
     #endregion inputs
@@ -48,14 +48,14 @@ try {
   #endregion start
 
   #region process
-    $valid = Test-Inputs $versionNumber, $gitRef, $productionRegex, $developmentVersion
+    $valid = Test-Inputs $versionNumber, $githubRef, $productionRegex, $developmentVersion
     if ($valid -eq $false) { Show-ErrorMessage $invalidInputs }
     
     $valid = Confirm-FileExists($manifestFilePath)
     if ($valid -eq $false) { Show-ErrorMessage $missingManifestFile }
 
-    $branch = Get-GitBranch(gitRef)
-    $tag = Get-GitTag(gitRef)
+    $branch = Get-GitBranch(githubRef)
+    $tag = Get-GitTag(githubRef)
     $codeFileExists = Confirm-FileExists($codeFilePath)
     $versionSpecified = ($versionNumber -ne '')
 
