@@ -5,7 +5,7 @@
 #endregion constants
 
 #region functions
-  function Get-CodeVersion {
+function Get-CodeVersion {
     param(
       [string] $path
       )
@@ -63,7 +63,19 @@
     return $(GetTextBetween($value.Replace(' Language=','')))
   }
 
-  function Get-TextBetween {
+  function Get-ParameterValue {
+    param(
+      [string] $parameter
+    )
+    if (($parameter -eq $null) -or ($parameter -eq '')) {
+      return '<not supplied>'
+    }
+    else {
+      return "'$parameter'"
+    }
+  }
+  
+    function Get-TextBetween {
     # https://powershellone.wordpress.com/2021/02/24/using-powershell-and-regex-to-extract-text-between-delimiters/
 
     param( 
@@ -116,32 +128,20 @@
         [string] $codeVersionAfter = '?'
       )
 
-      Show-Info("-------------")
-      Show-Info("Manifest file")
-      Show-Info("-------------")
-      Show-Info(" - before: $manifestVersionBefore")
-      Show-Info(" - after : $manifestVersionAfter")
+      Show-InfoMessage("-------------")
+      Show-InfoMessage("Manifest file")
+      Show-InfoMessage("-------------")
+      Show-InfoMessage(" - before: $manifestVersionBefore")
+      Show-InfoMessage(" - after : $manifestVersionAfter")
 
       if ($codeFileExists -eq $true) {
-        Show-Info("---------")
-        Show-Info("Code file")
-        Show-Info("---------")
-        Show-Info(" - before: $codeVersionBefore")
-        Show-Info(" - after : $codeVersionAfter")
+        Show-InfoMessage("---------")
+        Show-InfoMessage("Code file")
+        Show-InfoMessage("---------")
+        Show-InfoMessage(" - before: $codeVersionBefore")
+        Show-InfoMessage(" - after : $codeVersionAfter")
       }
     }  
-  
-    function Test-Argument {
-      param(
-        [string] $argument
-      )
-      if (($argument -eq $null) -or ($argument -eq '')) {
-        return '<not supplied>'
-      }
-      else {
-        return "'$argument'"
-      }
-    }
   
     function Test-FileExists {
       param(

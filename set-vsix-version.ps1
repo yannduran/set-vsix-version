@@ -25,11 +25,11 @@ try {
       Show-InfoMessage "------"
       Show-InfoMessage "Inputs"
       Show-InfoMessage "------"
-      Show-InfoMessage " - version-number      = " + Test-Argument($versionNumber)
+      Show-InfoMessage " - version-number      = $(Get-ParameterValue $versionNumber)"
       Show-InfoMessage " - github-ref          = $githubRef"
       Show-InfoMessage " - production-regex    = $productionRegex"
       Show-InfoMessage " - development-version = $developmentVersion"
-      Show-InfoMessage " - manifest-file-path  = $manifestFilePath"
+      Show-InfoMessage " - manifest-file-path  = $(Get-ParameterValue $manifestFilePath)"
     #endregion inputs
 
     #region constant values      
