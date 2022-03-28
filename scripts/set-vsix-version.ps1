@@ -10,8 +10,7 @@ param(
   [string] $githubRef,
   [string] $productionRegex,
   [string] $developmentVersion,
-  [string] $manifestFilePath,
-  [string] $codeFilePath
+  [string] $manifestFilePath
 )
 $valid = $false
 
@@ -24,22 +23,20 @@ try {
       Show-InfoMessage "Inputs"
       Show-InfoMessage "------"
       Show-InfoMessage " - version-number      = $versionNumber" 
-      Show-InfoMessage " - development-version = $developmentVersion"
-      Show-InfoMessage " - production-version  = $productionVersion"
-      Show-InfoMessage " - production-regex    = $productionRegex"
       Show-InfoMessage " - git-ref             = $githubRef"
+      Show-InfoMessage " - production-regex    = $productionRegex"
+      Show-InfoMessage " - development-version = $developmentVersion"
       Show-InfoMessage " - manifest-file-path  = $manifestFilePath"
-      Show-InfoMessage " - code-file-path      = $codeFilePath"
     #endregion inputs
 
     #region constant values      
       $versionRegex = '([0-9\\.]+)'
       $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
       $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
-      $invalidInputs = "'version-number' was not specified, therefore "
-        + "'github-ref', 'production-regex' and 'development-version' "
+      [string] $invalidInputs = "'version-number' was not specified, therefore " `
+        + "'github-ref', 'production-regex' and 'development-version' " `
         + "are all required"
-      $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the version"
+      $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the VSIX version"
     #endregion constant values
 
     #region variable values
