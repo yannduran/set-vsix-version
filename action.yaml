@@ -46,10 +46,10 @@ runs:
       shell: pwsh
 
       run: |
-        pwsh -command "& { . ./set-vsix-version.ps1 SetVersion `
+        . ./set-vsix-version.ps1
+        SetVersion `
           ${{ inputs.version-number }} `
           ${{ inputs.github-ref }} `
           ${{ inputs.production-regex }} `
           ${{ inputs.development-version }} `
           ${{ inputs.manifest-file-path }} `
-          }"
