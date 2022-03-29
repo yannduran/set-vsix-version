@@ -37,10 +37,6 @@ function Set-VsixVersion {
         $versionRegex = '([0-9\\.]+)'
         $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
         $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
-        [string] $invalidInputs = "'version-number' was not specified, therefore " `
-          + "'github-ref', 'production-regex' and 'development-version' " `
-          + "are all required"
-        $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the VSIX version"
       #endregion constant values
 
       #region variable values
@@ -49,13 +45,15 @@ function Set-VsixVersion {
     #endregion start
 
     #region process
+      $manifestFileExists = Test-FileExists($manifestFilePath)
+
       $versionSpecified = ($versionNumber -ne '')
       $branch = Get-GitBranch($githubRef)
       $tag = Get-GitTag($githubRef)
       $codeFileExists = Test-FileExists($codeFilePath)
 
-      $valid = Test-Inputs $versionSpecified, $githubRef, $productionRegex, $developmentVersion
-      if ($valid -eq $false) { Show-ErrorMessage $invalidInputs }
+      # $valid = Test-Inputs $versionSpecified, $githubRef, $productionRegex, $developmentVersion, $manifestFilePath
+      # if ($valid -eq $false) { Show-ErrorMessage $invalidInputs }
       
       #temporary
       $versionToSet = $versionNumber
@@ -73,19 +71,22 @@ function Set-VsixVersion {
       return $versionToSet
     #endregion end
   }
-  catch [System.ArgumentException] {
-    Show-ErrorMessage $_
-    $valid = $false
-  }
-  catch [System.InvalidOperationException] {
-    Show-ErrorMessage $_
-    $valid = $false
-  }
-  catch {
-    Show-ExceptionMessage $_
-    Show-ExceptionMessage $_.ScriptStackTrace
-    $valid = $false
-  }
+  #region catch
+    catch [System.ArgumentException] {
+      Show-ErrorMessage $_
+      $valid = $false
+    }
+    catch [System.InvalidOperationException] {
+      Show-ErrorMessage $_
+      $valid = $false
+    }
+    catch {
+      Show-ExceptionMessage $_
+      Show-ExceptionMessage $_.ScriptStackTrace
+      $valid = $false
+    }
+  #endregion
+  
   finally {
     if ($valid -eq $false) { exit 1 }
   }

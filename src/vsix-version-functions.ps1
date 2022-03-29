@@ -149,41 +149,35 @@
       endregion code file
     }  
   
-    function Test-FileExists {
-      param(
-        [string] $path
-      )
-      $result = Test-Path $path # [System.IO.File]::Exists($path)
-  
-      # switch ($result) {
-      #   $true {
-      #     Show-InfoMessage " - '$path' was found"
-      #   }
-      #   $false {
-      #     Show-InfoMessage " - '$path' was not found"
-      #   }
-      #   # Default {}
-      # }
-    
-      return $result
-    }
-  
-    function Test-Inputs {
-      param(
-        $versionSpecified, 
-        [string] $githubRef, 
-        [string] $productionRegex, 
-        [string] $developmentVersion
-      )
-        $manifestFileExists = Test-FileExists($manifestFilePath)
-        if ($manifestFileExists -eq $false) { Show-ErrorMessage $missingManifestFile }
-  
-        return (($versionSpecified -eq $true) -and ($manifestFileExists)) 
+  function Test-FileExists {
+    param(
+      [string] $path
+    )
+    $result = Test-Path $path # [System.IO.File]::Exists($path)
 
-        $missingInputs = (
-          ($githubRef -eq '') -or ($productionRegex -eq '') -or ($developmentVersion -eq '')
-        )
+    # switch ($result) {
+    #   $true {
+    #     Show-InfoMessage " - '$path' was found"
+    #   }
+    #   $false {
+    #     Show-InfoMessage " - '$path' was not found"
+    #   }
+    #   # Default {}
+    # }
+  
+    return $result
+  }
 
-        return (($versionSpecified -eq $false) -and ($missingInputs -eq $true))
+  function Test-ManifestFile {
+    param(
+      [string] $path
+    )
+    $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the VSIX version"
+    $manifestFileExists = Test-FileExists($path)
+
+    if ($manifestFileExists -eq $false) { 
+      throw new-object System.ArgumentException $missingManifestFile
     }
+    return $manifestFileExists
+  }
 #endregion functions
