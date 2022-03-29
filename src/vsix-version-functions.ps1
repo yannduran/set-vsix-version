@@ -170,7 +170,7 @@
   
     function Test-Inputs {
       param(
-        [string] $versionSpecified, 
+        $versionSpecified, 
         [string] $githubRef, 
         [string] $productionRegex, 
         [string] $developmentVersion
