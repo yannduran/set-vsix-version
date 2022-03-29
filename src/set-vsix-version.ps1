@@ -59,16 +59,18 @@ function Set-VsixVersion {
       
       #temporary
       $versionToSet = $versionNumber
-    #endregion process
 
-    #region end
+      #endregion process
+      
+      #region end
       if ($valid -eq $true) {
         Write-Output "::set-output name=version-number::$versionToSet"
-
+        
         Show-VersionResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
       }
-
+      
       Show-DatedMessage "Ended at"
+      return $versionToSet
     #endregion end
   }
   catch [System.ArgumentException] {
