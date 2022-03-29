@@ -47,7 +47,7 @@ runs:
 
       run: |
         . ./set-vsix-version.ps1
-        SetVersion `
+        Set-VsixVersion `
           -versionNumber "${{ inputs.version-number }}" `
           -githubRef "${{ inputs.github-ref }}" `
           -productionRegex "${{ inputs.production-regex }}" `

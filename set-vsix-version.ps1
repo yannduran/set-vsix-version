@@ -5,7 +5,7 @@
 #Date Created: 2022-03-28
 #######################################
 
-function SetVersion {
+function Set-VsixVersion {
   param(   
     [string] $versionNumber,
     [string] $githubRef,
