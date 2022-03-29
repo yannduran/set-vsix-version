@@ -180,4 +180,11 @@
     }
     return $manifestFileExists
   }
+
+  function Test-ValidInput {
+    param(
+      $value
+    )
+    return (($null -ne $value) -and ($value -ne ''))
+  }
 #endregion functions
