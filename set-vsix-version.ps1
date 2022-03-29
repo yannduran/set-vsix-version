@@ -49,17 +49,14 @@ function SetVersion {
     #endregion start
 
     #region process
-      $valid = Test-Inputs $versionNumber, $githubRef, $productionRegex, $developmentVersion
-      if ($valid -eq $false) { Show-ErrorMessage $invalidInputs }
-      
-      $manifestFileExists = Test-FileExists($manifestFilePath)
-      if ($manifestFileExists -eq $false) { Show-ErrorMessage $missingManifestFile }
-
       $versionSpecified = ($versionNumber -ne '')
       $branch = Get-GitBranch($githubRef)
       $tag = Get-GitTag($githubRef)
       $codeFileExists = Test-FileExists($codeFilePath)
 
+      $valid = Test-Inputs $versionSpecified, $githubRef, $productionRegex, $developmentVersion
+      if ($valid -eq $false) { Show-ErrorMessage $invalidInputs }
+      
       #temporary
       $versionToSet = $versionNumber
     #endregion process

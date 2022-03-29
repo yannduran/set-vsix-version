@@ -1,17 +1,18 @@
-﻿#region constants
+﻿#region constant values
   $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
   $tags = 'refs/tags/'
   $heads = 'refs/heads/'
 #endregion constants
 
 #region functions
-function Get-CodeVersion {
+  function Get-CodeVersion {
     param(
       [string] $path
-      )
+    )
 
     $value = select-string -Path $path -Pattern $codeRegex -AllMatches `
-      | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
+      | ForEach-Object { $_.Matches } `
+      | ForEach-Object { $_.Value }
 
     if ($value -eq '') {
       return ''
@@ -54,7 +55,8 @@ function Get-CodeVersion {
     )
 
     $value = select-string -Path $path -Pattern $manifestRegex -AllMatches `
-      | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value }
+      | ForEach-Object { $_.Matches } `
+      | ForEach-Object { $_.Value }
 
     if ($value -eq '') {
       return ''
@@ -75,8 +77,8 @@ function Get-CodeVersion {
     }
   }
   
-    function Get-TextBetween {
-    # https://powershellone.wordpress.com/2021/02/24/using-powershell-and-regex-to-extract-text-between-delimiters/
+  function Get-TextBetween {
+  # https://powershellone.wordpress.com/2021/02/24/using-powershell-and-regex-to-extract-text-between-delimiters/
 
     param( 
       [string] $Text,
@@ -90,7 +92,7 @@ function Get-CodeVersion {
   function Show-DatedMessage {
     param(
       [string] $prefix
-      )
+    )
     
     Write-Host "INFO: ${prefix} $(Get-Date -Format $dateFormat)" -ForegroundColor Magenta
   }
@@ -98,7 +100,7 @@ function Get-CodeVersion {
   function Show-ErrorMessage {
     param(
       [string] $message
-      )
+    )
     
     Write-Host "ERROR: ${message}" -ForegroundColor Yellow
   }  
@@ -106,7 +108,7 @@ function Get-CodeVersion {
   function Show-ExceptionMessage {
     param(
       [string] $message
-      )
+    )
     
     Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
   }
@@ -114,7 +116,7 @@ function Get-CodeVersion {
   function Show-InfoMessage {
     param(
       [string] $message
-      )
+    )
     
     Write-Host "INFO: ${message}" -ForegroundColor Magenta  
   }  
@@ -128,19 +130,23 @@ function Get-CodeVersion {
         [string] $codeVersionAfter = ''
       )
 
-      Show-InfoMessage("-------------")
-      Show-InfoMessage("Manifest file")
-      Show-InfoMessage("-------------")
-      Show-InfoMessage(" - before: $manifestVersionBefore")
-      Show-InfoMessage(" - after : $manifestVersionAfter")
+      #region manifest file
+        Show-InfoMessage("-------------")
+        Show-InfoMessage("Manifest file")
+        Show-InfoMessage("-------------")
+        Show-InfoMessage(" - before: $manifestVersionBefore")
+        Show-InfoMessage(" - after : $manifestVersionAfter")
+        endregion manifest file
 
+      #region code file
       if ($codeFileExists -eq $true) {
         Show-InfoMessage("---------")
         Show-InfoMessage("Code file")
         Show-InfoMessage("---------")
         Show-InfoMessage(" - before: $codeVersionBefore")
         Show-InfoMessage(" - after : $codeVersionAfter")
-      }
+       }
+      endregion code file
     }  
   
     function Test-FileExists {
@@ -162,22 +168,22 @@ function Get-CodeVersion {
       return $result
     }
   
-      function Test-Inputs {
-    param(
-      [string] $versionNumber, 
-      [string] $gitRef, 
-      [string] $productionRegex, 
-      [string] $developmentVersion
-    )
-    $inputStatus = $true
+    function Test-Inputs {
+      param(
+        [string] $versionSpecified, 
+        [string] $githubRef, 
+        [string] $productionRegex, 
+        [string] $developmentVersion
+      )
+        $manifestFileExists = Test-FileExists($manifestFilePath)
+        if ($manifestFileExists -eq $false) { Show-ErrorMessage $missingManifestFile }
+  
+        return (($versionSpecified -eq $true) -and ($manifestFileExists)) 
 
-    try {
-      
-    }
-    catch {
-      
-    }
+        $missingInputs = (
+          ($githubRef -eq '') -or ($productionRegex -eq '') -or ($developmentVersion -eq '')
+        )
 
-    return $inputStatus
-  }
+        return (($versionSpecified -eq $false) -and ($missingInputs -eq $true))
+    }
 #endregion functions
