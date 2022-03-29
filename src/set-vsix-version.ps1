@@ -14,7 +14,7 @@ function Set-VsixVersion {
     [string] $manifestFilePath
   )
 
-  . ./vsix-version-functions.ps1
+  . ./src/vsix-version-functions.ps1
 
   $valid = $false
 
