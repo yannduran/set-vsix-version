@@ -46,14 +46,13 @@ function Set-VsixVersion {
 
     #region process
       $manifestFileExists = Test-FileExists($manifestFilePath)
-
+      # $codeFileExists = Test-FileExists($codeFilePath)
       $versionSpecified = ($versionNumber -ne '')
+      $valid = Test-ValidParameters $versionSpecified, $githubRef, $productionRegex, $developmentVersion, $manifestFilePath
+
       $branch = Get-GitBranch($githubRef)
       $tag = Get-GitTag($githubRef)
-      $codeFileExists = Test-FileExists($codeFilePath)
 
-      # $valid = Test-Inputs $versionSpecified, $githubRef, $productionRegex, $developmentVersion, $manifestFilePath
-      # if ($valid -eq $false) { Show-ErrorMessage $invalidInputs }
       
       #temporary
       $versionToSet = $versionNumber
