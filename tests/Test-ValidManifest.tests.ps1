@@ -3,13 +3,12 @@ BeforeAll {
   # $ErrorActionPreference = 'Stop'
 }
 
-Describe "Test-ManifestFile" {
+Describe "Test-ValidManifest" {
   Context "File doesn't exist" {
     It "Throws argument exception" {
       $manifestFilePath = "does/not/exist/test.vsixmanifest"
 
-      # $actual | Should -Be $false
-      { Test-ManifestFile -path $manifestFilePath } | Should -Throw -ExceptionType System.ArgumentException
+      { Test-ValidManifest -path $manifestFilePath -ErrorAction Stop } | Should -Throw -ExceptionType System.ArgumentException
     }
   }
 
@@ -17,8 +16,6 @@ Describe "Test-ManifestFile" {
     It "Returns true" {
       $manifestFilePath = "./tests/test.vsixmanifest"
 
-      # $actual | Should -Be $false
-      Test-ManifestFile -path $manifestFilePath | Should -Be $true
-    }
+      { Test-ValidManifest -path $manifestFilePath -ErrorAction Stop } | Should -Be $true}
   }
 }
