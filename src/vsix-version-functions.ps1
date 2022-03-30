@@ -216,10 +216,10 @@
 
   function Test-ValidParameters {
     param(
-      $versionSpecified, 
-      [string] $gitRef, 
-      [string] $productionRegex, 
-      [string] $developmentVersion
+      [boolean] $versionSpecified, 
+      [string]  $gitRef, 
+      [string]  $productionRegex, 
+      [string]  $developmentVersion
     )
     $missingParameters = `
       "'versionNumber' was not specified, therefore " + `
@@ -232,10 +232,15 @@
     else {
       $gitRefValid = Test-ValidParameter $gitRef
       $productionRegexValid = Test-ValidParameter $productionRegex
-      $developmentVersionValid = Test-ValidParameter $developmentVersionValid
+      $developmentVersionValid = Test-ValidParameter $developmentVersion
+      $parametersAreValid = ( `
+        ($gitRefValid -eq $true) -and `
+        ($productionRegexValid -eq $true) -and `
+        ($developmentVersionValid -eq $true) `
+      )
 
-      if ($gitRefValid -and $productionRegexValid -and $developmentVersionValid) {
-        return true
+      if ($parametersAreValid -eq $true) {
+        return $true
       }
       else {
         throw New-Object System.ArgumentException $missingParameters

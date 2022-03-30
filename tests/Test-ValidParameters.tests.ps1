@@ -4,28 +4,27 @@ BeforeAll {
 
 Describe "Test-ValidParameters" {
   Context "versionNumber not supplied and no missing parameters" {
-    It "throws an ArgumentException" {
-      { 
-        Test-ValidParameters `
-        -versonNumber '' `
-        -githubRef 'refs/heads/master' `
-        -productionRegex '^$' `
+    It "returns true" {
+      Test-ValidParameters `
+        -versonSpecified $false `
+        -gitRef 'refs/heads/master' `
+        -productionRegex $productionRegex `
         -developmentVersion '1.0.0.0' `
         -manifestFilePath 'test.vsixmanifest' `
         -ErrorAction Stop `
-      } | Should -Throw -ExceptionType System.ArgumentException
+      | Should -Be $true
     }
   }
 }
 
 Describe "Test-ValidParameters" {
-  Context "versionNumber supplied and missing githubRef" {
+  Context "versionNumber not supplied and missing gitRef" {
     It "throws an ArgumentException" {
       { 
         Test-ValidParameters `
-        -versonNumber '1.2.3' `
-        -githubRef '' `
-        -productionRegex '^$' `
+        -versonSpecified $false `
+        -gitRef '' `
+        -productionRegex $productionRegex `
         -developmentVersion '1.0.0.1' `
         -manifestFilePath 'test.vsixmanifest' `
         -ErrorAction Stop `
@@ -35,12 +34,12 @@ Describe "Test-ValidParameters" {
 }
 
 Describe "Test-ValidParameters" {
-  Context "versionNumber supplied and missing productionRegex" {
+  Context "versionNumber not supplied and missing productionRegex" {
     It "throws an ArgumentException" {
       { 
         Test-ValidParameters `
-        -versonNumber '1.2.3' `
-        -githubRef '/refs/heads/master' `
+        -versonSpecified $false `
+        -gitRef '/refs/heads/master' `
         -productionRegex '' `
         -developmentVersion '1.0.0.2' `
         -manifestFilePath 'test.vsixmanifest' `
@@ -51,13 +50,13 @@ Describe "Test-ValidParameters" {
 }
 
 Describe "Test-ValidParameters" {
-  Context "versionNumber supplied and missing developmentVersion" {
+  Context "versionNumber not supplied and missing developmentVersion" {
     It "throws an ArgumentException" {
       { 
         Test-ValidParameters `
-        -versonNumber '1.2.3' `
-        -githubRef 'refs/heads/master' `
-        -productionRegex '^$' `
+        -versonSpecified $false `
+        -gitRef 'refs/heads/master' `
+        -productionRegex $productionRegex `
         -developmentVersion '' `
         -manifestFilePath 'test.vsixmanifest' `
         -ErrorAction Stop `

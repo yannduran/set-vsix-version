@@ -27,7 +27,7 @@ function Set-VsixVersion {
         Show-InfoMessage "Inputs"
         Show-InfoMessage "------"
         Show-InfoMessage " - version-number      = $(Get-ParameterValue $versionNumber)"
-        Show-InfoMessage " - github-ref          = $(Get-ParameterValue $gitRef)"
+        Show-InfoMessage " - git-ref             = $(Get-ParameterValue $gitRef)"
         Show-InfoMessage " - production-regex    = $(Get-ParameterValue $productionRegex)"
         Show-InfoMessage " - development-version = $(Get-ParameterValue $developmentVersion)"
         Show-InfoMessage " - manifest-file-path  = $(Get-ParameterValue $manifestFilePath)"
@@ -49,7 +49,7 @@ function Set-VsixVersion {
       $codeFileExists = Test-FileExists($codeFilePath)
       $versionSpecified = Test-ValidParameter($versionNumber)
       
-      Test-ValidParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion
+      $valid = Test-ValidParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion
 
       Show-InfoMessage "------"
       Show-InfoMessage "Values"
