@@ -47,20 +47,53 @@ function Set-VsixVersion {
     #region process
       $manifestFileExists = Test-FileExists($manifestFilePath)
       # $codeFileExists = Test-FileExists($codeFilePath)
-      $versionSpecified = ($versionNumber -ne '')
+      $versionSpecified = Test-ValidParameter($versionNumber)
       
       Test-ValidParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion
 
+      LogInfo "------"
+      LogInfo "Values"
+      LogInfo "------"
+  
       $branch = Get-GitBranch($gitRef)
       $isBranch = ($branch -eq '')
       
       $tag = Get-GitTag($gitRef)
       $isTag = ($tag -eq '')
 
-      
-      #temporary
-      $versionToSet = $versionNumber
-
+      if ($versionSpecified -eq $true) {
+        $valid = $true
+        $versionToSet = $versionNumber
+  
+        LogInfo " - type    = specified"
+      } 
+      else {
+        if ($isTag) {
+          $valid = $true
+          $tag = Get-GitTag $gitRef
+          $isProduction = ($tag -match $productionRegex)
+          
+          LogInfo " - tag     = $tag"
+  
+          if ($isProduction -eq $true) {
+            LogInfo " - type    = production"
+            $versionToSet = $productionVersion
+          }
+          else {
+            LogInfo " - type    = development"
+            $versionToSet = $developmentVersion
+          } 
+        }     
+   
+        if ($isBranch -eq $true) {
+          $valid = $true
+          $branch = $gitRef.Replace($heads,'')
+          $versionToSet = $developmentVersion
+    
+          LogInfo " - branch  = $branch"
+          LogInfo " - type    = development"
+        }
+    }
       #endregion process
       
       #region end

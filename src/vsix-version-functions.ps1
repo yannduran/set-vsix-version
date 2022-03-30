@@ -2,6 +2,7 @@
   $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
   $tags = 'refs/tags/'
   $heads = 'refs/heads/'
+  $productionRegex = "^v[0-9]+.[0-9]+.[0-9]+$"
 #endregion constants
 
 #region functions
@@ -36,7 +37,7 @@
       return ''
     }
   }
-
+  
   function Get-GitTag {
     param(
       $gitRef
@@ -172,6 +173,16 @@
     return $result
   }
 
+  function Test-IsProductionTag {
+    param(
+      $tag,
+      $regex
+    )
+    if (($null -eq $tag) -or ($tag -eq '')) { return $false }
+
+    return ($tag -match $regex)
+  }
+  
   function Test-ValidManifest {
     param(
       [string] $path
