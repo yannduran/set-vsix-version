@@ -206,24 +206,24 @@
   function Test-ValidParameters {
     param(
       $versionSpecified, 
-      [string] $githubRef, 
+      [string] $gitRef, 
       [string] $productionRegex, 
       [string] $developmentVersion
     )
     $missingParameters = `
       "'versionNumber' was not specified, therefore " + `
-      "'github-ref', 'production-regex' and 'development-version' " + `
+      "'git-ref', 'production-regex' and 'development-version' " + `
       "are all required"
 
     if ($versionSpecified -eq $true) { 
       return $true 
     }
     else {
-      $githubRefValid = Test-ValidParameter $githubRef
+      $gitRefValid = Test-ValidParameter $gitRef
       $productionRegexValid = Test-ValidParameter $productionRegex
       $developmentVersionValid = Test-ValidParameter $developmentVersionValid
 
-      if ($githubRefValid -and $productionRegexValid -and $developmentVersionValid) {
+      if ($gitRefValid -and $productionRegexValid -and $developmentVersionValid) {
         return true
       }
       else {

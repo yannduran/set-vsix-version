@@ -5,39 +5,39 @@ BeforeAll {
 Describe "Get-GitBranch" {
   Context "supplied gitRef is null" {
     It "throws argument exception" {
-      $githubRef = $null
+      $gitRef = $null
 
-      Get-GitBranch -githubRef $githubRef | Should -Be ''
+      Get-GitBranch -gitRef $gitRef | Should -Be ''
     }
   }
 }
 
 Describe "Get-GitBranch" {
-  Context "supplied githubRef is empty" {
+  Context "supplied gitRef is empty" {
     It "throws argument exception" {
-      $githubRef = ""
+      $gitRef = ""
 
-      Get-GitBranch -githubRef $githubRef | Should -Be ''
+      Get-GitBranch -gitRef $gitRef | Should -Be ''
     }
   }
 }
 
 Describe "Get-GitBranch" {
-  Context "supplied githubRef is a branch ref" {
+  Context "supplied gitRef is a branch ref" {
     It "returns the branch (master)" {
-      $githubRef = "refs/heads/master"
+      $gitRef = "refs/heads/master"
 
-      Get-GitBranch -githubRef $githubRef | Should -Be 'master'
+      Get-GitBranch -gitRef $gitRef | Should -Be 'master'
     }
   }
 }
 
 Describe "Get-GitBranch" {
-  Context "supplied githubRef is not a branch ref" {
-    It "returns the branch (master)" {
-      $githubRef = "refs/tags/master"
+  Context "supplied gitRef is not a branch ref" {
+    It "returns an empty string" {
+      $gitRef = "refs/tags/master"
 
-      Get-GitBranch -githubRef $githubRef | Should -Be ''
+      Get-GitBranch -gitRef $gitRef | Should -Be ''
     }
   }
 }

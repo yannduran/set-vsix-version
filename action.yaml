@@ -12,7 +12,7 @@ inputs:
     required: false
     default: ""
 
-  github-ref:
+  git-ref:
     description: "The repo's git ref"
     required: false
     default: ""
@@ -49,7 +49,7 @@ runs:
         . ./src/Set-VsixVersion.ps1
         Set-VsixVersion `
           -versionNumber "${{ inputs.version-number }}" `
-          -githubRef "${{ inputs.github-ref }}" `
+          -gitRef "${{ inputs.git-ref }}" `
           -productionRegex "${{ inputs.production-regex }}" `
           -developmentVersion "${{ inputs.development-version }}" `
           -manifestFilePath "${{ inputs.manifest-file-path }}"

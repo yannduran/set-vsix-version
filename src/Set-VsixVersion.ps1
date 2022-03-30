@@ -8,7 +8,7 @@
 function Set-VsixVersion {
   param(   
     [string] $versionNumber,
-    [string] $githubRef,
+    [string] $gitRef,
     [string] $productionRegex,
     [string] $developmentVersion,
     [string] $manifestFilePath
@@ -27,7 +27,7 @@ function Set-VsixVersion {
         Show-InfoMessage "Inputs"
         Show-InfoMessage "------"
         Show-InfoMessage " - version-number      = $(Get-ParameterValue $versionNumber)"
-        Show-InfoMessage " - github-ref          = $(Get-ParameterValue $githubRef)"
+        Show-InfoMessage " - github-ref          = $(Get-ParameterValue $gitRef)"
         Show-InfoMessage " - production-regex    = $(Get-ParameterValue $productionRegex)"
         Show-InfoMessage " - development-version = $(Get-ParameterValue $developmentVersion)"
         Show-InfoMessage " - manifest-file-path  = $(Get-ParameterValue $manifestFilePath)"
@@ -48,12 +48,13 @@ function Set-VsixVersion {
       $manifestFileExists = Test-FileExists($manifestFilePath)
       # $codeFileExists = Test-FileExists($codeFilePath)
       $versionSpecified = ($versionNumber -ne '')
-      $valid = Test-ValidParameters $versionSpecified, $githubRef, $productionRegex, $developmentVersion, $manifestFilePath
+      
+      Test-ValidParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion
 
-      $branch = Get-GitBranch($githubRef)
+      $branch = Get-GitBranch($gitRef)
       $isBranch = ($branch -eq '')
       
-      $tag = Get-GitTag($githubRef)
+      $tag = Get-GitTag($gitRef)
       $isTag = ($tag -eq '')
 
       
