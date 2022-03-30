@@ -3,46 +3,65 @@ BeforeAll {
 }
 
 Describe "Test-ValidParameters" {
-  Context "versionNumber is valid and githubRef is not valid" {
+  Context "versionNumber not supplied and no missing parameters" {
     It "throws an ArgumentException" {
-      { Test-ValidParameters `
+      { 
+        Test-ValidParameters `
+        -versonNumber '' `
+        -githubRef 'refs/heads/master' `
+        -productionRegex '^$' `
+        -developmentVersion '1.0.0.0' `
+        -manifestFilePath 'test.vsixmanifest' `
+        -ErrorAction Stop `
+      } | Should -Throw -ExceptionType System.ArgumentException
+    }
+  }
+}
+
+Describe "Test-ValidParameters" {
+  Context "versionNumber supplied and missing githubRef" {
+    It "throws an ArgumentException" {
+      { 
+        Test-ValidParameters `
         -versonNumber '1.2.3' `
         -githubRef '' `
         -productionRegex '^$' `
         -developmentVersion '1.0.0.1' `
         -manifestFilePath 'test.vsixmanifest' `
-        -ErrorAction Stop } `
-        | Should -Throw -ExceptionType System.ArgumentException
+        -ErrorAction Stop `
+      } | Should -Throw -ExceptionType System.ArgumentException
     }
   }
 }
 
 Describe "Test-ValidParameters" {
-  Context "versionNumber is valid and productionRegex is not valid" {
+  Context "versionNumber supplied and missing productionRegex" {
     It "throws an ArgumentException" {
-      { Test-ValidParameters `
+      { 
+        Test-ValidParameters `
         -versonNumber '1.2.3' `
-        -githubRef '/refs/heads/,aster' `
+        -githubRef '/refs/heads/master' `
         -productionRegex '' `
         -developmentVersion '1.0.0.2' `
         -manifestFilePath 'test.vsixmanifest' `
-        -ErrorAction Stop } `
-        | Should -Throw -ExceptionType System.ArgumentException
+        -ErrorAction Stop `
+      } | Should -Throw -ExceptionType System.ArgumentException
     }
   }
 }
 
 Describe "Test-ValidParameters" {
-  Context "versionNumber is valid and developmentVersion is not valid" {
+  Context "versionNumber supplied and missing developmentVersion" {
     It "throws an ArgumentException" {
-      { Test-ValidParameters `
+      { 
+        Test-ValidParameters `
         -versonNumber '1.2.3' `
         -githubRef 'refs/heads/master' `
         -productionRegex '^$' `
         -developmentVersion '' `
         -manifestFilePath 'test.vsixmanifest' `
-        -ErrorAction Stop } `
-        | Should -Throw -ExceptionType System.ArgumentException
+        -ErrorAction Stop `
+      } | Should -Throw -ExceptionType System.ArgumentException
     }
   }
 }
