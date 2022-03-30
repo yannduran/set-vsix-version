@@ -23,14 +23,14 @@
 
   function Get-GitBranch {
     param(
-      $githubRef
+      $gitRef
     )
-    $valid = Test-ValidParameter($githubRef)
+    $valid = Test-ValidParameter($gitRef)
 
     if ($valid -eq $false) { return '' }
 
-    if ($githubRef.StartsWith($heads)) {
-      return $githubRef.Replace($heads,'')
+    if ($gitRef.StartsWith($heads)) {
+      return $gitRef.Replace($heads,'')
     }
     else {
       return ''
@@ -39,9 +39,11 @@
 
   function Get-GitTag {
     param(
-      [string] $gitRef
+      $gitRef
     )
-    if ($gitRef -eq '') { return '' }
+    $valid = Test-ValidParameter($gitRef)
+
+    if ($valid -eq $false) { return '' }
 
     if ($gitRef.StartsWith($tags)) {
       return $gitRef.Replace($tags,'')
