@@ -23,12 +23,21 @@
 
   function Get-GitBranch {
     param(
-      [string] $gitRef
+      $githubRef
     )
-    if ($gitRef -eq '') { return '' }
+    $valid = Test-ValidParameter($githubRef)
 
-    if ($gitRef.StartsWith($heads)) {
-      return $gitRef.Replace($heads,'')
+    if ($valid -ne $true)
+    { 
+      $canNotBeNullOrEmpty = ""
+
+      throw New-Object System.ArgumentException $canNotBeNullOrEmpty
+    }
+
+    if ($githubRef -eq '') { return '' }
+
+    if ($githubRef.StartsWith($heads)) {
+      return $githubRef.Replace($heads,'')
     }
     else {
       return ''
@@ -183,9 +192,20 @@
 
   function Test-ValidParameter {
     param(
-      $value
+      $value,
+      $message = ''
     )
-    return (($null -ne $value) -and ($value -ne ''))
+    if (($null -eq $value) -or ($value -eq '')) {
+      if ($message -eq '') {
+        return $false
+      }
+      else {
+        throw New-Object System.ArgumentException $message
+      }
+    }
+    else {
+      return $true
+    }
   }
 
   function Test-ValidParameters {
@@ -195,7 +215,7 @@
       [string] $productionRegex, 
       [string] $developmentVersion
     )
-    [string] $missingParameters = `
+    $missingParameters = `
       "'versionNumber' was not specified, therefore " + `
       "'github-ref', 'production-regex' and 'development-version' " + `
       "are all required"
