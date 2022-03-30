@@ -51,7 +51,10 @@ function Set-VsixVersion {
       $valid = Test-ValidParameters $versionSpecified, $githubRef, $productionRegex, $developmentVersion, $manifestFilePath
 
       $branch = Get-GitBranch($githubRef)
+      $isBranch = ($branch -eq '')
+      
       $tag = Get-GitTag($githubRef)
+      $isTag = ($tag -eq '')
 
       
       #temporary
