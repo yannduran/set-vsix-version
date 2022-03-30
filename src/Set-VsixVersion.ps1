@@ -46,7 +46,7 @@ function Set-VsixVersion {
 
     #region process
       $manifestFileExists = Test-FileExists($manifestFilePath)
-      # $codeFileExists = Test-FileExists($codeFilePath)
+      $codeFileExists = Test-FileExists($codeFilePath)
       $versionSpecified = Test-ValidParameter($versionNumber)
       
       Test-ValidParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion
