@@ -141,7 +141,7 @@
         Show-InfoMessage("-------------")
         Show-InfoMessage(" - before: $manifestVersionBefore")
         Show-InfoMessage(" - after : $manifestVersionAfter")
-        endregion manifest file
+      #endregion manifest file
 
       #region code file
       if ($codeFileExists -eq $true) {
@@ -151,7 +151,7 @@
         Show-InfoMessage(" - before: $codeVersionBefore")
         Show-InfoMessage(" - after : $codeVersionAfter")
        }
-      endregion code file
+      #endregion code file
     }  
   
   function Test-FileExists {
