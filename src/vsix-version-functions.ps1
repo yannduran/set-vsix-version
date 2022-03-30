@@ -168,7 +168,7 @@
     return $result
   }
 
-  function Test-ManifestFile {
+  function Test-ValidManifest {
     param(
       [string] $path
     )
@@ -181,10 +181,39 @@
     return $manifestFileExists
   }
 
-  function Test-ValidInput {
+  function Test-ValidParameter {
     param(
       $value
     )
     return (($null -ne $value) -and ($value -ne ''))
+  }
+
+  function Test-ValidParameters {
+    param(
+      $versionSpecified, 
+      [string] $githubRef, 
+      [string] $productionRegex, 
+      [string] $developmentVersion
+    )
+    [string] $missingParameters = `
+      "'versionNumber' was not specified, therefore " + `
+      "'github-ref', 'production-regex' and 'development-version' " + `
+      "are all required"
+
+    if ($versionSpecified -eq $true) { 
+      return $true 
+    }
+    else {
+      $githubRefValid = Test-ValidParameter $githubRef
+      $productionRegexValid = Test-ValidParameter $productionRegex
+      $developmentVersionValid = Test-ValidParameter $developmentVersionValid
+
+      if ($githubRefValid -and $productionRegexValid -and $developmentVersionValid) {
+        return true
+      }
+      else {
+        throw New-Object System.ArgumentException $missingParameters
+      }
+    }
   }
 #endregion functions

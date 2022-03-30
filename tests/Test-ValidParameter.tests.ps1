@@ -3,14 +3,14 @@ BeforeAll {
 }
 
 Describe "Test-ValidParameter" {
-  Context "Parameter is null" {
-    It "Returns false" {
+  Context "parameter is null" {
+    It "returns false" {
       Test-ValidParameter -value $null | Should -Be $false
     }
   }
 
-  Context "Parameter is empty" {
-    It "Returns false" {
+  Context "parameter is empty" {
+    It "returns false" {
       Test-ValidParameter -value '' | Should -Be $false
     }
   }
