@@ -27,14 +27,7 @@
     )
     $valid = Test-ValidParameter($githubRef)
 
-    if ($valid -ne $true)
-    { 
-      $canNotBeNullOrEmpty = ""
-
-      throw New-Object System.ArgumentException $canNotBeNullOrEmpty
-    }
-
-    if ($githubRef -eq '') { return '' }
+    if ($valid -eq $false) { return '' }
 
     if ($githubRef.StartsWith($heads)) {
       return $githubRef.Replace($heads,'')
