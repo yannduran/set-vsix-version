@@ -51,9 +51,9 @@ function Set-VsixVersion {
       
       Test-ValidParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion
 
-      LogInfo "------"
-      LogInfo "Values"
-      LogInfo "------"
+      Show-InfoMessage "------"
+      Show-InfoMessage "Values"
+      Show-InfoMessage "------"
   
       $branch = Get-GitBranch($gitRef)
       $isBranch = ($branch -eq '')
@@ -65,7 +65,7 @@ function Set-VsixVersion {
         $valid = $true
         $versionToSet = $versionNumber
   
-        LogInfo " - type    = specified"
+        Show-InfoMessage " - type    = specified"
       } 
       else {
         if ($isTag) {
@@ -73,14 +73,14 @@ function Set-VsixVersion {
           $tag = Get-GitTag $gitRef
           $isProduction = ($tag -match $productionRegex)
           
-          LogInfo " - tag     = $tag"
+          Show-InfoMessage " - tag     = $tag"
   
           if ($isProduction -eq $true) {
-            LogInfo " - type    = production"
+            Show-InfoMessage " - type    = production"
             $versionToSet = $productionVersion
           }
           else {
-            LogInfo " - type    = development"
+            Show-InfoMessage " - type    = development"
             $versionToSet = $developmentVersion
           } 
         }     
@@ -90,8 +90,8 @@ function Set-VsixVersion {
           $branch = $gitRef.Replace($heads,'')
           $versionToSet = $developmentVersion
     
-          LogInfo " - branch  = $branch"
-          LogInfo " - type    = development"
+          Show-InfoMessage " - branch  = $branch"
+          Show-InfoMessage " - type    = development"
         }
     }
       #endregion process

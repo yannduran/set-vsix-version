@@ -29,7 +29,7 @@ jobs:
         uses: ./
         with:
           version-number: 1.2.3
-          github-ref: ""
+          git-ref: ""
           production-regex: ""
           development-version: ""
           manifest-file-path: ./tests/test.vsixmanifest
@@ -42,7 +42,7 @@ jobs:
         uses: ./
         with:
           version-number: ""
-          github-ref: "refs/heads/master"
+          git-ref: "refs/heads/master"
           production-regex: "^v[0-9]+.[0-9]+.[0-9]+$"
           development-version: "1.0.0.1"
           manifest-file-path: ./tests/test.vsixmanifest
@@ -55,7 +55,7 @@ jobs:
         uses: ./
         with:
           version-number: ""
-          github-ref: "/refs/tags/1.2.3"
+          git-ref: "/refs/tags/1.2.3"
           production-regex: "^v[0-9]+.[0-9]+.[0-9]+$"
           development-version: "1.0.0.2"
           manifest-file-path: ./tests/test.vsixmanifest
@@ -68,7 +68,7 @@ jobs:
         uses: ./
         with:
           version-number: ""
-          github-ref: "/refs/tags/v2.3.0"
+          git-ref: "/refs/tags/v2.3.0"
           production-regex: "^v[0-9]+.[0-9]+.[0-9]+$"
           development-version: "1.0.0.3"
           manifest-file-path: ./tests/test.vsixmanifest
