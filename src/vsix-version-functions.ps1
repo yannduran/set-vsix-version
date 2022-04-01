@@ -214,17 +214,20 @@
     }
   }
 
-  function Test-ValidParameters {
+  function Test-RequiredParameters {
     param(
       [boolean] $versionSpecified, 
       [string]  $gitRef, 
       [string]  $productionRegex, 
-      [string]  $developmentVersion
+      [string]  $developmentVersion,
+      [boolean] $manifestFileExists
     )
-    $missingParameters = `
-      "'versionNumber' was not specified, therefore " + `
-      "'git-ref', 'production-regex' and 'development-version' " + `
-      "are all required"
+
+    if ($manifestFileExists -eq $false) {
+      $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the version mumber"
+
+      throw New-Object System.ArgumentException $missingManifestFile
+    }
 
     if ($versionSpecified -eq $true) { 
       return $true 
@@ -243,6 +246,11 @@
         return $true
       }
       else {
+        $missingParameters = `
+          "'versionNumber' was not specified, therefore " + `
+          "'git-ref', 'production-regex' and 'development-version' " + `
+          "are all required"
+
         throw New-Object System.ArgumentException $missingParameters
       }
     }
