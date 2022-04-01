@@ -197,6 +197,7 @@
   }
 
   function Test-ValidParameter {
+    [OutputType([boolean])]
     param(
       $value,
       $message = ''
