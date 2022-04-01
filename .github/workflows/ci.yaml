@@ -7,25 +7,22 @@ on:
       - release/v**
 
 jobs:
-  tests:
+  Tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - name: Version number supplied and required parameters are missing
+      - name: Has version number and manifest file path
         id: version-supplied
 
         uses: ./
         with:
           version-number: 1.2.3
-          git-ref: ""
-          production-regex: ""
-          development-version: ""
           manifest-file-path: ./tests/test.vsixmanifest
 
       - run: echo "Version is '${{ steps.version-supplied.outputs.version-number }}'"
 
-      - name: No version number - branch
+      - name: Has no version number and ref is branch
         id: branch
 
         uses: ./
@@ -38,7 +35,7 @@ jobs:
 
       - run: echo "Version is '${{ steps.branch.outputs.version-number }}'"
 
-      - name: No version number, non-production tag
+      - name: Has no version number and non-production tag
         id: non-production-tag
 
         uses: ./
@@ -51,7 +48,7 @@ jobs:
 
       - run: echo "Version is '${{ steps.non-production-tag.outputs.development-version }}'"
 
-      - name: No version number, production tag
+      - name: Has no version number and production tag
         id: production-tag
 
         uses: ./
