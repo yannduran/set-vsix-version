@@ -68,10 +68,10 @@ function Set-VsixVersion {
         Show-InfoMessage " - type    = specified"
       } 
       else {
-        if ($isTag) {
+        if ($isTag -eq $true) {
           $valid = $true
           $tag = Get-GitTag $gitRef
-          $isProduction = ($tag -match $productionRegex)
+          $isProduction = Test-IsProductionTag $tag -match $productionRegex
           
           Show-InfoMessage " - tag     = $tag"
   
