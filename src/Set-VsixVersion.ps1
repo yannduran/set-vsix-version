@@ -56,10 +56,10 @@ function Set-VsixVersion {
       Show-InfoMessage "------"
   
       $branch = Get-GitBranch($gitRef)
-      $isBranch = ($branch -eq '')
+      $isBranch = ($branch -ne '')
       
       $tag = Get-GitTag($gitRef)
-      $isTag = ($tag -eq '')
+      $isTag = ($tag -ne'')
 
       if ($versionSpecified -eq $true) {
         $valid = $true
