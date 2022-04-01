@@ -3,7 +3,24 @@ BeforeAll {
 }
 
 Describe "Test-RequiredParameters" {
-  Context "manifestFilePath is not supplied" {
+  Context "has version number and no manifestFilePath" {
+    It "throws an ArgumentException" {
+      {
+        Test-RequiredParameters `
+          -versonSpecified $true `
+          -gitRef '' `
+          -productionRegex ''$productionRegex'' `
+          -developmentVersion '' `
+          -manifestFileExists $false `
+          -ErrorAction Stop `
+      } `
+      | Should -Throw -ExceptionType System.ArgumentException
+    }
+  }
+}
+
+Describe "Test-RequiredParameters" {
+  Context "has no manifestFilePath" {
     It "throws an ArgumentException" {
       {
         Test-RequiredParameters `
@@ -20,7 +37,7 @@ Describe "Test-RequiredParameters" {
 }
 
 Describe "Test-RequiredParameters" {
-  Context "versionNumber not supplied and no missing parameters" {
+  Context "has no versionNumber and no missing parameters" {
     It "returns true" {
       Test-RequiredParameters `
         -versonSpecified $false `
@@ -35,7 +52,7 @@ Describe "Test-RequiredParameters" {
 }
 
 Describe "Test-RequiredParameters" {
-  Context "versionNumber not supplied and missing gitRef" {
+  Context "has no versionNumber and no gitRef" {
     It "throws an ArgumentException" {
       { 
         Test-RequiredParameters `
@@ -51,7 +68,7 @@ Describe "Test-RequiredParameters" {
 }
 
 Describe "Test-RequiredParameters" {
-  Context "versionNumber not supplied and missing productionRegex" {
+  Context "has no versionNumber and no productionRegex" {
     It "throws an ArgumentException" {
       { 
         Test-RequiredParameters `
@@ -67,7 +84,7 @@ Describe "Test-RequiredParameters" {
 }
 
 Describe "Test-RequiredParameters" {
-  Context "versionNumber not supplied and missing developmentVersion" {
+  Context "has no versionNumber and no developmentVersion" {
     It "throws an ArgumentException" {
       { 
         Test-RequiredParameters `
