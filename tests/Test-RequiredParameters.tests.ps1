@@ -9,7 +9,7 @@ Describe "Test-RequiredParameters" {
         Test-RequiredParameters `
           -versonSpecified $true `
           -gitRef '' `
-          -productionRegex ''$productionRegex'' `
+          -productionRegex '' `
           -developmentVersion '' `
           -manifestFileExists $false `
           -ErrorAction Stop `
@@ -20,15 +20,15 @@ Describe "Test-RequiredParameters" {
 }
 
 Describe "Test-RequiredParameters" {
-  Context "has no manifestFilePath" {
+  Context "has version number and manifestFilePath" {
     It "throws an ArgumentException" {
       {
         Test-RequiredParameters `
-          -versonSpecified $false `
-          -gitRef 'refs/heads/master' `
-          -productionRegex $productionRegex `
-          -developmentVersion '1.0.0.0' `
-          -manifestFileExists $false `
+          -versonSpecified $true `
+          -gitRef '' `
+          -productionRegex '' `
+          -developmentVersion '' `
+          -manifestFileExists $true `
           -ErrorAction Stop `
       } `
       | Should -Throw -ExceptionType System.ArgumentException
