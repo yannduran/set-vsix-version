@@ -202,26 +202,25 @@
       $value,
       $message = ''
     )
-    if (($null -eq $value) -or ($value -eq '')) {
-      if ($message -eq '') {
+    if (($null -ne $value) -and ($value -ne '')) {
+      return $true
+    }
+
+    if ($message -eq '') {
         return $false
-      }
-      else {
-        throw New-Object System.ArgumentException $message
-      }
     }
     else {
-      return $true
+      throw New-Object System.ArgumentException $message
     }
   }
 
   function Test-RequiredParameters {
     param(
-      [boolean] $versionSpecified, 
-      [string]  $gitRef, 
-      [string]  $productionRegex, 
-      [string]  $developmentVersion,
-      [boolean] $manifestFileExists
+      $versionSpecified, 
+      $gitRef, 
+      $productionRegex, 
+      $developmentVersion,
+      $manifestFileExists
     )
 
     if ($manifestFileExists -eq $false) {
