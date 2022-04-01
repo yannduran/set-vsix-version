@@ -42,7 +42,7 @@ Describe "Test-RequiredParameters" {
       Test-RequiredParameters `
         -versonSpecified $false `
         -gitRef 'refs/heads/master' `
-        -productionRegex $productionRegex `
+        -productionRegex $vXdotXdotX `
         -developmentVersion '1.0.0.0' `
         -manifestFileExists $true `
         -ErrorAction Stop `
@@ -58,7 +58,7 @@ Describe "Test-RequiredParameters" {
         Test-RequiredParameters `
           -versonSpecified $false `
           -gitRef '' `
-          -productionRegex $productionRegex `
+          -productionRegex $vXdotXdotX `
           -developmentVersion '1.0.0.1' `
           -manifestFileExists $true `
           -ErrorAction Stop `
@@ -90,7 +90,7 @@ Describe "Test-RequiredParameters" {
         Test-RequiredParameters `
           -versonSpecified $false `
           -gitRef 'refs/heads/master' `
-          -productionRegex $productionRegex `
+          -productionRegex $vXdotXdotX `
           -developmentVersion '' `
           -manifestFileExists $true `
           -ErrorAction Stop `

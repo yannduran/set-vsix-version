@@ -2,7 +2,7 @@
   $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
   $tags = 'refs/tags/'
   $heads = 'refs/heads/'
-  $productionRegex = "^v[0-9]+.[0-9]+.[0-9]+$"
+  $vXdotXdotX = "^v[0-9]+.[0-9]+.[0-9]+$"
 #endregion constants
 
 #region functions
@@ -230,7 +230,7 @@
     }
 
     if ($versionSpecified -eq $true) { 
-      return $true 
+      return ($manigestFileExists -eq $true) 
     }
     else {
       $gitRefValid = Test-ValidParameter $gitRef
