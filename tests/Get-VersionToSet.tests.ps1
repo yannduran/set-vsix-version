@@ -60,16 +60,18 @@ Describe "Get-VersionToSet" {
 Describe "Get-VersionToSet" {
   Context "has no version number and production tag" {
     It "returns tag" {
-      $tag = 'v1.2.3'
+      $versionNumber = ''
+      $version = '2.3.0'
+      $gitRef = 'refs/tags/v' + $version
       $productionRegex = $vXdotXdotX
-      $gitRef = 'refs/tags/' + $tag
+      $developmentVersion = '1.0.0.3'
 
       Get-VersionToSet `
         -versionNumber $versionNumber `
         -gitRef $gitRef `
         -productionRegex $productionRegex `
         -developmentVersion $developmentVersion `
-      | Should -Be $tag
+      | Should -Be $version
     }
   }
 }
