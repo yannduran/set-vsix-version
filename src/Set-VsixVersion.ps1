@@ -50,13 +50,20 @@ function Set-VsixVersion {
       $codeFileExists = Test-FileExists($codeFilePath)
       $valid = Test-RequiredParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion, $manifestFileExists
 
+      Show-InfoMessage "------"
+      Show-InfoMessage "Values"
+      Show-InfoMessage "------"
+  
       if ($valid -eq $true) {
-        Show-InfoMessage "------"
-        Show-InfoMessage "Values"
-        Show-InfoMessage "------"
-    
         $versionToSet = Get-VersionToSet $versionNumber $isTag $isBranch $productionRegex $developmentVersion
-        $valid = ($versionToSet -ne '')
+        $valid = Test-NotNullOrEmpty($versionToSet)
+
+        if ($valid -eq $false){
+          throw New-Object System.ApplicationException 'No version to set'
+        }
+      }
+      else {
+        throw New-Object System.ApplicationException 'Validation failed'
       }
     #endregion process
       

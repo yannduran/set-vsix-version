@@ -250,13 +250,21 @@
     return $manifestFileExists
   }
 
+  function Test-NotNullOrEmpty {
+    [OutputType([boolean])]
+    param(
+      $value
+    )
+    return (($null -ne $value) -and ($value -ne ''))
+  }
+
   function Test-ValidParameter {
     [OutputType([boolean])]
     param(
       $value,
       $message = ''
     )
-    if (($null -ne $value) -and ($value -ne '')) {
+    if (Test-NotNullOrEmpty $value) {
       return $true
     }
 
