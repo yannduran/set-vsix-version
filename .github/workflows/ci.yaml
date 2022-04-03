@@ -59,4 +59,4 @@ jobs:
           development-version: "1.0.0.3"
           manifest-file-path: ./tests/test.vsixmanifest
 
-      - run: echo "Version is '${{ steps.production-tag.outputs.development-version }}'"
+      - run: echo "Version is '${{ steps.production-tag.outputs.version-number }}'"
