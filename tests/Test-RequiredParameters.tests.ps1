@@ -3,11 +3,11 @@ BeforeAll {
 }
 
 Describe "Test-RequiredParameters" {
-  Context "has version number and no manifestFilePath" {
+  Context "has version number but manifest file doesn't exist" {
     It "throws an ApplicationException" {
       {
         Test-RequiredParameters `
-          -versonSpecified $true `
+          -versionSpecified $true `
           -gitRef '' `
           -productionRegex '' `
           -developmentVersion '' `
@@ -20,18 +20,16 @@ Describe "Test-RequiredParameters" {
 }
 
 Describe "Test-RequiredParameters" {
-  Context "has version number and manifestFilePath" {
+  Context "has version number and manifest file exists" {
     It "throws an ArgumentException" {
-      {
         Test-RequiredParameters `
-          -versonSpecified $true `
+          -versionSpecified $true `
           -gitRef '' `
           -productionRegex '' `
           -developmentVersion '' `
           -manifestFileExists $true `
           -ErrorAction Stop `
-      } `
-      | Should -Throw -ExceptionType System.ArgumentException
+      | Should -Be $true
     }
   }
 }
@@ -40,7 +38,7 @@ Describe "Test-RequiredParameters" {
   Context "has no versionNumber and no missing parameters" {
     It "returns true" {
       Test-RequiredParameters `
-        -versonSpecified $false `
+        -versionSpecified $false `
         -gitRef 'refs/heads/master' `
         -productionRegex $vXdotXdotX `
         -developmentVersion '1.0.0.0' `
@@ -56,7 +54,7 @@ Describe "Test-RequiredParameters" {
     It "throws an ArgumentException" {
       { 
         Test-RequiredParameters `
-          -versonSpecified $false `
+          -versionSpecified $false `
           -gitRef '' `
           -productionRegex $vXdotXdotX `
           -developmentVersion '1.0.0.1' `
@@ -72,7 +70,7 @@ Describe "Test-RequiredParameters" {
     It "throws an ArgumentException" {
       { 
         Test-RequiredParameters `
-          -versonSpecified $false `
+          -versionSpecified $false `
           -gitRef '/refs/heads/master' `
           -productionRegex '' `
           -developmentVersion '1.0.0.2' `
@@ -88,7 +86,7 @@ Describe "Test-RequiredParameters" {
     It "throws an ArgumentException" {
       { 
         Test-RequiredParameters `
-          -versonSpecified $false `
+          -versionSpecified $false `
           -gitRef 'refs/heads/master' `
           -productionRegex $vXdotXdotX `
           -developmentVersion '' `
