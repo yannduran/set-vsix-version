@@ -1,4 +1,4 @@
-#region constant values
+﻿#region constant values
   $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
   $tags = 'refs/tags/'
   $heads = 'refs/heads/'
@@ -304,17 +304,16 @@
         ($developmentVersionValid -eq $true) `
       )
 
-      if ($parametersAreValid -eq $true) {
-        return $true
-      }
-      else {
+      if ($parametersAreValid -eq $false) {
         $missingParameters = `
           "'versionNumber' was not specified, therefore " + `
           "'git-ref', 'production-regex' and 'development-version' " + `
           "are all required"
-
+  
         throw New-Object System.ArgumentException $missingParameters
       }
+
+      return $true
     }
   }
 #endregion functions
