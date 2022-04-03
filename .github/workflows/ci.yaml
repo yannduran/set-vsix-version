@@ -46,7 +46,7 @@ jobs:
           development-version: "1.0.0.2"
           manifest-file-path: ./tests/test.vsixmanifest
 
-      - run: echo "Version is '${{ steps.non-production-tag.outputs.development-version }}'"
+      - run: echo "Version is '${{ steps.non-production-tag.outputs.version-number }}'"
 
       - name: Has no version number and production tag
         id: production-tag
