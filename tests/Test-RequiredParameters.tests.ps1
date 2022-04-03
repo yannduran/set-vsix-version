@@ -4,7 +4,7 @@ BeforeAll {
 
 Describe "Test-RequiredParameters" {
   Context "has version number and no manifestFilePath" {
-    It "throws an ArgumentException" {
+    It "throws an ApplicationException" {
       {
         Test-RequiredParameters `
           -versonSpecified $true `
@@ -14,7 +14,7 @@ Describe "Test-RequiredParameters" {
           -manifestFileExists $false `
           -ErrorAction Stop `
       } `
-      | Should -Throw -ExceptionType System.ArgumentException
+      | Should -Throw -ExceptionType System.ApplicationException
     }
   }
 }

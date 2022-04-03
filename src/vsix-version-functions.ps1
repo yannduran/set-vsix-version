@@ -1,4 +1,4 @@
-﻿#region constant values
+#region constant values
   $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
   $tags = 'refs/tags/'
   $heads = 'refs/heads/'
@@ -288,7 +288,7 @@
     if ($manifestFileExists -eq $false) {
       $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the version mumber"
 
-      throw New-Object System.ArgumentException $missingManifestFile
+      throw New-Object System.ApplicationException $missingManifestFile
     }
 
     if ($versionSpecified -eq $true) { 
