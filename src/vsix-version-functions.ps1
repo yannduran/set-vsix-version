@@ -108,37 +108,35 @@
       
       return $versionNumber
     } 
-    else {
-      $branch = Get-GitBranch($gitRef)
 
-      if (Test-NotNullOrEmpty($branch) -eq $true) {
-        Show-InfoMessage " - branch  = $branch"
-        Show-InfoMessage " - type    = development"
+    $branch = Get-GitBranch($gitRef)
 
-        return $developmentVersion
+    if (Test-NotNullOrEmpty($branch) -eq $true) {
+      Show-InfoMessage " - branch  = $branch"
+      Show-InfoMessage " - type    = development"
+
+      return $developmentVersion
+    }
+
+    $tag = Get-GitTag $gitRef
+
+    if (Test-NotNullOrEmpty($tag) -eq $true) {
+      Show-InfoMessage " - tag     = $tag"
+      
+      $isProduction = Test-IsProductionTag $tag $productionRegex
+
+      if ($isProduction -eq $true) {
+        Show-InfoMessage " - type    = production"
+      
+        return $tag
       }
 
-      $tag = Get-GitTag $gitRef
-  
-      if (Test-NotNullOrEmpty($tag) -eq $true) {
-        $isProduction = Test-IsProductionTag $tag $productionRegex
-        
-        Show-InfoMessage " - tag     = $tag"
+      Show-InfoMessage " - type    = development"
+    
+      return $developmentVersion
+    }     
 
-        if ($isProduction -eq $true) {
-          Show-InfoMessage " - type    = production"
-       
-          return $tag
-        }
-        else {
-          Show-InfoMessage " - type    = development"
-       
-          return $developmentVersion
-        } 
-      }     
-
-      throw New-Object System.ApplicationException "Logic error in 'Get-VersionToSet'"
-    }
+    throw New-Object System.ApplicationException "Logic error in 'Get-VersionToSet'"
   }
 
   function Show-DatedMessage {
