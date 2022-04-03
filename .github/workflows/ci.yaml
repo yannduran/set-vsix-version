@@ -41,7 +41,7 @@ jobs:
         uses: ./
         with:
           version-number: ""
-          git-ref: "/refs/tags/1.2.3"
+          git-ref: "refs/tags/1.2.3"
           production-regex: "^v[0-9]+.[0-9]+.[0-9]+$"
           development-version: "1.0.0.2"
           manifest-file-path: ./tests/test.vsixmanifest
@@ -54,7 +54,7 @@ jobs:
         uses: ./
         with:
           version-number: ""
-          git-ref: "/refs/tags/v2.3.0"
+          git-ref: "refs/tags/v2.3.0"
           production-regex: "^v[0-9]+.[0-9]+.[0-9]+$"
           development-version: "1.0.0.3"
           manifest-file-path: ./tests/test.vsixmanifest
