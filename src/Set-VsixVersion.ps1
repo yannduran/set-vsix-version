@@ -48,9 +48,9 @@ function Set-VsixVersion {
       $versionSpecified = Test-ValidParameter($versionNumber)
       $manifestFileExists = Test-FileExists($manifestFilePath)
       $codeFileExists = Test-FileExists($codeFilePath)
-      $parametersAreValid = Test-RequiredParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion, $manifestFileExists
+      $valid = Test-RequiredParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion, $manifestFileExists
 
-      if ($parametersAreValid -eq $true) {
+      if ($valid -eq $true) {
         Show-InfoMessage "------"
         Show-InfoMessage "Values"
         Show-InfoMessage "------"

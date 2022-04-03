@@ -284,7 +284,7 @@
     }
 
     if ($versionSpecified -eq $true) { 
-      return ($manigestFileExists -eq $true) 
+      return $manifestFileExists
     }
     else {
       $gitRefValid = Test-ValidParameter $gitRef
