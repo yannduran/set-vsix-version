@@ -94,6 +94,55 @@
     return [regex]::Matches($Text, $pattern).Value
   }
 
+  function Get-VersionToSet {
+    param(
+      $versionNumber = '',
+      $gitRef,
+      $productionRegex = $vXdotXdotX,
+      $developmentVersion = '0.1'
+    )
+    $versionSpecified = Test-ValidParameter($versionNumber)
+  
+    if ($versionSpecified -eq $true) {
+      Show-InfoMessage " - type    = specified"
+      
+      return $versionNumber
+    } 
+    else {
+      $branch = Get-GitBranch($gitRef)
+      $isBranch = ($branch -ne '')
+      
+      $tag = Get-GitTag $gitRef
+      $isTag = ($tag -ne'')
+  
+      if ($isTag -eq $true) {
+        $isProduction = Test-IsProductionTag $tag $productionRegex
+        
+        Show-InfoMessage " - tag     = $tag"
+
+        if ($isProduction -eq $true) {
+          Show-InfoMessage " - type    = production"
+       
+          return $tag
+        }
+        else {
+          Show-InfoMessage " - type    = development"
+       
+          return $developmentVersion
+        } 
+      }     
+ 
+      if ($isBranch -eq $true) {
+        $branch = $gitRef.Replace($heads,'')
+        
+        Show-InfoMessage " - branch  = $branch"
+        Show-InfoMessage " - type    = development"
+
+        return $developmentVersion
+      }
+    }
+  }
+
   function Show-DatedMessage {
     param(
       [string] $prefix
@@ -176,9 +225,14 @@
   function Test-IsProductionTag {
     param(
       $tag,
-      $regex
+      $regex = ''
     )
-    if (($null -eq $tag) -or ($tag -eq '')) { return $false }
+    $validTag = Test-ValidParameter $tag
+    $validRegex = Test-ValidParameter $regex
+    if (($validTag -eq $false) -or ($validRegex -eq $false))
+    { 
+      return $false 
+    }
 
     return ($tag -match $regex)
   }

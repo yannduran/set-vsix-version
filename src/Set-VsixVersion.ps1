@@ -55,48 +55,11 @@ function Set-VsixVersion {
       Show-InfoMessage "Values"
       Show-InfoMessage "------"
   
-      $branch = Get-GitBranch($gitRef)
-      $isBranch = ($branch -ne '')
+      $versionToSet = Get-VersionToSet $versionNumber $isTag $isBranch $productionRegex $developmentVersion
+      $valid = ($versionToSet -ne '')
+    #endregion process
       
-      $tag = Get-GitTag($gitRef)
-      $isTag = ($tag -ne'')
-
-      if ($versionSpecified -eq $true) {
-        $valid = $true
-        $versionToSet = $versionNumber
-  
-        Show-InfoMessage " - type    = specified"
-      } 
-      else {
-        if ($isTag -eq $true) {
-          $valid = $true
-          $tag = Get-GitTag $gitRef
-          $isProduction = Test-IsProductionTag $tag -match $productionRegex
-          
-          Show-InfoMessage " - tag     = $tag"
-  
-          if ($isProduction -eq $true) {
-            Show-InfoMessage " - type    = production"
-            $versionToSet = $productionVersion
-          }
-          else {
-            Show-InfoMessage " - type    = development"
-            $versionToSet = $developmentVersion
-          } 
-        }     
-   
-        if ($isBranch -eq $true) {
-          $valid = $true
-          $branch = $gitRef.Replace($heads,'')
-          $versionToSet = $developmentVersion
-    
-          Show-InfoMessage " - branch  = $branch"
-          Show-InfoMessage " - type    = development"
-        }
-    }
-      #endregion process
-      
-      #region end
+    #region end
       if ($valid -eq $true) {
         Write-Output "::set-output name=version-number::$versionToSet"
         
@@ -104,7 +67,6 @@ function Set-VsixVersion {
       }
       
       Show-DatedMessage "Ended at"
-      return $versionToSet
     #endregion end
   }
   #region catch
