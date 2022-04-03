@@ -54,16 +54,15 @@ function Set-VsixVersion {
       Show-InfoMessage "Values"
       Show-InfoMessage "------"
   
-      if ($valid -eq $true) {
-        $versionToSet = Get-VersionToSet $versionNumber $isTag $isBranch $productionRegex $developmentVersion
-        $valid = Test-NotNullOrEmpty($versionToSet)
-
-        if ($valid -eq $false){
-          throw New-Object System.ApplicationException 'No version to set'
-        }
-      }
-      else {
+      if ($valid -eq $false) {
         throw New-Object System.ApplicationException 'Validation failed'
+      }
+
+      $versionToSet = Get-VersionToSet $versionNumber $isTag $isBranch $productionRegex $developmentVersion
+      $valid = Test-NotNullOrEmpty($versionToSet)
+
+      if ($valid -eq $false){
+        throw New-Object System.ApplicationException 'No version to set'
       }
     #endregion process
       
