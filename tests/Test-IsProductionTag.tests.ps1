@@ -15,7 +15,7 @@ Describe "Test-IsProductionTag" {
 Describe "Test-IsProductionTag" {
   Context "supplied tag is empty" {
     It "returns false" {
-      $tag = ""
+      $tag = ''
 
       Test-IsProductionTag -tag $tag | Should -Be $false
     }
@@ -23,12 +23,44 @@ Describe "Test-IsProductionTag" {
 }
 
 Describe "Test-IsProductionTag" {
+  Context "regex is null" {
+    It "returns false" {
+      $tag = ''
+      $regex = $null
+
+      Test-IsProductionTag -tag $tag -regex $regex | Should -Be $false
+    }
+  }
+}
+
+Describe "Test-IsProductionTag" {
+  Context "regex is empty" {
+    It "returns false" {
+      $tag = ''
+      $regex = ''
+      Test-IsProductionTag -tag $tag -regex $regex | Should -Be $false
+    }
+  }
+}
+
+Describe "Test-IsProductionTag" {
   Context "supplied tag matches regex" {
     It "returns true" {
-      $tag = "v1.0.0"
+      $tag = "v1.2.3"
       $regex = $vXdotXdotX
 
       Test-IsProductionTag -tag $tag -regex $regex | Should -Be $true
+    }
+  }
+}
+
+Describe "Test-IsProductionTag" {
+  Context "supplied tag does not match regex" {
+    It "returns false" {
+      $tag = "1.2.3"
+      $regex = $vXdotXdotX
+
+      Test-IsProductionTag -tag $tag -regex $regex | Should -Be $false
     }
   }
 }
