@@ -21,6 +21,24 @@ Describe "Get-VersionToSet" {
 }
 
 Describe "Get-VersionToSet" {
+  Context "has no version number and branch ref" {
+    It "returns development version" {
+      $versionNumber = ''
+      $gitRef = 'refs/heads/master'
+      $productionRegex = $vXdotXdotX
+      $developmentVersion = '1.0.0.1'
+
+      Get-VersionToSet `
+        -versionNumber $versionNumber `
+        -gitRef $gitRef `
+        -productionRegex $productionRegex `
+        -developmentVersion $developmentVersion `
+      | Should -Be $developmentVersion
+    }
+  }
+}
+
+Describe "Get-VersionToSet" {
   Context "has no version number and non-production tag" {
     It "returns development version" {
       $gitRef = 'refs/tags/1.2.3'
@@ -46,21 +64,6 @@ Describe "Get-VersionToSet" {
         -productionRegex $vXdotXdotX `
         -developmentVersion $developmentVersion `
       | Should -Be $tag
-    }
-  }
-}
-
-Describe "Get-VersionToSet" {
-  Context "has no version number and branch ref" {
-    It "returns development version" {
-      $gitRef = 'refs/heads/master'
-      $developmentVersion = '1.0.0.1'
-
-      Get-VersionToSet `
-        -gitRef $gitRef `
-        -productionRegex $vXdotXdotX `
-        -developmentVersion $developmentVersion `
-      | Should -Be $developmentVersion
     }
   }
 }

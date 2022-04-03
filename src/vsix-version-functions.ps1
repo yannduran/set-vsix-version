@@ -96,9 +96,9 @@
 
   function Get-VersionToSet {
     param(
-      $versionNumber = '',
+      $versionNumber,
       $gitRef,
-      $productionRegex = $vXdotXdotX,
+      $productionRegex,
       $developmentVersion = '0.1'
     )
     $versionSpecified = Test-ValidParameter($versionNumber)
@@ -110,12 +110,17 @@
     } 
     else {
       $branch = Get-GitBranch($gitRef)
-      $isBranch = ($branch -ne '')
-      
+
+      if (Test-NotNullOrEmpty($branch) -eq $true) {
+        Show-InfoMessage " - branch  = $branch"
+        Show-InfoMessage " - type    = development"
+
+        return $developmentVersion
+      }
+
       $tag = Get-GitTag $gitRef
-      $isTag = ($tag -ne'')
   
-      if ($isTag -eq $true) {
+      if (Test-NotNullOrEmpty($tag) -eq $true) {
         $isProduction = Test-IsProductionTag $tag $productionRegex
         
         Show-InfoMessage " - tag     = $tag"
@@ -131,15 +136,8 @@
           return $developmentVersion
         } 
       }     
- 
-      if ($isBranch -eq $true) {
-        $branch = $gitRef.Replace($heads,'')
-        
-        Show-InfoMessage " - branch  = $branch"
-        Show-InfoMessage " - type    = development"
 
-        return $developmentVersion
-      }
+      throw New-Object System.ApplicationException "Logic error in 'Get-VersionToSet'"
     }
   }
 
