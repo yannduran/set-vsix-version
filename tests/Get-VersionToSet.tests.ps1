@@ -1,3 +1,4 @@
+      $productionRegex = $vXdotXdotX
 BeforeAll { 
   . ./src/vsix-version-functions.ps1
 }
@@ -41,12 +42,15 @@ Describe "Get-VersionToSet" {
 Describe "Get-VersionToSet" {
   Context "has no version number and non-production tag" {
     It "returns development version" {
+      $versionNumber = ''
       $gitRef = 'refs/tags/1.2.3'
-      $developmentVersion = '1.0.0.1'
+      $productionRegex = $vXdotXdotX
+      $developmentVersion = '1.0.0.2'
 
       Get-VersionToSet `
+        -versionNumber $versionNumber `
         -gitRef $gitRef `
-        -productionRegex $vXdotXdotX `
+        -productionRegex $productionRegex `
         -developmentVersion $developmentVersion `
       | Should -Be $developmentVersion
     }
@@ -57,11 +61,13 @@ Describe "Get-VersionToSet" {
   Context "has no version number and production tag" {
     It "returns tag" {
       $tag = 'v1.2.3'
+      $productionRegex = $vXdotXdotX
       $gitRef = 'refs/tags/' + $tag
 
       Get-VersionToSet `
+        -versionNumber $versionNumber `
         -gitRef $gitRef `
-        -productionRegex $vXdotXdotX `
+        -productionRegex $productionRegex `
         -developmentVersion $developmentVersion `
       | Should -Be $tag
     }
