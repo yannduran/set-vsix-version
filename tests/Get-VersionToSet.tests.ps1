@@ -53,7 +53,7 @@ Describe "Get-VersionToSet" {
 Describe "Get-VersionToSet" {
   Context "has no version number and branch ref" {
     It "returns development version" {
-      $gitRef = 'refs/heads/1.2.3'
+      $gitRef = 'refs/heads/master'
       $developmentVersion = '1.0.0.1'
 
       Get-VersionToSet `

@@ -48,20 +48,22 @@ function Set-VsixVersion {
       $versionSpecified = Test-ValidParameter($versionNumber)
       $manifestFileExists = Test-FileExists($manifestFilePath)
       $codeFileExists = Test-FileExists($codeFilePath)
-      
       $parametersAreValid = Test-RequiredParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion, $manifestFileExists
 
-      Show-InfoMessage "------"
-      Show-InfoMessage "Values"
-      Show-InfoMessage "------"
-  
-      $versionToSet = Get-VersionToSet $versionNumber $isTag $isBranch $productionRegex $developmentVersion
-      $valid = ($versionToSet -ne '')
+      if ($parametersAreValid -eq $true) {
+        Show-InfoMessage "------"
+        Show-InfoMessage "Values"
+        Show-InfoMessage "------"
+    
+        $versionToSet = Get-VersionToSet $versionNumber $isTag $isBranch $productionRegex $developmentVersion
+        $valid = ($versionToSet -ne '')
+      }
     #endregion process
       
     #region end
       if ($valid -eq $true) {
         Write-Output "::set-output name=version-number::$versionToSet"
+        Show-InfoMessage " - version = $versionToSet"
         
         Show-VersionResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
       }

@@ -22,14 +22,13 @@ jobs:
 
       - run: echo "Version is '${{ steps.version-supplied.outputs.version-number }}'"
 
-      - name: Has no version number and ref is branch
+      - name: Has no version number and branch ref
         id: branch
 
         uses: ./
         with:
           version-number: ""
           git-ref: "refs/heads/master"
-          # production-regex: "^v[0-9]+.[0-9]+.[0-9]+$"
           development-version: "1.0.0.1"
           manifest-file-path: ./tests/test.vsixmanifest
 
