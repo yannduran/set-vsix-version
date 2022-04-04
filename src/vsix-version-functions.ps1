@@ -1,4 +1,4 @@
-﻿#region constant values
+#region constant values
   $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
   $tags = 'refs/tags/'
   $heads = 'refs/heads/'
@@ -128,7 +128,11 @@
       if ($isProduction -eq $true) {
         Show-InfoMessage " - type    = production"
       
-        return $tag
+        $version = Select-VersionNumber -source $tag -regex $productionRegex
+
+        if (Test-NotNullOrEmpty $version -eq $false){
+          Write-Error "Tag '$tag' does not contain a version number using '$productionRegex'" -ErrorAction Stop
+        }
       }
 
       Show-InfoMessage " - type    = development"
@@ -145,6 +149,23 @@
     )
     
     Write-Host "INFO: ${prefix} $(Get-Date -Format $dateFormat)" -ForegroundColor Magenta
+  }
+
+  function Select-VersionNumber {
+    param(
+      $source,
+      $regex
+    )
+    $numericVersion = $source | Select-String -Pattern $regex
+
+    try {
+      $versionNumber = $numericVersion.Matches[0].Value
+    }
+    catch {
+      return ''
+    }
+
+    return $versionNumber
   }
 
   function Show-ErrorMessage {
