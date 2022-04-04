@@ -33,12 +33,6 @@ function Set-VsixVersion {
         Show-InfoMessage " - manifest-file-path  = $(Get-ParameterValue $manifestFilePath)"
       #endregion inputs
 
-      #region constant values      
-        $versionRegex = '([0-9\\.]+)'
-        $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
-        $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
-      #endregion constant values
-
       #region variable values
         $versionToSet = '0.1' #default value
       #endregion variable values

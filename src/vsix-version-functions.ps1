@@ -1,9 +1,13 @@
-#region constant values
+﻿#region constant values
   $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
   $tags = 'refs/tags/'
   $heads = 'refs/heads/'
-  $vXdotXdotX = "^v[0-9]+.[0-9]+.[0-9]+$"
-#endregion constants
+  $XdotXdotX = "[0-9]+.[0-9]+.[0-9]"
+  $vXdotXdotX = "^v" + $XdotXdotX + "$"
+  $versionRegex = '([0-9\\.]+)'
+  $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
+  $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
+#endregion constant values
 
 #region functions
   function Get-CodeVersion {
