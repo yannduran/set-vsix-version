@@ -10,6 +10,7 @@ function Set-VsixVersion {
     [string] $versionNumber,
     [string] $gitRef,
     [string] $productionRegex,
+    [string] $versionRegex,
     [string] $developmentVersion,
     [string] $manifestFilePath
   )
@@ -52,7 +53,12 @@ function Set-VsixVersion {
         throw New-Object System.ApplicationException 'Validation failed'
       }
 
-      $versionToSet = Get-VersionToSet $versionNumber $gitRef $productionRegex $developmentVersion
+      $versionToSet = Get-VersionToSet `
+        -versionNumber $versionNumber `
+        -gitRef $gitRef `
+        -productionRegex $productionRegex `
+        -versionRegex $versionRegex `
+        -developmentVersion $developmentVersion
       $valid = Test-NotNullOrEmpty($versionToSet)
 
       if ($valid -eq $false){

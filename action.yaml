@@ -22,6 +22,11 @@ inputs:
     required: false
     default: ""
 
+  version-regex:
+    description: "A regex expression that defines a valid version number"
+    required: false
+    default: ""
+
   development-version:
     description: "Development version number"
     required: false
@@ -51,5 +56,6 @@ runs:
           -versionNumber "${{ inputs.version-number }}" `
           -gitRef "${{ inputs.git-ref }}" `
           -productionRegex "${{ inputs.production-regex }}" `
+          -versionRegex "${{ inputs.version-regex }}" `
           -developmentVersion "${{ inputs.development-version }}" `
           -manifestFilePath "${{ inputs.manifest-file-path }}"

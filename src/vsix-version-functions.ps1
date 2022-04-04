@@ -103,6 +103,7 @@
       $versionNumber,
       $gitRef,
       $productionRegex,
+      $versionRegex,
       $developmentVersion = '0.1'
     )
     $versionSpecified = Test-ValidParameter($versionNumber)
@@ -132,11 +133,14 @@
       if ($isProduction -eq $true) {
         Show-InfoMessage " - type    = production"
       
-        $version = Select-VersionNumber -source $tag -regex $productionRegex
+        $version = Select-VersionNumber -source $tag -regex $versionRegex
+        $versionFound = Test-NotNullOrEmpty $version
 
-        if (Test-NotNullOrEmpty $version -eq $false){
-          Write-Error "Tag '$tag' does not contain a version number using '$productionRegex'" -ErrorAction Stop
+        if ($versionFound -eq $false){
+          Write-Error "Tag '$tag' does not contain a version number using '$versionRegex'" -ErrorAction Stop
         }
+
+        return $version
       }
 
       Show-InfoMessage " - type    = development"
