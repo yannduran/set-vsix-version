@@ -68,7 +68,7 @@ function Set-VsixVersion {
       
     #region end
       if ($valid -eq $true) {
-        Write-Output "::set-output name=version-number::$versionToSet"
+        Set-Output "version-number" $versionToSet
         Show-InfoMessage " - version = $versionToSet"
         
         Show-VersionResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter

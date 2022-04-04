@@ -151,14 +151,6 @@
     throw New-Object System.ApplicationException "Logic error in 'Get-VersionToSet'"
   }
 
-  function Show-DatedMessage {
-    param(
-      [string] $prefix
-    )
-    
-    Write-Host "INFO: ${prefix} $(Get-Date -Format $dateFormat)" -ForegroundColor Magenta
-  }
-
   function Select-VersionNumber {
     param(
       $source,
@@ -174,6 +166,22 @@
     }
 
     return $versionNumber
+  }
+
+  function Set-Output {
+    param(
+      $name,
+      $value
+    )
+    Write-Output "::set-output name=$name::$value"
+  }
+
+  function Show-DatedMessage {
+    param(
+      [string] $prefix
+    )
+    
+    Write-Host "INFO: ${prefix} $(Get-Date -Format $dateFormat)" -ForegroundColor Magenta
   }
 
   function Show-ErrorMessage {
