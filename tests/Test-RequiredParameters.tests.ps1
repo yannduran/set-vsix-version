@@ -60,7 +60,7 @@ Describe "Test-RequiredParameters" {
           -developmentVersion '1.0.0.1' `
           -manifestFileExists $true `
           -ErrorAction Stop `
-      } | Should -Throw -ExceptionType System.ArgumentException
+      } | Should -Throw -ExceptionType ArgumentException
     }
   }
 }
@@ -76,7 +76,7 @@ Describe "Test-RequiredParameters" {
           -developmentVersion '1.0.0.2' `
           -manifestFileExists $true `
           -ErrorAction Stop `
-      } | Should -Throw -ExceptionType System.ArgumentException
+      } | Should -Throw -ExceptionType ArgumentException
     }
   }
 }
@@ -92,7 +92,7 @@ Describe "Test-RequiredParameters" {
           -developmentVersion '' `
           -manifestFileExists $true `
           -ErrorAction Stop `
-      } | Should -Throw -ExceptionType System.ArgumentException
+      } | Should -Throw -ExceptionType ArgumentException
     }
   }
 }

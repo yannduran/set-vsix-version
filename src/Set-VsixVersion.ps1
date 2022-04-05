@@ -43,6 +43,7 @@ function Set-VsixVersion {
       $versionSpecified = Test-ValidParameter($versionNumber)
       $manifestFileExists = Test-FileExists($manifestFilePath)
       $codeFileExists = Test-FileExists($codeFilePath)
+
       $valid = Test-RequiredParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion, $manifestFileExists
 
       Show-InfoMessage "------"
@@ -50,7 +51,7 @@ function Set-VsixVersion {
       Show-InfoMessage "------"
   
       if ($valid -eq $false) {
-        throw New-Object System.ApplicationException 'Validation failed'
+        New-ArgumentException -message 'Validation failed' -ErrorId ApplicationException
       }
 
       $versionToSet = Get-VersionToSet `
@@ -61,8 +62,8 @@ function Set-VsixVersion {
         -developmentVersion $developmentVersion
       $valid = Test-NotNullOrEmpty($versionToSet)
 
-      if ($valid -eq $false){
-        throw New-Object System.ApplicationException 'No version to set'
+      if ($valid -eq $false) {
+        New-ArgumentException -message 'No version to set' -ErrorId ApplicationException
       }
     #endregion process
       
@@ -78,11 +79,7 @@ function Set-VsixVersion {
     #endregion end
   }
   #region catch
-    catch [System.ArgumentException] {
-      Show-ErrorMessage $_
-      $valid = $false
-    }
-    catch [System.InvalidOperationException] {
+    catch [ArgumentException], [InvalidOperationException] {
       Show-ErrorMessage $_
       $valid = $false
     }

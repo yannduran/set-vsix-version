@@ -1,4 +1,10 @@
-﻿#region constant values
+#region usings
+  using namespace System
+  using namespace System.IO
+  using namespace Microsoft.PowerShell.Commands
+#endregion usings
+
+#region constant values
   $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
   $tags = 'refs/tags/'
   $heads = 'refs/heads/'
@@ -137,7 +143,9 @@
         $versionFound = Test-NotNullOrEmpty $version
 
         if ($versionFound -eq $false){
-          Write-Error "Tag '$tag' does not contain a version number using '$versionRegex'" -ErrorAction Stop
+          $message = "Tag '$tag' does not contain a version number using '$versionRegex'"
+          
+          New-ArgumentException $message ApplicationException
         }
 
         return $version
@@ -148,7 +156,15 @@
       return $developmentVersion
     }     
 
-    throw New-Object System.ApplicationException "Logic error in 'Get-VersionToSet'"
+    New-ArgumentException "Logic error in 'Get-VersionToSet'" ApplicationException
+  }
+
+  function New-ArgumentException {
+    param(
+      $name
+    )
+    Write-Error -Exception ([ArgumentException]::new("The '$name' parameter was not provided")) -ErrorAction Stop
+  }
   }
 
   function Select-VersionNumber {
@@ -278,7 +294,7 @@
     $manifestFileExists = Test-FileExists($path)
 
     if ($manifestFileExists -eq $false) { 
-      throw new-object System.ArgumentException $missingManifestFile
+      New-ArgumentException $missingManifestFile ArgumentException
     }
     return $manifestFileExists
   }
@@ -305,7 +321,7 @@
         return $false
     }
     else {
-      throw New-Object System.ArgumentException $message
+      New-ArgumentException $message
     }
   }
 
@@ -343,7 +359,7 @@
           "'git-ref', 'production-regex' and 'development-version' " + `
           "are all required"
   
-        throw New-Object System.ArgumentException $missingParameters
+        New-ArgumentException -message $missingParameters -errorId ArgumentException
       }
 
       return $true

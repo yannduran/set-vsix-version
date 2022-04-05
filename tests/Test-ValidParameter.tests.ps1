@@ -13,7 +13,7 @@ Describe "Test-ValidParameter" {
     It "throws ArgumentException" {
       {
         Test-ValidParameter -value $null -message $message -ErrorAction Stop
-      } | Should -Throw -ExceptionType System.ArgumentException
+      } | Should -Throw -ExceptionType ArgumentException
     }
   }
 
@@ -27,7 +27,7 @@ Describe "Test-ValidParameter" {
     It "throws ArgumentException" {
       {
         Test-ValidParameter -value $null -message $message -ErrorAction Stop
-      } | Should -Throw -ExceptionType System.ArgumentException
+      } | Should -Throw -ExceptionType ArgumentException
     }
   }
 
