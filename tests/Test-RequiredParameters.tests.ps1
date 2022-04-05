@@ -17,24 +17,7 @@ Describe "Test-RequiredParameters" {
       | Should -Throw -ExceptionType FileNotFoundException
     }
   }
-}
 
-Describe "Test-RequiredParameters" {
-  Context "has version number and manifest file exists" {
-    It "returns true" {
-        Test-RequiredParameters `
-          -versionSpecified $true `
-          -gitRef '' `
-          -productionRegex '' `
-          -developmentVersion '' `
-          -manifestFileExists $true `
-          -ErrorAction Stop `
-      | Should -Be $true
-    }
-  }
-}
-
-Describe "Test-RequiredParameters" {
   Context "has no versionNumber and no missing parameters" {
     It "returns true" {
       Test-RequiredParameters `
@@ -44,12 +27,10 @@ Describe "Test-RequiredParameters" {
         -developmentVersion '1.0.0.0' `
         -manifestFileExists $true `
         -ErrorAction Stop `
-      | Should -Be $true
+      | Should -BeTrue
     }
   }
-}
 
-Describe "Test-RequiredParameters" {
   Context "has no versionNumber and no gitRef" {
     It "throws an ArgumentException" {
       { 
@@ -63,9 +44,7 @@ Describe "Test-RequiredParameters" {
       } | Should -Throw -ExceptionType ArgumentException
     }
   }
-}
 
-Describe "Test-RequiredParameters" {
   Context "has no versionNumber and no productionRegex" {
     It "throws an ArgumentException" {
       { 
@@ -79,9 +58,7 @@ Describe "Test-RequiredParameters" {
       } | Should -Throw -ExceptionType ArgumentException
     }
   }
-}
 
-Describe "Test-RequiredParameters" {
   Context "has no versionNumber and no developmentVersion" {
     It "throws an ArgumentException" {
       { 

@@ -7,71 +7,59 @@ Describe "Test-IsProductionTag" {
     It "returns false" {
       $tag = $null
 
-      Test-IsProductionTag -tag $tag | Should -Be $false
+      Test-IsProductionTag -tag $tag | Should -BeFalse
     }
   }
-}
 
-Describe "Test-IsProductionTag" {
   Context "supplied tag is empty" {
     It "returns false" {
       $tag = ''
 
-      Test-IsProductionTag -tag $tag | Should -Be $false
+      Test-IsProductionTag -tag $tag | Should -BeFalse
     }
   }
-}
 
-Describe "Test-IsProductionTag" {
   Context "regex is null" {
     It "returns false" {
       $tag = ''
       $regex = $null
 
-      Test-IsProductionTag -tag $tag -regex $regex | Should -Be $false
+      Test-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
     }
   }
-}
 
-Describe "Test-IsProductionTag" {
   Context "regex is empty" {
     It "returns false" {
       $tag = ''
       $regex = ''
-      Test-IsProductionTag -tag $tag -regex $regex | Should -Be $false
+      Test-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
     }
   }
-}
 
-Describe "Test-IsProductionTag" {
   Context "supplied tag matches regex" {
     It "returns true" {
       $tag = "v1.2.3"
       $regex = $vXdotXdotX
 
-      Test-IsProductionTag -tag $tag -regex $regex | Should -Be $true
+      Test-IsProductionTag -tag $tag -regex $regex | Should -BeTrue
     }
   }
-}
 
-Describe "Test-IsProductionTag" {
   Context "supplied tag does not match regex" {
     It "returns false" {
       $tag = "1.2.3"
       $regex = $vXdotXdotX
 
-      Test-IsProductionTag -tag $tag -regex $regex | Should -Be $false
+      Test-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
     }
   }
-}
 
-Describe "Test-IsProductionTag" {
   Context "supplied tag does not match regex" {
     It "returns false" {
       $tag = "1.0"
       $regex = $vXdotXdotX
 
-      Test-IsProductionTag -tag $tag -regex $regex | Should -Be $false
+      Test-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
     }
   }
 }

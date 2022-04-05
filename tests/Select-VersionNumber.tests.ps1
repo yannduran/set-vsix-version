@@ -14,11 +14,9 @@ Describe "Select-VersionNumber" {
       | Should -Be $source
     }
   }
-}
 
-Describe "Select-VersionNumber" {
   Context "for embedded version number" {
-    It "returns extracted version number" {
+    It "returns the extracted version number" {
       $numericVersion = '1.2.3'
       $source = "v$numericVersion"
       $regex = $XdotXdotX
@@ -29,11 +27,9 @@ Describe "Select-VersionNumber" {
       | Should -Be $numericVersion
     }
   }
-}
 
-Describe "Select-VersionNumber" {
   Context "for no version number" {
-    It "returns empty string" {
+    It "returns an empty string" {
       $source = 'abcde'
       $regex = $XdotXdotX
 

@@ -5,23 +5,19 @@ BeforeAll {
 Describe "Test-NotNullOrEmpty" {
   Context "parameter is null" {
     It "returns false" {
-      Test-NotNullOrEmpty -value $null | Should -Be $false
+      Test-NotNullOrEmpty -value $null | Should -BeFalse
     }
   }
-}
 
-Describe "Test-NotNullOrEmpty" {
   Context "parameter is empty" {
     It "returns false" {
-      Test-NotNullOrEmpty -value '' | Should -Be $false
+      Test-NotNullOrEmpty -value '' | Should -BeFalse
     }
   }
-}
 
-Describe "Test-NotNullOrEmpty" {
   Context "parameter is not null or empty" {
     It "returns true" {
-      Test-NotNullOrEmpty -value 'test' | Should -Be $true
+      Test-NotNullOrEmpty -value 'test' | Should -BeTrue
     }
   }
 }

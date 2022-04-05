@@ -19,10 +19,8 @@ Describe "Get-VersionToSet" {
       | Should -Be $versionNumber
     }
   }
-}
 
-Describe "Get-VersionToSet" {
-  Context "has no version number and branch ref" {
+  Context "has no version number and a branch ref" {
     It "returns development version" {
       $versionNumber = ''
       $gitRef = 'refs/heads/master'
@@ -37,10 +35,8 @@ Describe "Get-VersionToSet" {
       | Should -Be $developmentVersion
     }
   }
-}
 
-Describe "Get-VersionToSet" {
-  Context "has no version number and non-production tag" {
+  Context "has no version number and a non-production tag" {
     It "returns development version" {
       $versionNumber = ''
       $gitRef = 'refs/tags/1.2.3'
@@ -55,10 +51,8 @@ Describe "Get-VersionToSet" {
       | Should -Be $developmentVersion
     }
   }
-}
 
-Describe "Get-VersionToSet" {
-  Context "has no version number and production tag" {
+  Context "has no version number and a production tag" {
     It "returns extracted version number" {
       $versionNumber = ''
       $version = '2.3.0'

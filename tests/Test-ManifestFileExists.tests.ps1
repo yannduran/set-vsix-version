@@ -3,8 +3,8 @@ BeforeAll {
 }
 
 Describe "Test-ManifestFileExists" {
-  Context "File doesn't exist" {
-    It "Throws argument exception" {
+  Context "file doesn't exist" {
+    It "throws an argument exception" {
       $manifestFilePath = "does/not/exist/test.vsixmanifest"
 
       { 
@@ -15,14 +15,14 @@ Describe "Test-ManifestFileExists" {
     }
   }
 
-  Context "File does exist" {
-    It "Returns true" {
+  Context "file does exist" {
+    It "returns true" {
       $manifestFilePath = "./tests/test.vsixmanifest"
 
       Test-ManifestFileExists `
         -path $manifestFilePath `
         -ErrorAction Stop `
-      | Should -Be $true
+      | Should -BeTrue
     }
   }
 }
