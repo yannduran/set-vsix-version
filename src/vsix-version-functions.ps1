@@ -165,6 +165,12 @@
     )
     Write-Error -Exception ([ArgumentException]::new("The '$name' parameter was not provided")) -ErrorAction Stop
   }
+
+  function New-FileNotFoundException {
+    param(
+      $path
+    )
+    Write-Error -Exception ([FileNotFoundException]::new("The file '$path' was not found")) -ErrorAction Stop
   }
 
   function Select-VersionNumber {
@@ -294,7 +300,7 @@
     $manifestFileExists = Test-FileExists($path)
 
     if ($manifestFileExists -eq $false) { 
-      New-ArgumentException $missingManifestFile ArgumentException
+      New-FileNotFoundException $missingManifestFile
     }
     return $manifestFileExists
   }
@@ -337,7 +343,8 @@
     if ($manifestFileExists -eq $false) {
       $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the version mumber"
 
-      throw New-Object System.ApplicationException $missingManifestFile
+      # throw New-Object System.ApplicationException $missingManifestFile
+      New-FileNotFoundException -message $missingManifestFile -errorId ArgumentException
     }
 
     if ($versionSpecified -eq $true) { 
