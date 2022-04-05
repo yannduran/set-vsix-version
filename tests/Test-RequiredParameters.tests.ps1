@@ -21,7 +21,7 @@ Describe "Test-RequiredParameters" {
 
 Describe "Test-RequiredParameters" {
   Context "has version number and manifest file exists" {
-    It "throws an ArgumentException" {
+    It "returns true" {
         Test-RequiredParameters `
           -versionSpecified $true `
           -gitRef '' `
