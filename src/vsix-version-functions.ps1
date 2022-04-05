@@ -115,7 +115,7 @@
     $versionSpecified = Test-ValidParameter($versionNumber)
   
     if ($versionSpecified -eq $true) {
-      Show-InfoMessage " - type    = specified"
+      Write-InfoMessage " - type    = specified"
       
       return $versionNumber
     } 
@@ -123,8 +123,8 @@
     $branch = Get-GitBranch($gitRef)
 
     if (Test-NotNullOrEmpty($branch) -eq $true) {
-      Show-InfoMessage " - branch  = $branch"
-      Show-InfoMessage " - type    = development"
+      Write-InfoMessage " - branch  = $branch"
+      Write-InfoMessage " - type    = development"
 
       return $developmentVersion
     }
@@ -132,12 +132,12 @@
     $tag = Get-GitTag $gitRef
 
     if (Test-NotNullOrEmpty($tag) -eq $true) {
-      Show-InfoMessage " - tag     = $tag"
+      Write-InfoMessage " - tag     = $tag"
       
       $isProduction = Test-IsProductionTag $tag $productionRegex
 
       if ($isProduction -eq $true) {
-        Show-InfoMessage " - type    = production"
+        Write-InfoMessage " - type    = production"
       
         $version = Select-VersionNumber -source $tag -regex $versionRegex
         $versionFound = Test-NotNullOrEmpty $version
@@ -151,7 +151,7 @@
         return $version
       }
 
-      Show-InfoMessage " - type    = development"
+      Write-InfoMessage " - type    = development"
     
       return $developmentVersion
     }     
@@ -198,7 +198,7 @@
     Write-Output "::set-output name=$name::$value"
   }
 
-  function Show-DatedMessage {
+  function Write-DatedMessage {
     param(
       [string] $prefix
     )
@@ -206,7 +206,7 @@
     Write-Host "INFO: ${prefix} $(Get-Date -Format $dateFormat)" -ForegroundColor Magenta
   }
 
-  function Show-ErrorMessage {
+  function Write-ErrorMessage {
     param(
       [string] $message
     )
@@ -214,14 +214,14 @@
     Write-Host "ERROR: ${message}" -ForegroundColor Yellow
   }  
   
-  function Show-ExceptionMessage {
+  function Write-ExceptionMessage {
     param(
       [string] $message
     )
     Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
   }
 
-  function Show-InfoMessage {
+  function Write-InfoMessage {
     param(
       [string] $message
     )
@@ -229,7 +229,7 @@
     Write-Host "INFO: ${message}" -ForegroundColor Magenta  
   }  
  
-  function Show-VersionResults {
+  function Write-VersionResults {
       param(
         [string] $manifestVersionBefore = '',
         [string] $manifestVersionAfter = '', 
@@ -239,20 +239,20 @@
       )
 
       #region manifest file
-        Show-InfoMessage("-------------")
-        Show-InfoMessage("Manifest file")
-        Show-InfoMessage("-------------")
-        Show-InfoMessage(" - before: $manifestVersionBefore")
-        Show-InfoMessage(" - after : $manifestVersionAfter")
+        Write-InfoMessage("-------------")
+        Write-InfoMessage("Manifest file")
+        Write-InfoMessage("-------------")
+        Write-InfoMessage(" - before: $manifestVersionBefore")
+        Write-InfoMessage(" - after : $manifestVersionAfter")
       #endregion manifest file
 
       #region code file
       if ($codeFileExists -eq $true) {
-        Show-InfoMessage("---------")
-        Show-InfoMessage("Code file")
-        Show-InfoMessage("---------")
-        Show-InfoMessage(" - before: $codeVersionBefore")
-        Show-InfoMessage(" - after : $codeVersionAfter")
+        Write-InfoMessage("---------")
+        Write-InfoMessage("Code file")
+        Write-InfoMessage("---------")
+        Write-InfoMessage(" - before: $codeVersionBefore")
+        Write-InfoMessage(" - after : $codeVersionAfter")
        }
       #endregion code file
     }  
@@ -265,10 +265,10 @@
 
     # switch ($result) {
     #   $true {
-    #     Show-InfoMessage " - '$path' was found"
+    #     Write-InfoMessage " - '$path' was found"
     #   }
     #   $false {
-    #     Show-InfoMessage " - '$path' was not found"
+    #     Write-InfoMessage " - '$path' was not found"
     #   }
     #   # Default {}
     # }

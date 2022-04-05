@@ -21,17 +21,17 @@ function Set-VsixVersion {
 
   try {
     #region start
-      Show-DatedMessage "Started at"  
+      Write-DatedMessage "Started at"  
 
       #region inputs
-        Show-InfoMessage "------"
-        Show-InfoMessage "Inputs"
-        Show-InfoMessage "------"
-        Show-InfoMessage " - version-number      = $(Get-ParameterValue $versionNumber)"
-        Show-InfoMessage " - git-ref             = $(Get-ParameterValue $gitRef)"
-        Show-InfoMessage " - production-regex    = $(Get-ParameterValue $productionRegex)"
-        Show-InfoMessage " - development-version = $(Get-ParameterValue $developmentVersion)"
-        Show-InfoMessage " - manifest-file-path  = $(Get-ParameterValue $manifestFilePath)"
+        Write-InfoMessage "------"
+        Write-InfoMessage "Inputs"
+        Write-InfoMessage "------"
+        Write-InfoMessage " - version-number      = $(Get-ParameterValue $versionNumber)"
+        Write-InfoMessage " - git-ref             = $(Get-ParameterValue $gitRef)"
+        Write-InfoMessage " - production-regex    = $(Get-ParameterValue $productionRegex)"
+        Write-InfoMessage " - development-version = $(Get-ParameterValue $developmentVersion)"
+        Write-InfoMessage " - manifest-file-path  = $(Get-ParameterValue $manifestFilePath)"
       #endregion inputs
 
       #region variable values
@@ -46,9 +46,9 @@ function Set-VsixVersion {
 
       $valid = Test-RequiredParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion, $manifestFileExists
 
-      Show-InfoMessage "------"
-      Show-InfoMessage "Values"
-      Show-InfoMessage "------"
+      Write-InfoMessage "------"
+      Write-InfoMessage "Values"
+      Write-InfoMessage "------"
   
       if ($valid -eq $false) {
         New-ArgumentException -message 'Validation failed' -ErrorId ApplicationException
@@ -70,22 +70,22 @@ function Set-VsixVersion {
     #region end
       if ($valid -eq $true) {
         Set-Output "version-number" $versionToSet
-        Show-InfoMessage " - version = $versionToSet"
+        Write-InfoMessage " - version = $versionToSet"
         
-        Show-VersionResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
+        Write-VersionResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
       }
       
-      Show-DatedMessage "Ended at"
+      Write-DatedMessage "Ended at"
     #endregion end
   }
   #region catch
     catch [ArgumentException], [InvalidOperationException] {
-      Show-ErrorMessage $_
+      Write-ErrorMessage $_
       $valid = $false
     }
     catch {
-      Show-ExceptionMessage $_
-      Show-ExceptionMessage $_.ScriptStackTrace
+      Write-ExceptionMessage $_
+      Write-ExceptionMessage $_.ScriptStackTrace
       $valid = $false
     }
   #endregion
