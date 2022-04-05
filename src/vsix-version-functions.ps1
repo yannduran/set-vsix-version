@@ -261,7 +261,7 @@
     param(
       [string] $path
     )
-    $result = Test-Path $path # [System.IO.File]::Exists($path)
+    $result = Test-Path $path
 
     # switch ($result) {
     #   $true {
@@ -342,7 +342,6 @@
     if ($manifestFileExists -eq $false) {
       $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the version mumber"
 
-      # throw New-Object System.ApplicationException $missingManifestFile
       New-FileNotFoundException -message $missingManifestFile -errorId ArgumentException
     }
 
