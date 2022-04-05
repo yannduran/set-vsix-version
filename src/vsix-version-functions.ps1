@@ -1,4 +1,4 @@
-#region usings
+﻿#region usings
   using namespace System
   using namespace System.IO
   using namespace Microsoft.PowerShell.Commands
@@ -218,7 +218,6 @@
     param(
       [string] $message
     )
-    
     Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
   }
 
@@ -292,7 +291,15 @@
     return ($tag -match $regex)
   }
   
-  function Test-ValidManifest {
+  function Test-NotNullOrEmpty {
+    [OutputType([boolean])]
+    param(
+      $value
+    )
+    return (($null -ne $value) -and ($value -ne ''))
+  }
+
+  function Test-ManifestFileExists {
     param(
       [string] $path
     )
@@ -303,14 +310,6 @@
       New-FileNotFoundException $missingManifestFile
     }
     return $manifestFileExists
-  }
-
-  function Test-NotNullOrEmpty {
-    [OutputType([boolean])]
-    param(
-      $value
-    )
-    return (($null -ne $value) -and ($value -ne ''))
   }
 
   function Test-ValidParameter {
