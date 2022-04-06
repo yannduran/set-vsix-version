@@ -48,7 +48,7 @@ function Set-VsixVersion {
       Write-InfoMessage "------"
   
       if ($valid -eq $false) {
-        New-ArgumentException -message 'Validation failed' -ErrorId ApplicationException
+        Invoke-ArgumentException -message 'Validation failed' -ErrorId ApplicationException
       }
 
       $versionToSet = Get-VersionToSet `
@@ -60,7 +60,7 @@ function Set-VsixVersion {
       $valid = Test-NotNullOrEmpty($versionToSet)
 
       if ($valid -eq $false) {
-        New-ArgumentException -message 'No version to set' -ErrorId ApplicationException
+        Invoke-ArgumentException -message 'No version to set' -ErrorId ApplicationException
       }
     #endregion process
       

@@ -144,7 +144,7 @@
         if ($versionFound -eq $false){
           $message = "Tag '$tag' does not contain a version number using '$versionRegex'"
           
-          New-ArgumentException $message ApplicationException
+          Invoke-ArgumentException $message ApplicationException
         }
 
         return $version
@@ -155,10 +155,10 @@
       return $developmentVersion
     }     
 
-    New-ArgumentException "Logic error in 'Get-VersionToSet'" ApplicationException
+    Invoke-ArgumentException "Logic error in 'Get-VersionToSet'" ApplicationException
   }
 
-  function New-ArgumentException {
+  function Invoke-ArgumentException {
     param(
       $name
     )
@@ -345,7 +345,7 @@
         return $false
     }
     else {
-      New-ArgumentException $message
+      Invoke-ArgumentException $message
     }
   }
 
@@ -383,7 +383,7 @@
           "'git-ref', 'production-regex' and 'development-version' " + `
           "are all required"
   
-        New-ArgumentException -message $missingParameters -errorId ArgumentException
+        Invoke-ArgumentException -message $missingParameters -errorId ArgumentException
       }
 
       return $true

@@ -2,12 +2,12 @@ BeforeAll {
   . ./src/vsix-version-functions.ps1
 }
 
-Describe "New-ArgumentException" {
+Describe "Invoke-ArgumentException" {
   It "throws argument exception" {
     { 
       $name = 'Test'
 
-      New-ArgumentException `
+      Invoke-ArgumentException `
         -name $name `
         -ErrorAction Stop
     } | Should -Throw -ExceptionType ArgumentException
