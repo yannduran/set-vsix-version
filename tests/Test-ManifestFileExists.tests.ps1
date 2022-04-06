@@ -5,24 +5,27 @@ BeforeAll {
 Describe "Test-ManifestFileExists" {
   Context "file doesn't exist" {
     It "throws an argument exception" {
-      $manifestFilePath = "does/not/exist/test.vsixmanifest"
+      $manifestFileExists = $false
 
-      { 
+      $result = { 
         Test-ManifestFileExists `
-          -path $manifestFilePath `
+          -manifestFileExists $manifestFileExists `
           -ErrorAction Stop
-      } | Should -Throw -ExceptionType FileNotFoundException
+      } 
+      
+      $result | Should -Throw -ExceptionType FileNotFoundException
     }
   }
 
   Context "file does exist" {
     It "returns true" {
-      $manifestFilePath = "./tests/test.vsixmanifest"
+      $manifestFileExists = $true
 
-      Test-ManifestFileExists `
-        -path $manifestFilePath `
-        -ErrorAction Stop `
-      | Should -BeTrue
+      $result = Test-ManifestFileExists `
+        -manifestFileExists $manifestFileExists `
+        -ErrorAction Stop
+      
+      $result | Should -Be $null -Because "'Test-ManifestFileExists' doesn't return a value"
     }
   }
 }

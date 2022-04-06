@@ -18,16 +18,31 @@ Describe "Test-RequiredParameters" {
     }
   }
 
-  Context "has no versionNumber and no missing parameters" {
+  Context "has versionNumber and manifest file exists" {
     It "returns true" {
-      Test-RequiredParameters `
+      $result = Test-RequiredParameters `
+        -versionSpecified $true `
+        -gitRef '' `
+        -productionRegex '' `
+        -developmentVersion '' `
+        -manifestFileExists $true `
+        -ErrorAction Stop
+      
+        $result | Should -BeTrue
+    }
+  }
+
+  Context "has no versionNumber and no missing required parameters" {
+    It "returns true" {
+      $result = Test-RequiredParameters `
         -versionSpecified $false `
         -gitRef 'refs/heads/master' `
         -productionRegex $vXdotXdotX `
         -developmentVersion '1.0.0.0' `
         -manifestFileExists $true `
-        -ErrorAction Stop `
-      | Should -BeTrue
+        -ErrorAction Stop
+      
+        $result | Should -BeTrue
     }
   }
 

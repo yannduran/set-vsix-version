@@ -1,4 +1,4 @@
-#region usings
+﻿#region usings
   using namespace System
   using namespace System.IO
   using namespace Microsoft.PowerShell.Commands
@@ -320,10 +320,10 @@
 
   function Test-ManifestFileExists {
     param(
-      [string] $path
-    )
+      [boolean] $manifestFileExists
+    )   
     if ($manifestFileExists -eq $false) { 
-    $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the VSIX version"
+      $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the VSIX version"
       Invoke-FileNotFoundException $missingManifestFile
     }
   }
