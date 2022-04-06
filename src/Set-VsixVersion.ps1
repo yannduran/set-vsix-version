@@ -23,16 +23,13 @@ function Set-VsixVersion {
     #region start
       Write-DatedMessage "Started at"  
 
-      #region inputs
-        Write-InfoMessage "------"
-        Write-InfoMessage "Inputs"
-        Write-InfoMessage "------"
-        Write-InfoMessage " - version-number      = $(Get-ParameterValue $versionNumber)"
-        Write-InfoMessage " - git-ref             = $(Get-ParameterValue $gitRef)"
-        Write-InfoMessage " - production-regex    = $(Get-ParameterValue $productionRegex)"
-        Write-InfoMessage " - development-version = $(Get-ParameterValue $developmentVersion)"
-        Write-InfoMessage " - manifest-file-path  = $(Get-ParameterValue $manifestFilePath)"
-      #endregion inputs
+      Write-InputValues `
+        $versionNumber, `
+        $gitRef, `
+        $productionRegex, `
+        $versionRegex, `
+        $developmentVersion, `
+        $manifestFilePath
 
       #region variable values
         $versionToSet = '0.1' #default value

@@ -1,4 +1,4 @@
-﻿#region usings
+#region usings
   using namespace System
   using namespace System.IO
   using namespace Microsoft.PowerShell.Commands
@@ -229,6 +229,26 @@
     Write-Host "INFO: ${message}" -ForegroundColor Magenta  
   }  
  
+  function Write-InputValues {
+    param(
+      $versionNumber, 
+      $gitRef, 
+      $productionRegex, 
+      $versionRegex, 
+      $developmentVersion, 
+      $manifestFilePath
+    )
+    Write-InfoMessage "------"
+    Write-InfoMessage "Inputs"
+    Write-InfoMessage "------"
+    Write-InfoMessage " - version-number      = $(Format-ParameterValue $versionNumber)"
+    Write-InfoMessage " - git-ref             = $(Format-ParameterValue $gitRef)"
+    Write-InfoMessage " - production-regex    = $(Format-ParameterValue $productionRegex)"
+    Write-InfoMessage " - version-regex       = $(Format-ParameterValue $versionRegex)"
+    Write-InfoMessage " - development-version = $(Format-ParameterValue $developmentVersion)"
+    Write-InfoMessage " - manifest-file-path  = $(Format-ParameterValue $manifestFilePath)"
+}
+
   function Write-VersionResults {
       param(
         [string] $manifestVersionBefore = '',
