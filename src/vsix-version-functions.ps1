@@ -228,6 +228,12 @@
     Write-Host "INFO: ${message}" -ForegroundColor Magenta  
   }  
  
+  function Write-InputsHeader {
+    Write-InfoMessage "------"
+    Write-InfoMessage "Inputs"
+    Write-InfoMessage "------"
+  }
+
   function Write-InputValues {
     param(
       $versionNumber, 
@@ -237,16 +243,13 @@
       $developmentVersion, 
       $manifestFilePath
     )
-    Write-InfoMessage "------"
-    Write-InfoMessage "Inputs"
-    Write-InfoMessage "------"
     Write-InfoMessage " - version-number      = $(Format-ParameterValue $versionNumber)"
     Write-InfoMessage " - git-ref             = $(Format-ParameterValue $gitRef)"
     Write-InfoMessage " - production-regex    = $(Format-ParameterValue $productionRegex)"
     Write-InfoMessage " - version-regex       = $(Format-ParameterValue $versionRegex)"
     Write-InfoMessage " - development-version = $(Format-ParameterValue $developmentVersion)"
     Write-InfoMessage " - manifest-file-path  = $(Format-ParameterValue $manifestFilePath)"
-}
+  }
 
   function Write-VersionResults {
       param(

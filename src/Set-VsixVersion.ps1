@@ -1,4 +1,4 @@
-﻿#######################################
+#######################################
 #Script Title: Set VSIX Version
 #Script File Name: set-vsix-version.ps1 
 #Author: Yann Duran
@@ -23,6 +23,7 @@ function Set-VsixVersion {
     #region start
       Write-DatedMessage "Started at"  
 
+      Write-InputsHeader
       Write-InputValues `
         $versionNumber `
         $gitRef `
