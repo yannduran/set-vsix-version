@@ -1,4 +1,4 @@
-﻿#region usings
+#region usings
   using namespace System
   using namespace System.IO
   using namespace Microsoft.PowerShell.Commands
@@ -165,7 +165,7 @@
     Write-Error -Exception ([ArgumentException]::new("The '$name' parameter was not provided")) -ErrorAction Stop
   }
 
-  function New-FileNotFoundException {
+  function Invoke-FileNotFoundException {
     param(
       $path
     )
@@ -322,13 +322,10 @@
     param(
       [string] $path
     )
-    $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the VSIX version"
-    $manifestFileExists = Test-FileExists($path)
-
     if ($manifestFileExists -eq $false) { 
-      New-FileNotFoundException $missingManifestFile
+    $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the VSIX version"
+      Invoke-FileNotFoundException $missingManifestFile
     }
-    return $manifestFileExists
   }
 
   function Test-ValidParameter {
@@ -358,11 +355,7 @@
       $manifestFileExists
     )
 
-    if ($manifestFileExists -eq $false) {
-      $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the version mumber"
-
-      New-FileNotFoundException -message $missingManifestFile -errorId ArgumentException
-    }
+    Test-ManifestFileExists $manifestFileExists
 
     if ($versionSpecified -eq $true) { 
       return $manifestFileExists
