@@ -1,4 +1,4 @@
-#region usings
+﻿#region usings
   using namespace System
   using namespace System.IO
   using namespace Microsoft.PowerShell.Commands
@@ -80,7 +80,7 @@
     return $(GetTextBetween($value.Replace(' Language=','')))
   }
 
-  function Get-ParameterValue {
+  function Format-ParameterValue {
     param(
       [string] $parameter
     )
