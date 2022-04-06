@@ -23,18 +23,20 @@ function Set-VsixVersion {
     #region start
       Write-DatedMessage "Started at"  
 
-      Write-InputsHeader
-      Write-InputValues `
-        $versionNumber `
-        $gitRef `
-        $productionRegex `
-        $versionRegex `
-        $developmentVersion `
-        $manifestFilePath
-
       #region variable values
         $versionToSet = '0.1' #default value
       #endregion variable values
+
+      #region inputs
+        Write-InputsHeader
+        Write-Inputs `
+          $versionNumber `
+          $gitRef `
+          $productionRegex `
+          $versionRegex `
+          $developmentVersion `
+          $manifestFilePath
+      #endregion inputs
     #endregion start
 
     #region process
@@ -43,14 +45,13 @@ function Set-VsixVersion {
       $codeFileExists = Test-FileExists($codeFilePath)
 
       $valid = Test-RequiredParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion, $manifestFileExists
-
-      Write-InfoMessage "------"
-      Write-InfoMessage "Values"
-      Write-InfoMessage "------"
-  
+      
       if ($valid -eq $false) {
-        Invoke-ArgumentException -message 'Validation failed' -ErrorId ApplicationException
+        Invoke-ArgumentException -message 'Validation failed'
       }
+
+      Write-ValuesHeader
+      Write-Values
 
       $versionToSet = Get-VersionToSet `
         -versionNumber $versionNumber `

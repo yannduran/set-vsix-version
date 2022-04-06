@@ -12,7 +12,7 @@ Context "debug test" {
     $developmentVersion = '1.0.0.1'
     $manifestFilePath = ''
 
-    $result = Write-InputValues `
+    $result = Write-Inputs `
       $versionNumber `
       $gitRef `
       $productionRegex `

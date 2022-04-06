@@ -234,7 +234,7 @@
     Write-InfoMessage "------"
   }
 
-  function Write-InputValues {
+  function Write-Inputs {
     param(
       $versionNumber, 
       $gitRef, 
@@ -249,6 +249,16 @@
     Write-InfoMessage " - version-regex       = $(Format-ParameterValue $versionRegex)"
     Write-InfoMessage " - development-version = $(Format-ParameterValue $developmentVersion)"
     Write-InfoMessage " - manifest-file-path  = $(Format-ParameterValue $manifestFilePath)"
+  }
+
+  function Write-ValuesHeader {
+    Write-InfoMessage "------"
+    Write-InfoMessage "Values"
+    Write-InfoMessage "------"
+  }
+
+  function Write-Values {
+
   }
 
   function Write-VersionResults {
