@@ -24,11 +24,11 @@ function Set-VsixVersion {
       Write-DatedMessage "Started at"  
 
       Write-InputValues `
-        $versionNumber, `
-        $gitRef, `
-        $productionRegex, `
-        $versionRegex, `
-        $developmentVersion, `
+        $versionNumber `
+        $gitRef `
+        $productionRegex `
+        $versionRegex `
+        $developmentVersion `
         $manifestFilePath
 
       #region variable values

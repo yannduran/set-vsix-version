@@ -87,9 +87,8 @@
     if (($parameter -eq $null) -or ($parameter -eq '')) {
       return '<not supplied>'
     }
-    else {
-      return "'$parameter'"
-    }
+
+    return "'$parameter'"
   }
   
   function Get-TextBetween {
