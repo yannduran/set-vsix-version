@@ -1,6 +1,7 @@
-#region usings
+﻿#region usings
   using namespace System
   using namespace System.IO
+  using namespace Collections.Generic
   using namespace Microsoft.PowerShell.Commands
 #endregion usings
 
@@ -296,22 +297,45 @@
       $developmentVersion, 
       $manifestFilePath
     )
-    Write-InfoMessage " - version-number      = $(Format-ParameterValue $versionNumber)"
-    Write-InfoMessage " - git-ref             = $(Format-ParameterValue $gitRef)"
-    Write-InfoMessage " - production-regex    = $(Format-ParameterValue $productionRegex)"
-    Write-InfoMessage " - version-regex       = $(Format-ParameterValue $versionRegex)"
-    Write-InfoMessage " - development-version = $(Format-ParameterValue $developmentVersion)"
-    Write-InfoMessage " - manifest-file-path  = $(Format-ParameterValue $manifestFilePath)"
+    $inputs = `
+      ('version-number', $versionNumber), `
+      ('git-ref', $gitRef), `
+      ('production-regex', $productionRegex), `
+      ('version-regex', $versionRegex), `
+      ('development-version', $developmentVersion), `
+      ('manifest-file-path', $manifestFilePath)
+
+    Write-NameValuePairs $inputs
   }
 
-  function Write-ValuesHeader {
-    Write-InfoMessage "------"
-    Write-InfoMessage "Values"
-    Write-InfoMessage "------"
+  function Write-NameValuePairs {
+    param(
+      [array]$params
+    )
+    $width = Get-MaxNameWidth $params
+
+    foreach ($param in $params) {
+      $name = Format-ParameterName $param[0] $width
+      $value = Format-ParameterValue $param[1]
+      $line = " - $name = " + $value
+
+      Write-InfoMessage $line
+    }
   }
 
   function Write-Values {
+    param(
+      $refType,
+      $refValue,
+      $versionType,
+      $versionValue
+    )
+    $values = `
+      ($refType, $refValue), `
+      ('type', $versionType), `
+      ('version', $versionValue)
 
+    Write-NameValuePairs $values
   }
 
   function Write-ManifestFileResults {
