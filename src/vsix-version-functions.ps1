@@ -1,4 +1,4 @@
-﻿#region usings
+#region usings
   using namespace System
   using namespace System.IO
   using namespace Microsoft.PowerShell.Commands
@@ -16,6 +16,13 @@
 #endregion constant values
 
 #region functions
+  function Format-ParameterName {
+    param(
+      [string] $name,
+      [int] $width
+    )
+    return $name.PadRight($width)
+  }
   function Get-CodeVersion {
     param(
       [string] $path
