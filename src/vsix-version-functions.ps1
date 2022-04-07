@@ -34,6 +34,18 @@
     return "'$parameter'"
   }
 
+  function Format-ParameterPair {
+    param(
+      [string] $name,
+      [string] $value,
+      [int] $width
+    )
+    $formattedName = Format-ParameterName $name $width
+    $formattedValue = Format-ParameterValue $value
+    
+    return " - $($formattedName) = $($formattedValue)"
+  }
+
   function Get-CodeVersion {
     param(
       [string] $path
