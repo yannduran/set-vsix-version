@@ -28,7 +28,7 @@ function Set-VsixVersion {
       #endregion variable values
 
       #region inputs
-        Write-InputsHeader
+        Write-Header 'Inputs'
         Write-Inputs `
           $versionNumber `
           $gitRef `
@@ -77,7 +77,14 @@ function Set-VsixVersion {
         Set-Output "version-number" $versionToSet
         Write-InfoMessage " - version = $versionToSet"
         
-        Write-VersionResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
+        Write-Header 'Manifest File'
+        if ($codeFileExists -eq $true) {
+          Write-Header 'Code File'
+          Write-CodeFileResults $codeVersionBefore $codeVersionAfter
+          }
+        # Write-VersionResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
+        
+        Set-Output "version-number" $versionToSet
       }
       
       Write-DatedMessage "Ended at"

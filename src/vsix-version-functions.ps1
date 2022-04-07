@@ -274,10 +274,17 @@
     Write-Host "INFO: ${message}" -ForegroundColor Magenta  
   }  
  
-  function Write-InputsHeader {
-    Write-InfoMessage "------"
-    Write-InfoMessage "Inputs"
-    Write-InfoMessage "------"
+  function Write-Header {
+    param(
+      $header,
+      $character = '-'
+    )
+    $length = $header.Length
+    $line = ''.PadRight($length, $character) # $character * $length
+
+    Write-InfoMessage $line
+    Write-InfoMessage $header
+    Write-InfoMessage $line
   }
 
   function Write-Inputs {
