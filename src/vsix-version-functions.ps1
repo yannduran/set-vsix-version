@@ -23,6 +23,7 @@
     )
     return $name.PadRight($width)
   }
+
   function Format-ParameterValue {
     param(
       [string] $parameter
@@ -139,59 +140,68 @@
     return [regex]::Matches($Text, $pattern).Value
   }
 
-  function Get-VersionToSet {
+  function Get-VersionValues {
     param(
       $versionNumber,
       $gitRef,
       $productionRegex,
       $versionRegex,
-      $developmentVersion = '0.1'
+      $developmentVersion
     )
-    $versionSpecified = Test-ValidParameter($versionNumber)
+    $branch = Get-GitBranch $gitRef 
+    $isBranch = Test-NotNullOrEmpty $branch
+    $tag = Get-GitTag $gitRef
+    $isTag = Test-NotNullOrEmpty $tag
+    $versionSpecified = Test-ValidParameter $versionNumber
   
     if ($versionSpecified -eq $true) {
-      Write-InfoMessage " - type    = specified"
-      
-      return $versionNumber
+      $refType = ''
+      $refValue = ''
+      $versionType = 'specified'
+      $versionToSet = $versionNumber
     } 
 
-    $branch = Get-GitBranch($gitRef)
-
-    if (Test-NotNullOrEmpty($branch) -eq $true) {
-      Write-InfoMessage " - branch  = $branch"
-      Write-InfoMessage " - type    = development"
-
-      return $developmentVersion
+    if ($isBranch -eq $true) {
+      $refType = 'branch'
+      $refValue = $branch
+      $versionType = 'development'
+      $versionToSet = $developmentVersion
     }
 
-    $tag = Get-GitTag $gitRef
+    if ($isTag -eq $true) {
+      $refType = 'tag'
+      $refValue = $tag
 
-    if (Test-NotNullOrEmpty($tag) -eq $true) {
-      Write-InfoMessage " - tag     = $tag"
-      
       $isProduction = Test-IsProductionTag $tag $productionRegex
+      $isDevelopment = (!$isProduction)
 
       if ($isProduction -eq $true) {
-        Write-InfoMessage " - type    = production"
+        $versionType = 'production'
+        $versionToSet = Select-VersionNumber -source $tag -regex $versionRegex
       
-        $version = Select-VersionNumber -source $tag -regex $versionRegex
-        $versionFound = Test-NotNullOrEmpty $version
+        $versionExtracted = Test-NotNullOrEmpty $versionToSet
 
-        if ($versionFound -eq $false){
+        if ($versionExtracted -eq $false){
           $message = "Tag '$tag' does not contain a version number using '$versionRegex'"
           
-          Invoke-ArgumentException $message ApplicationException
+          Invoke-ArgumentException $message
         }
-
-        return $version
       }
-
-      Write-InfoMessage " - type    = development"
-    
-      return $developmentVersion
+        
+      if ($isDevelopment -eq $true) {
+        $versionType = 'development'
+        $versionToSet = $developmentVersion
+      }
     }     
 
-    Invoke-ArgumentException "Logic error in 'Get-VersionToSet'" ApplicationException
+    return @{ 
+      refType = $refType; 
+      refValue = $refValue;
+      versionType = $versionType;
+      versionValue = $versionToSet;
+    }
+    # return $versionRef, $refValue, $versionType, $version
+    # Invoke-ArgumentException "Logic error in 'Get-VersionToSet'" ApplicationException
   }
 
   function Invoke-ArgumentException {

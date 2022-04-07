@@ -53,7 +53,7 @@ function Set-VsixVersion {
       Write-ValuesHeader
       Write-Values
 
-      $versionToSet = Get-VersionToSet `
+      $values = Get-VersionValues
         -versionNumber $versionNumber `
         -gitRef $gitRef `
         -productionRegex $productionRegex `
