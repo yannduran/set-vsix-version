@@ -50,8 +50,7 @@ function Set-VsixVersion {
         Invoke-ArgumentException -message 'Validation failed'
       }
 
-      Write-ValuesHeader
-      Write-Values
+      Write-Header 'Values'
 
       $values = Get-VersionValues
         -versionNumber $versionNumber `
@@ -59,6 +58,13 @@ function Set-VsixVersion {
         -productionRegex $productionRegex `
         -versionRegex $versionRegex `
         -developmentVersion $developmentVersion
+
+      Write-Values `
+        -refType $values.$refType `
+        -refValue $values.$refValue `
+        -versionType $values.$versionType `
+        -versionValue $values.$versionToSet
+
       $valid = Test-NotNullOrEmpty($versionToSet)
 
       if ($valid -eq $false) {
