@@ -110,17 +110,23 @@
     return $(GetTextBetween($value.Replace(' Language=','')))
   }
 
-  function Format-ParameterValue {
+  function Get-MaxNameWidth {
     param(
-      [string] $parameter
+      [array]$params
     )
-    if (($parameter -eq $null) -or ($parameter -eq '')) {
-      return '<not supplied>'
+    $maxWidth = 0
+
+    foreach ($param in $params) {
+      $length = $param[0].Length
+
+      if ($length -gt $maxWidth) {
+        $maxWidth = $length
+      }
     }
 
-    return "'$parameter'"
+    return $maxWidth
   }
-  
+
   function Get-TextBetween {
   # https://powershellone.wordpress.com/2021/02/24/using-powershell-and-regex-to-extract-text-between-delimiters/
 
