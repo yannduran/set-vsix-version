@@ -314,34 +314,27 @@
 
   }
 
-  function Write-VersionResults {
-      param(
-        [string] $manifestVersionBefore = '',
-        [string] $manifestVersionAfter = '', 
-        [bool]   $codeFileExists = $false,
-        [string] $codeVersionBefore = '',
-        [string] $codeVersionAfter = ''
-      )
+  function Write-ManifestFileResults {
+    param(
+      [string] $manifestVersionBefore = '',
+      [string] $manifestVersionAfter = ''
+    )
+    Write-InfoMessage(" - before: $manifestVersionBefore")
+    Write-InfoMessage(" - after : $manifestVersionAfter")
+  }
 
-      #region manifest file
-        Write-InfoMessage("-------------")
-        Write-InfoMessage("Manifest file")
-        Write-InfoMessage("-------------")
-        Write-InfoMessage(" - before: $manifestVersionBefore")
-        Write-InfoMessage(" - after : $manifestVersionAfter")
-      #endregion manifest file
+  function Write-CodeFileResults {
+    param(
+      [bool]   $codeFileExists = $false,
+      [string] $codeVersionBefore = '',
+      [string] $codeVersionAfter = ''
+    )
+    if ($codeFileExists -eq $true) {
+      Write-InfoMessage(" - before: $codeVersionBefore")
+      Write-InfoMessage(" - after : $codeVersionAfter")
+    }
+  }
 
-      #region code file
-      if ($codeFileExists -eq $true) {
-        Write-InfoMessage("---------")
-        Write-InfoMessage("Code file")
-        Write-InfoMessage("---------")
-        Write-InfoMessage(" - before: $codeVersionBefore")
-        Write-InfoMessage(" - after : $codeVersionAfter")
-       }
-      #endregion code file
-    }  
-  
   function Test-FileExists {
     param(
       [string] $path

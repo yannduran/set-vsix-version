@@ -1,4 +1,4 @@
-#######################################
+﻿#######################################
 #Script Title: Set VSIX Version
 #Script File Name: set-vsix-version.ps1 
 #Author: Yann Duran
@@ -68,21 +68,21 @@ function Set-VsixVersion {
       $valid = Test-NotNullOrEmpty($versionToSet)
 
       if ($valid -eq $false) {
-        Invoke-ArgumentException -message 'No version to set' -ErrorId ApplicationException
+        Invoke-ArgumentException -message 'No version to set'
       }
     #endregion process
       
     #region end
       if ($valid -eq $true) {
-        Set-Output "version-number" $versionToSet
         Write-InfoMessage " - version = $versionToSet"
         
         Write-Header 'Manifest File'
+        Write-ManifestFileResults $manifestVersionBefore $manifestVersionAfter
+        
         if ($codeFileExists -eq $true) {
           Write-Header 'Code File'
           Write-CodeFileResults $codeVersionBefore $codeVersionAfter
-          }
-        # Write-VersionResults $manifestVersionBefore $manifestVersionAfter $codeFileExists $codeVersionBefore $codeVersionAfter
+        }
         
         Set-Output "version-number" $versionToSet
       }
