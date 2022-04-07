@@ -8,7 +8,6 @@ Describe "Format-ParameterValue" {
   }
 
   Context "value is null" {
-
     It "returns $notSupplied" {
       $value = $null
       $result = Format-ParameterValue $value

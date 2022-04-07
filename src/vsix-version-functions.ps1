@@ -23,6 +23,17 @@
     )
     return $name.PadRight($width)
   }
+  function Format-ParameterValue {
+    param(
+      [string] $parameter
+    )
+    if (($parameter -eq $null) -or ($parameter -eq '')) {
+      return '<not supplied>'
+    }
+
+    return "'$parameter'"
+  }
+
   function Get-CodeVersion {
     param(
       [string] $path
