@@ -38,16 +38,16 @@ BeforeAll {
 
 Context "debug test" {
   It "returns null" {
-    $refType = 'branch'
-    $refValue = 'master'
-    $versionType = 'development'
-    $versionValue = '1.0.0.1'
+    # $refType = 'branch'
+    # $refValue = 'master'
+    # $versionType = 'development'
+    # $versionValue = '1.0.0.1'
 
-    $result = Write-Values `
-      $refType `
-      $refValue `
-      $versionType `
-      $versionValue 
+    # $result = Write-Values `
+    #   $refType `
+    #   $refValue `
+    #   $versionType `
+    #   $versionValue 
 
     $result | Should -Be $null
   }
