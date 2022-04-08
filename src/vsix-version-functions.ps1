@@ -359,25 +359,6 @@
     }
   }
 
-  function Test-FileExists {
-    param(
-      [string] $path
-    )
-    $result = Test-Path $path
-
-    # switch ($result) {
-    #   $true {
-    #     Write-InfoMessage " - '$path' was found"
-    #   }
-    #   $false {
-    #     Write-InfoMessage " - '$path' was not found"
-    #   }
-    #   # Default {}
-    # }
-  
-    return $result
-  }
-
   function Test-IsProductionTag {
     param(
       $tag,
@@ -455,7 +436,7 @@
 
       if ($parametersAreValid -eq $false) {
         $missingParameters = `
-          "'versionNumber' was not specified, therefore " + `
+          "'version-number' was not specified, therefore " + `
           "'git-ref', 'production-regex' and 'development-version' " + `
           "are all required"
   
