@@ -313,11 +313,13 @@
     $width = Get-MaxNameWidth $params
 
     foreach ($param in $params) {
-      $name = Format-ParameterName $param[0] $width
-      $value = Format-ParameterValue $param[1]
-      $line = " - $name = " + $value
-
-      Write-InfoMessage $line
+      if (Test-NotNullOrEmpty $param[0] -eq $true) {
+        $name = Format-ParameterName $param[0] $width
+        $value = Format-ParameterValue $param[1]
+        $line = " - $name = " + $value
+        
+        Write-InfoMessage $line
+      }
     }
   }
 
