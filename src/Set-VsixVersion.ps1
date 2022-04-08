@@ -7,12 +7,12 @@
 
 function Set-VsixVersion {
   param(   
-    [string] $versionNumber,
-    [string] $gitRef,
-    [string] $productionRegex,
-    [string] $versionRegex,
-    [string] $developmentVersion,
-    [string] $manifestFilePath
+    [string] $versionNumber = '',
+    [string] $gitRef = '',
+    [string] $productionRegex = '',
+    [string] $versionRegex = '',
+    [string] $developmentVersion = '',
+    [string] $manifestFilePath = ''
   )
 
   . ./src/vsix-version-functions.ps1
@@ -42,7 +42,7 @@ function Set-VsixVersion {
     #region process
       $versionSpecified = Test-ValidParameter $versionNumber
       $manifestFileExists = Test-Path $manifestFilePath
-      $codeFileExists = Test-Path $codeFilePath
+      # $codeFileExists = $false # Test-Path $codeFilePath
 
       $valid = Test-RequiredParameters `
         -versionSpecified $versionSpecified, `
@@ -57,7 +57,7 @@ function Set-VsixVersion {
 
       Write-Header 'Values'
 
-      $values = Get-VersionValues
+      $values = Get-VersionValues `
         -versionNumber $versionNumber `
         -gitRef $gitRef `
         -productionRegex $productionRegex `
@@ -65,10 +65,10 @@ function Set-VsixVersion {
         -developmentVersion $developmentVersion
 
       Write-Values `
-        -refType $values.$refType `
-        -refValue $values.$refValue `
-        -versionType $values.$versionType `
-        -versionValue $values.$versionToSet
+        -refType $values.refType `
+        -refValue $values.refValue `
+        -versionType $values.versionType `
+        -versionValue $values.versionValue
 
       $valid = Test-NotNullOrEmpty($versionToSet)
 
