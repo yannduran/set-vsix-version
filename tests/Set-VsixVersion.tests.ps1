@@ -21,7 +21,7 @@ Describe "Set-VsixVersion" {
         -developmentVersion $developmentVersion `
         -manifestFilePath $manifestFilePath
       
-      $result | Should -Be '::set-output name=version-number::0.1'
+      $result | Should -Be "::set-output name=version-number::$versionNumber"
     }
   }
 }
