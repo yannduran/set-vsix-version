@@ -44,7 +44,12 @@ function Set-VsixVersion {
       $manifestFileExists = Test-Path $manifestFilePath
       $codeFileExists = Test-Path $codeFilePath
 
-      $valid = Test-RequiredParameters $versionSpecified, $gitRef, $productionRegex, $developmentVersion, $manifestFileExists
+      $valid = Test-RequiredParameters `
+        -versionSpecified $versionSpecified, `
+        -gitRef $gitRef, `
+        -productionRegex $productionRegex, `
+        -developmentVersion $developmentVersion, `
+        -manifestFileExists $manifestFileExists
       
       if ($valid -eq $false) {
         Invoke-ArgumentException -message 'Validation failed'

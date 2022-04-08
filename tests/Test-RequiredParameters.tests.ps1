@@ -5,7 +5,7 @@ BeforeAll {
 Describe "Test-RequiredParameters" {
   Context "has version number but manifest file doesn't exist" {
     It "throws an FileNotFoundException" {
-      {
+      $result = {
         Test-RequiredParameters `
           -versionSpecified $true `
           -gitRef '' `
@@ -13,8 +13,8 @@ Describe "Test-RequiredParameters" {
           -developmentVersion '' `
           -manifestFileExists $false `
           -ErrorAction Stop `
-      } `
-      | Should -Throw -ExceptionType System.IO.FileNotFoundException
+      }
+      $result | Should -Throw -ExceptionType System.IO.FileNotFoundException
     }
   }
 
@@ -28,7 +28,7 @@ Describe "Test-RequiredParameters" {
         -manifestFileExists $true `
         -ErrorAction Stop
       
-        $result | Should -BeTrue
+      $result | Should -BeTrue
     }
   }
 
@@ -48,7 +48,7 @@ Describe "Test-RequiredParameters" {
 
   Context "has no versionNumber and no gitRef" {
     It "throws an ArgumentException" {
-      { 
+      $result = { 
         Test-RequiredParameters `
           -versionSpecified $false `
           -gitRef '' `
@@ -56,13 +56,14 @@ Describe "Test-RequiredParameters" {
           -developmentVersion '1.0.0.1' `
           -manifestFileExists $true `
           -ErrorAction Stop `
-      } | Should -Throw -ExceptionType ArgumentException
+      } 
+      $result | Should -Throw -ExceptionType ArgumentException
     }
   }
 
   Context "has no versionNumber and no productionRegex" {
     It "throws an ArgumentException" {
-      { 
+      $result = { 
         Test-RequiredParameters `
           -versionSpecified $false `
           -gitRef '/refs/heads/master' `
@@ -70,13 +71,14 @@ Describe "Test-RequiredParameters" {
           -developmentVersion '1.0.0.2' `
           -manifestFileExists $true `
           -ErrorAction Stop `
-      } | Should -Throw -ExceptionType ArgumentException
+      } 
+      $result | Should -Throw -ExceptionType ArgumentException
     }
   }
 
   Context "has no versionNumber and no developmentVersion" {
     It "throws an ArgumentException" {
-      { 
+      $result = { 
         Test-RequiredParameters `
           -versionSpecified $false `
           -gitRef 'refs/heads/master' `
@@ -84,7 +86,8 @@ Describe "Test-RequiredParameters" {
           -developmentVersion '' `
           -manifestFileExists $true `
           -ErrorAction Stop `
-      } | Should -Throw -ExceptionType ArgumentException
+      } 
+      $result | Should -Throw -ExceptionType ArgumentException
     }
   }
 }
