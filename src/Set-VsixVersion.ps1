@@ -63,12 +63,16 @@ function Set-VsixVersion {
         -productionRegex $productionRegex `
         -versionRegex $versionRegex `
         -developmentVersion $developmentVersion
+      $refType = $values.refType
+      $refValue = $values.refValue
+      $versionType = $values.versionType
+      $versionToSet = $values.versionValue
 
       Write-Values `
-        -refType $values.refType `
-        -refValue $values.refValue `
-        -versionType $values.versionType `
-        -versionValue $values.versionValue
+        -refType $refType `
+        -refValue $refValue `
+        -versionType $versionType `
+        -versionValue $versionToSet
 
       $valid = Test-NotNullOrEmpty($versionToSet)
 
@@ -79,8 +83,6 @@ function Set-VsixVersion {
       
     #region end
       if ($valid -eq $true) {
-        Write-InfoMessage " - version = $versionToSet"
-        
         Write-Header 'Manifest File'
         Write-ManifestFileResults $manifestVersionBefore $manifestVersionAfter
         
