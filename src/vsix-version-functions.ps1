@@ -201,8 +201,6 @@
       versionType = $versionType;
       versionValue = $versionToSet;
     }
-    # return $versionRef, $refValue, $versionType, $version
-    # Invoke-ArgumentException "Logic error in 'Get-VersionToSet'" ApplicationException
   }
 
   function Invoke-ArgumentException {
