@@ -14,7 +14,7 @@ Describe "Test-RequiredParameters" {
           -manifestFileExists $false `
           -ErrorAction Stop `
       } `
-      | Should -Throw -ExceptionType FileNotFoundException
+      | Should -Throw -ExceptionType System.IO.FileNotFoundException
     }
   }
 

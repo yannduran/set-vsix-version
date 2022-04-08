@@ -13,7 +13,7 @@ Describe "Test-ManifestFileExists" {
           -ErrorAction Stop
       } 
       
-      $result | Should -Throw -ExceptionType FileNotFoundException
+      $result | Should -Throw -ExceptionType System.IO.FileNotFoundException
     }
   }
 
