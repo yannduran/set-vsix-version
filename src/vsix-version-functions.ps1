@@ -1,4 +1,4 @@
-﻿#region usings
+#region usings
   using namespace System
   using namespace System.IO
   using namespace Collections.Generic
@@ -12,8 +12,8 @@
   $XdotXdotX = "[0-9]+.[0-9]+.[0-9]"
   $vXdotXdotX = "^v" + $XdotXdotX + "$"
   $versionRegex = '([0-9\\.]+)'
-  $manifestRegex = 'Version="' + $versionRegex + '" Language=' # do this all inside ""?
-  $codeRegex = 'Version = "' + $versionRegex + '"' # do this all inside ""?
+  $manifestFileRegex = "Version='$versionRegex' Language="
+  $codeFileRegex = "Version = '$versionRegex'"
 #endregion constant values
 
 #region functions
@@ -96,20 +96,21 @@
     }
   }
 
-  function Get-ManifestVersion {
+  function Get-ManifestFileVersion {
     param(
-      [string] $path
-    )
-
-    $value = select-string -Path $path -Pattern $manifestRegex -AllMatches `
-      | ForEach-Object { $_.Matches } `
-      | ForEach-Object { $_.Value }
-
-    if ($value -eq '') {
-      return ''
-    } 
-
-    return $(GetTextBetween($value.Replace(' Language=','')))
+      [string] $path,
+      [string] $regex
+      )
+  
+    $value = select-string -Path $path -Pattern $regex -SimpleMatch
+    #   | ForEach-Object { $_.Matches } `
+    #   | ForEach-Object { $_.Value }
+  
+    # if (Test-NotNullOrEmpty $value -eq $false) {
+    #   return ''
+    # } 
+  
+    return $(Get-TextBetween($value.Replace(' Language=','')))
   }
 
   function Get-MaxNameWidth {
@@ -141,7 +142,7 @@
     return [regex]::Matches($Text, $pattern).Value
   }
 
-  function Get-VersionValues {
+  function Get-Values {
     param(
       $versionNumber,
       $gitRef,
@@ -215,6 +216,52 @@
       $path
     )
     Write-Error -Exception ([FileNotFoundException]::new("The file '$path' was not found")) -ErrorAction Stop
+  }
+
+  function Set-CodeFileVersion {
+    param(
+      $codeFilePath,
+      $codeFileRegex,
+      $versionRegex,
+      $versionToSet
+    )
+    $codeVersionBefore = Get-CodeFileVersion $codeFilePath $codeFileRegex $versionRegex
+    
+    $content = [string]::join([environment]::newline, (get-content $codeFilePath))
+    $regex = New-Object Regex $codeFileRegex
+    
+    $newVersion = "Version = '$versionToSet'"
+    $regex.Replace($content, $newVersion) | Out-File $codeFilePath
+
+    $codeVersionAfter = Get-CodeFileVersion $codeFilePath $codeFileRegex $versionRegex
+
+    return @{ 
+      'before' = $codeVersionBefore; 
+      'after' = $codeVersionAfter;
+    }
+  }
+
+  function Set-ManifestFileVersion {
+    param(
+      $manifestFilePath,
+      $manifestFileRegex,
+      $versionRegex,
+      $versionToSet
+    )
+    $versionBefore = Get-ManifestFileVersion $manifestFilePath $manifestFileRegex $versionRegex
+    
+    $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
+    $regex = New-Object Regex $manifestFileRegex
+
+    $newVersion = 'Version="' + $versionToSet + '" Language='
+    $regex.Replace($content, $newVersion) | Out-File $manifestFilePath
+
+    $versionAfter = Get-ManifestFileVersion $manifestFileRegex $manifestFilePath
+
+    return @{ 
+      'before' = $versionBefore; 
+      'after' = $versionAfter;
+    }
   }
 
   function Select-VersionNumber {

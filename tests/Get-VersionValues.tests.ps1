@@ -2,7 +2,7 @@ BeforeAll {
   . ./src/vsix-version-functions.ps1
 }
 
-Describe "Get-VersionValues" {
+Describe "Get-Values" {
   Context "has version number" {
     It "returns type=specified, versionToSet=1.2.3" {
       $versionNumber = '1.2.3'
@@ -11,7 +11,7 @@ Describe "Get-VersionValues" {
       $versionRegex = ''
       $developmentVersion = ''
 
-      $result = Get-VersionValues `
+      $result = Get-Values `
         -versionNumber $versionNumber `
         -gitRef $gitRef `
         -productionRegex $productionRegex `
@@ -33,7 +33,7 @@ Describe "Get-VersionValues" {
       $versionRegex = ''
       $developmentVersion = '1.0.0.1'
       
-      $result = Get-VersionValues `
+      $result = Get-Values `
         -versionNumber $versionNumber `
         -gitRef $gitRef `
         -productionRegex $productionRegex `
@@ -55,7 +55,7 @@ Describe "Get-VersionValues" {
       $versionRegex = $XdotXdotX
       $developmentVersion = '1.0.0.2'
       
-      $result = Get-VersionValues `
+      $result = Get-Values `
         -versionNumber $versionNumber `
         -gitRef $gitRef `
         -productionRegex $productionRegex `
@@ -77,7 +77,7 @@ Describe "Get-VersionValues" {
       $versionRegex = $XdotXdotX
       $developmentVersion = '1.0.0.3'
       
-      $result = Get-VersionValues `
+      $result = Get-Values `
         -versionNumber $versionNumber `
         -gitRef $gitRef `
         -productionRegex $productionRegex `

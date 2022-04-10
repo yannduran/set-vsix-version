@@ -1,4 +1,4 @@
-﻿#######################################
+#######################################
 #Script Title: Set VSIX Version
 #Script File Name: set-vsix-version.ps1 
 #Author: Yann Duran
@@ -57,12 +57,13 @@ function Set-VsixVersion {
 
       Write-Header 'Values'
 
-      $values = Get-VersionValues `
+      $values = Get-Values `
         -versionNumber $versionNumber `
         -gitRef $gitRef `
         -productionRegex $productionRegex `
         -versionRegex $versionRegex `
         -developmentVersion $developmentVersion
+      
       $refType = $values.refType
       $refValue = $values.refValue
       $versionType = $values.versionType
@@ -75,20 +76,33 @@ function Set-VsixVersion {
         -versionValue $versionToSet
 
       $valid = Test-NotNullOrEmpty($versionToSet)
+      if ($valid -eq $false) { Invoke-ArgumentException -message 'No version to set' }
 
-      if ($valid -eq $false) {
-        Invoke-ArgumentException -message 'No version to set'
-      }
+      $manifestResults = Set-ManifestFileVersion `
+        -manifestFilePath $manifestFilePath `
+        -manifestFileRegex $manifestFileRegex `
+        -versionRegex $versionRegex `
+        -versionToSet $versionToSet
+
+        if ($codeFileExists -eq $true) {
+          $codeResults = Set-CodeFileVersion `
+            -codeFilePath $codeFilePath `
+            -codeFileRegex $codeFileRegex `
+            -versionRegex $versionRegex `
+            -versionToSet $versionToSet
+        }
     #endregion process
       
     #region end
       if ($valid -eq $true) {
-        Write-Header 'Manifest File'
-        Write-ManifestFileResults $manifestVersionBefore $manifestVersionAfter
-        
+        #region manifest file
+          Write-Header 'Manifest File'
+          Write-ManifestFileResults $manifestResults
+        #endregion manifest file
+
         if ($codeFileExists -eq $true) {
           Write-Header 'Code File'
-          Write-CodeFileResults $codeVersionBefore $codeVersionAfter
+          Write-CodeFileResults $codeResults
         }
         
         Set-Output "version-number" $versionToSet
