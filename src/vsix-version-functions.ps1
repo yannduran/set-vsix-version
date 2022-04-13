@@ -1,6 +1,7 @@
 #region usings
   using namespace System
   using namespace System.IO
+  using namespace System.Text.RegularExpressions
   using namespace Collections.Generic
   using namespace Microsoft.PowerShell.Commands
 #endregion usings
@@ -12,8 +13,8 @@
   $XdotXdotX = "[0-9]+.[0-9]+.[0-9]"
   $vXdotXdotX = "^v" + $XdotXdotX + "$"
   $versionRegex = '([0-9\\.]+)'
-  $manifestFileRegex = "Version='$versionRegex' Language="
-  $codeFileRegex = "Version = '$versionRegex'"
+  $manifestFileRegex = 'Version="' + $versionRegex + '" Language='
+  $codeFileRegex = 'Version = "' + $versionRegex + '"'
 #endregion constant values
 
 #region functions
@@ -44,7 +45,7 @@
     )
     $formattedName = Format-ParameterName $name $width
     $formattedValue = Format-ParameterValue $value
-    
+
     return " - $($formattedName) = $($formattedValue)"
   }
 
@@ -75,11 +76,10 @@
     if ($gitRef.StartsWith($heads)) {
       return $gitRef.Replace($heads,'')
     }
-    else {
-      return ''
-    }
+
+    return ''
   }
-  
+
   function Get-GitTag {
     param(
       $gitRef
@@ -101,15 +101,16 @@
       [string] $path,
       [string] $regex
       )
-  
-    $value = select-string -Path $path -Pattern $regex -SimpleMatch
-    #   | ForEach-Object { $_.Matches } `
-    #   | ForEach-Object { $_.Value }
-  
-    # if (Test-NotNullOrEmpty $value -eq $false) {
-    #   return ''
-    # } 
-  
+
+    $value = select-string -Path $path -Pattern $regex |
+      ForEach-Object { $_.Matches } |
+      ForEach-Object { $_.Value }
+    $valid = Test-NotNullOrEmpty $value
+
+    if ($valid -eq $false) {
+      return ''
+    }
+
     return $(Get-TextBetween($value.Replace(' Language=','')))
   }
 
@@ -133,7 +134,7 @@
   function Get-TextBetween {
   # https://powershellone.wordpress.com/2021/02/24/using-powershell-and-regex-to-extract-text-between-delimiters/
 
-    param( 
+    param(
       [string] $Text,
       [char]   $delimeter = '"'
     )
@@ -150,7 +151,7 @@
       $versionRegex,
       $developmentVersion
     )
-    $branch = Get-GitBranch $gitRef 
+    $branch = Get-GitBranch $gitRef
     $isBranch = Test-NotNullOrEmpty $branch
     $tag = Get-GitTag $gitRef
     $isTag = Test-NotNullOrEmpty $tag
@@ -180,24 +181,24 @@
       if ($isProduction -eq $true) {
         $versionType = 'production'
         $versionToSet = Select-VersionNumber -source $tag -regex $versionRegex
-      
+
         $versionExtracted = Test-NotNullOrEmpty $versionToSet
 
         if ($versionExtracted -eq $false){
           $message = "Tag '$tag' does not contain a version number using '$versionRegex'"
-          
+
           Invoke-ArgumentException $message
         }
       }
-        
+
       if ($isDevelopment -eq $true) {
         $versionType = 'development'
         $versionToSet = $developmentVersion
       }
-    }     
+    }
 
-    return @{ 
-      refType = $refType; 
+    return @{
+      refType = $refType;
       refValue = $refValue;
       versionType = $versionType;
       versionValue = $versionToSet;
@@ -226,17 +227,17 @@
       $versionToSet
     )
     $codeVersionBefore = Get-CodeFileVersion $codeFilePath $codeFileRegex $versionRegex
-    
+
     $content = [string]::join([environment]::newline, (get-content $codeFilePath))
     $regex = New-Object Regex $codeFileRegex
-    
+
     $newVersion = "Version = '$versionToSet'"
     $regex.Replace($content, $newVersion) | Out-File $codeFilePath
 
     $codeVersionAfter = Get-CodeFileVersion $codeFilePath $codeFileRegex $versionRegex
 
-    return @{ 
-      'before' = $codeVersionBefore; 
+    return @{
+      'before' = $codeVersionBefore;
       'after' = $codeVersionAfter;
     }
   }
@@ -245,21 +246,20 @@
     param(
       $manifestFilePath,
       $manifestFileRegex,
-      $versionRegex,
       $versionToSet
     )
-    $versionBefore = Get-ManifestFileVersion $manifestFilePath $manifestFileRegex $versionRegex
-    
+    $versionBefore = Get-ManifestFileVersion $manifestFilePath $manifestFileRegex
+
     $content = [string]::join([environment]::newline, (get-content $manifestFilePath))
     $regex = New-Object Regex $manifestFileRegex
 
     $newVersion = 'Version="' + $versionToSet + '" Language='
     $regex.Replace($content, $newVersion) | Out-File $manifestFilePath
 
-    $versionAfter = Get-ManifestFileVersion $manifestFileRegex $manifestFilePath
+    $versionAfter = Get-ManifestFileVersion $manifestFilePath $manifestFileRegex
 
-    return @{ 
-      'before' = $versionBefore; 
+    return @{
+      'before' = $versionBefore;
       'after' = $versionAfter;
     }
   }
@@ -293,7 +293,7 @@
     param(
       [string] $prefix
     )
-    
+
     Write-Host "INFO: ${prefix} $(Get-Date -Format $dateFormat)" -ForegroundColor Magenta
   }
 
@@ -301,10 +301,10 @@
     param(
       [string] $message
     )
-    
+
     Write-Host "ERROR: ${message}" -ForegroundColor Yellow
-  }  
-  
+  }
+
   function Write-ExceptionMessage {
     param(
       [string] $message
@@ -316,10 +316,10 @@
     param(
       [string] $message
     )
-    
-    Write-Host "INFO: ${message}" -ForegroundColor Magenta  
-  }  
- 
+
+    Write-Host "INFO: ${message}" -ForegroundColor Magenta
+  }
+
   function Write-Header {
     param(
       $header,
@@ -335,11 +335,11 @@
 
   function Write-Inputs {
     param(
-      $versionNumber, 
-      $gitRef, 
-      $productionRegex, 
-      $versionRegex, 
-      $developmentVersion, 
+      $versionNumber,
+      $gitRef,
+      $productionRegex,
+      $versionRegex,
+      $developmentVersion,
       $manifestFilePath
     )
     $inputs = `
@@ -364,7 +364,7 @@
         $name = Format-ParameterName $param[0] $width
         $value = Format-ParameterValue $param[1]
         $line = " - $name = " + $value
-        
+
         Write-InfoMessage $line
       }
     }
@@ -414,13 +414,13 @@
     $validTag = Test-ValidParameter $tag
     $validRegex = Test-ValidParameter $regex
     if (($validTag -eq $false) -or ($validRegex -eq $false))
-    { 
-      return $false 
+    {
+      return $false
     }
 
     return ($tag -match $regex)
   }
-  
+
   function Test-NotNullOrEmpty {
     [OutputType([boolean])]
     param(
@@ -432,8 +432,8 @@
   function Test-ManifestFileExists {
     param(
       [boolean] $manifestFileExists
-    )   
-    if ($manifestFileExists -eq $false) { 
+    )
+    if ($manifestFileExists -eq $false) {
       $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the VSIX version"
       Invoke-FileNotFoundException $missingManifestFile
     }
@@ -459,16 +459,16 @@
 
   function Test-RequiredParameters {
     param(
-      $versionSpecified, 
-      $gitRef, 
-      $productionRegex, 
+      $versionSpecified,
+      $gitRef,
+      $productionRegex,
       $developmentVersion,
       $manifestFileExists
     )
 
     Test-ManifestFileExists $manifestFileExists
 
-    if ($versionSpecified -eq $true) { 
+    if ($versionSpecified -eq $true) {
       return $manifestFileExists
     }
     else {
@@ -486,8 +486,8 @@
           "'version-number' was not specified, therefore " + `
           "'git-ref', 'production-regex' and 'development-version' " + `
           "are all required"
-  
-        Invoke-ArgumentException -message $missingParameters -errorId ArgumentException
+
+        Invoke-ArgumentException -message $missingParameters
       }
 
       return $true
