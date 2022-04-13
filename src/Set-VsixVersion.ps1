@@ -1,4 +1,4 @@
-#######################################
+﻿#######################################
 #Script Title: Set VSIX Version
 #Script File Name: set-vsix-version.ps1 
 #Author: Yann Duran
@@ -51,9 +51,9 @@ function Set-VsixVersion {
         -developmentVersion $developmentVersion, `
         -manifestFileExists $manifestFileExists
       
-      if ($valid -eq $false) {
-        Invoke-ArgumentException -message 'Validation failed'
-      }
+      # if ($valid -eq $false) {
+      #   Invoke-ArgumentException -message 'Validation failed'
+      # }
 
       Write-Header 'Values'
 
