@@ -1,4 +1,4 @@
-#region usings
+﻿#region usings
   using namespace System
   using namespace System.IO
   using namespace System.Text.RegularExpressions
@@ -72,10 +72,10 @@
       $gitRef
     )
     $valid = Test-ValidParameter($gitRef)
-
     if ($valid -eq $false) { return '' }
 
-    if ($gitRef.StartsWith($heads)) {
+    $valid = ($gitRef.StartsWith($heads))
+    if ($valid -eq $true) {
       return $gitRef.Replace($heads,'')
     }
 
@@ -157,14 +157,14 @@
     $isBranch = Test-NotNullOrEmpty $branch
     $tag = Get-GitTag $gitRef
     $isTag = Test-NotNullOrEmpty $tag
-    $versionSpecified = Test-ValidParameter $versionNumber
-  
-    if ($versionSpecified -eq $true) {
+    $valid = Test-ValidParameter $versionNumber
+
+    if ($valid -eq $true) {
       $refType = ''
       $refValue = ''
       $versionType = 'specified'
       $versionToSet = $versionNumber
-    } 
+    }
 
     if ($isBranch -eq $true) {
       $refType = 'branch'
