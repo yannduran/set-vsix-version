@@ -389,22 +389,17 @@
 
   function Write-ManifestFileResults {
     param(
-      [string] $manifestVersionBefore = '',
-      [string] $manifestVersionAfter = ''
+      [array]$params
     )
-    Write-InfoMessage(" - before: $manifestVersionBefore")
-    Write-InfoMessage(" - after : $manifestVersionAfter")
+    Write-NameValuePairs $params
   }
 
   function Write-CodeFileResults {
     param(
-      [bool]   $codeFileExists = $false,
-      [string] $codeVersionBefore = '',
-      [string] $codeVersionAfter = ''
+      [array]$params
     )
     if ($codeFileExists -eq $true) {
-      Write-InfoMessage(" - before: $codeVersionBefore")
-      Write-InfoMessage(" - after : $codeVersionAfter")
+      Write-NameValuePairs $params
     }
   }
 
