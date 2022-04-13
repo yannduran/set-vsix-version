@@ -49,22 +49,24 @@
     return " - $($formattedName) = $($formattedValue)"
   }
 
-  function Get-CodeVersion {
+
+  function Get-CodeFileVersion {
     param(
-      [string] $path
+      [string] $path,
+      [string] $regex
     )
 
-    $value = select-string -Path $path -Pattern $codeRegex -AllMatches `
-      | ForEach-Object { $_.Matches } `
-      | ForEach-Object { $_.Value }
+    $value = select-string -Path $path -Pattern $regex |
+      ForEach-Object { $_.Matches } |
+      ForEach-Object { $_.Value }
 
-    if ($value -eq '') {
+    $valid = Test-NotNullOrEmpty $value
+    if ($valid -eq $false) {
       return ''
     }
-    
-    return $(GetTextBetween($value))
-  }
 
+    return $(Get-TextBetween($value))
+  }
   function Get-GitBranch {
     param(
       $gitRef
