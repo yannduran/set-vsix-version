@@ -1,4 +1,4 @@
-#######################################
+﻿#######################################
 #Script Title: Set VSIX Version
 #Script File Name: set-vsix-version.ps1
 #Author: Yann Duran
@@ -63,7 +63,7 @@ function Set-VsixVersion {
         -productionRegex $productionRegex `
         -versionRegex $versionRegex `
         -developmentVersion $developmentVersion
-      
+
       $refType = $values.refType
       $refValue = $values.refValue
       $versionType = $values.versionType
@@ -92,7 +92,7 @@ function Set-VsixVersion {
             -versionToSet $versionToSet
         }
     #endregion process
-      
+
     #region end
       if ($valid -eq $true) {
         #region manifest file
@@ -104,10 +104,10 @@ function Set-VsixVersion {
           Write-Header 'Code File'
           Write-CodeFileResults $codeResults
         }
-        
+
         Set-Output "version-number" $versionToSet
       }
-      
+
       Write-DatedMessage "Ended at"
     #endregion end
   }
@@ -122,7 +122,7 @@ function Set-VsixVersion {
       $valid = $false
     }
   #endregion
-  
+
   finally {
     if ($valid -eq $false) { exit 1 }
   }
