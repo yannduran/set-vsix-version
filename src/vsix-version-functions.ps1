@@ -381,11 +381,11 @@
     $width = Get-MaxNameWidth $params
 
     foreach ($param in $params) {
-      $key = $param[0].Key
-      $value = $param[0].Value
+      $text = $param[0]
+      $value = $param[1]
 
-      if (Test-NotNullOrEmpty $key -eq $true) {
-        $name = Format-ParameterName $key $width
+      if (Test-NotNullOrEmpty $text -eq $true) {
+        $name = Format-ParameterName $text $width
         $value = Format-ParameterValue $value
         $line = " - $name = " + $value
 
