@@ -141,8 +141,8 @@
     $maxWidth = 0
 
     foreach ($param in $params) {
-      $key = $param[0].Key
-      $length = $key.Length
+      $text = $param[0]
+      $length = $text.Length
 
       if ($length -gt $maxWidth) {
         $maxWidth = $length
