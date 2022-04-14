@@ -1,6 +1,7 @@
-#region usings
+﻿#region usings
   using namespace System
   using namespace System.IO
+  using namespace System.IO.Path
   using namespace System.Text.RegularExpressions
   using namespace Collections.Generic
   using namespace Microsoft.PowerShell.Commands
@@ -140,7 +141,8 @@
     $maxWidth = 0
 
     foreach ($param in $params) {
-      $length = $param[0].Length
+      $key = $param[0].Key
+      $length = $key.Length
 
       if ($length -gt $maxWidth) {
         $maxWidth = $length
@@ -379,9 +381,12 @@
     $width = Get-MaxNameWidth $params
 
     foreach ($param in $params) {
-      if (Test-NotNullOrEmpty $param[0] -eq $true) {
-        $name = Format-ParameterName $param[0] $width
-        $value = Format-ParameterValue $param[1]
+      $key = $param[0].Key
+      $value = $param[0].Value
+
+      if (Test-NotNullOrEmpty $key -eq $true) {
+        $name = Format-ParameterName $key $width
+        $value = Format-ParameterValue $value
         $line = " - $name = " + $value
 
         Write-InfoMessage $line
