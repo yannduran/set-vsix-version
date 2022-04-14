@@ -1,4 +1,4 @@
-﻿#region usings
+#region usings
   using namespace System
   using namespace System.IO
   using namespace System.Text.RegularExpressions
@@ -10,11 +10,20 @@
   $dateFormat = 'yyyy-MMM-dd HH:mm:ss'
   $tags = 'refs/tags/'
   $heads = 'refs/heads/'
+
   $XdotXdotX = "[0-9]+.[0-9]+.[0-9]"
   $vXdotXdotX = "^v" + $XdotXdotX + "$"
+
   $versionRegex = '([0-9\\.]+)'
   $manifestFileRegex = 'Version="' + $versionRegex + '" Language='
   $codeFileRegex = 'Version = "' + $versionRegex + '"'
+
+  $testsFolder = './tests/'
+
+  $manifestFilePath = $testsFolder + 'test.vsixmanifest'
+  $manifestFileBackup = $manifestFilePath + '.bak'
+  $codeFilePath = [System.IO.Path]::ChangeExtension($manifestFilePath, '.cs')
+  $codeFileBackup = $codeFilePath + '.bak'
 #endregion constant values
 
 #region functions
@@ -49,6 +58,14 @@
     return " - $($formattedName) = $($formattedValue)"
   }
 
+  function Get-CodeFilePath {
+    param(
+      $manifestFilePath
+      )
+    $result = [System.IO.Path]::ChangeExtension($manifestFilePath, '.cs')
+
+    return $result
+  }
 
   function Get-CodeFileVersion {
     param(

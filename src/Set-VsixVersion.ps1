@@ -1,12 +1,12 @@
-﻿#######################################
+#######################################
 #Script Title: Set VSIX Version
-#Script File Name: set-vsix-version.ps1 
+#Script File Name: set-vsix-version.ps1
 #Author: Yann Duran
 #Date Created: 2022-03-28
 #######################################
 
 function Set-VsixVersion {
-  param(   
+  param(
     [string] $versionNumber = '',
     [string] $gitRef = '',
     [string] $productionRegex = '',
@@ -21,7 +21,7 @@ function Set-VsixVersion {
 
   try {
     #region start
-      Write-DatedMessage "Started at"  
+      Write-DatedMessage "Started at"
 
       #region variable values
         $versionToSet = '0.1' #default value
@@ -42,7 +42,7 @@ function Set-VsixVersion {
     #region process
       $versionSpecified = Test-ValidParameter $versionNumber
       $manifestFileExists = Test-Path $manifestFilePath
-      # $codeFileExists = $false # Test-Path $codeFilePath
+      $codeFileExists = Test-Path $codeFilePath
 
       $valid = Test-RequiredParameters `
         -versionSpecified $versionSpecified, `
@@ -50,7 +50,7 @@ function Set-VsixVersion {
         -productionRegex $productionRegex, `
         -developmentVersion $developmentVersion, `
         -manifestFileExists $manifestFileExists
-      
+
       # if ($valid -eq $false) {
       #   Invoke-ArgumentException -message 'Validation failed'
       # }
