@@ -7,12 +7,13 @@
 
 function Set-VsixVersion {
   param(
-    [string] $versionNumber = '',
-    [string] $gitRef = '',
-    [string] $productionRegex = '',
-    [string] $versionRegex = '',
-    [string] $developmentVersion = '',
-    [string] $manifestFilePath = ''
+    [string]  $versionNumber = '',
+    [string]  $gitRef = '',
+    [string]  $productionRegex = '',
+    [string]  $versionRegex = '',
+    [string]  $developmentVersion = '',
+    [string]  $manifestFilePath = '',
+    [boolean] $quiet = $false
   )
 
   . ./src/vsix-version-functions.ps1
@@ -21,21 +22,22 @@ function Set-VsixVersion {
 
   try {
     #region start
-      Write-DatedMessage "Started at"
+      Write-DatedMessage "Started at" -quiet $quiet
 
       #region variable values
         $versionToSet = '0.1' #default value
       #endregion variable values
 
       #region inputs
-        Write-Header 'Inputs'
+        Write-Header 'Inputs' -quiet $quiet
         Write-Inputs `
           $versionNumber `
           $gitRef `
           $productionRegex `
           $versionRegex `
           $developmentVersion `
-          $manifestFilePath
+          $manifestFilePath `
+          -quiet $quiet
       #endregion inputs
     #endregion start
 
@@ -55,7 +57,7 @@ function Set-VsixVersion {
       #   Invoke-ArgumentException -message 'Validation failed'
       # }
 
-      Write-Header 'Values'
+      Write-Header 'Values' -quiet $quiet
 
       $values = Get-Values `
         -versionNumber $versionNumber `
@@ -73,7 +75,8 @@ function Set-VsixVersion {
         -refType $refType `
         -refValue $refValue `
         -versionType $versionType `
-        -versionValue $versionToSet
+        -versionValue $versionToSet `
+        -quiet $quiet
 
       $valid = Test-NotNullOrEmpty($versionToSet)
       if ($valid -eq $false) { Invoke-ArgumentException -message 'No version to set' }
@@ -96,19 +99,19 @@ function Set-VsixVersion {
     #region end
       if ($valid -eq $true) {
         #region manifest file
-          Write-Header 'Manifest File'
-          Write-ManifestFileResults $manifestResults
+          Write-Header 'Manifest File' -quiet $quiet
+          Write-ManifestFileResults $manifestResults -quiet $quiet
         #endregion manifest file
 
         if ($codeFileExists -eq $true) {
-          Write-Header 'Code File'
-          Write-CodeFileResults $codeResults
+          Write-Header 'Code File' -quiet $quiet
+          Write-CodeFileResults $codeResults -quiet $quiet
         }
 
-        Set-Output "version-number" $versionToSet
+        Set-Output "version-number" $versionToSet -quiet $quiet
       }
 
-      Write-DatedMessage "Ended at"
+      Write-DatedMessage "Ended at" -quiet $quiet
     #endregion end
   }
   #region catch

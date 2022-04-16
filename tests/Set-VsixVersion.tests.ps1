@@ -25,7 +25,7 @@ Describe "Set-VsixVersion" {
         manifestFilePath = $manifestFilePath
       }
 
-      $result = Set-VsixVersion @params
+      $result = Set-VsixVersion @params -quiet $true
 
       $result | Should -Be "::set-output name=version-number::$versionNumber" `
         -Because "the output variable should be set"

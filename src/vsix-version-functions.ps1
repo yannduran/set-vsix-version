@@ -247,7 +247,7 @@
       $versionRegex,
       $versionToSet
     )
-    $codeVersionBefore = Get-CodeFileVersion $codeFilePath $codeFileRegex $versionRegex
+    $versionBefore = Get-CodeFileVersion $codeFilePath $codeFileRegex $versionRegex
 
     $content = [string]::join([environment]::newline, (get-content $codeFilePath))
     $regex = New-Object Regex $codeFileRegex
@@ -255,12 +255,12 @@
     $newVersion = 'Version = "' + $versionToSet + '"'
     $regex.Replace($content, $newVersion) | Out-File $codeFilePath
 
-    $codeVersionAfter = Get-CodeFileVersion $codeFilePath $codeFileRegex $versionRegex
+    $versionAfter = Get-CodeFileVersion $codeFilePath $codeFileRegex $versionRegex
 
-    return @{
-      'before' = $codeVersionBefore;
-      'after' = $codeVersionAfter;
-    }
+    return (
+      ('before', $versionBefore),
+      ('after', $versionAfter)
+    )
   }
 
   function Set-ManifestFileVersion {
@@ -279,10 +279,10 @@
 
     $versionAfter = Get-ManifestFileVersion $manifestFilePath $manifestFileRegex
 
-    return @{
-      'before' = $versionBefore;
-      'after' = $versionAfter;
-    }
+    return (
+      ('before', $versionBefore),
+      ('after', $versionAfter)
+    )
   }
 
   function Select-VersionNumber {
@@ -312,46 +312,61 @@
 
   function Write-DatedMessage {
     param(
-      [string] $prefix
+      [string] $prefix,
+      [boolean] $quiet = $false
     )
 
-    Write-Host "INFO: ${prefix} $(Get-Date -Format $dateFormat)" -ForegroundColor Magenta
+    if ($quiet -eq $false) {
+      Write-Host "INFO: ${prefix} $(Get-Date -Format $dateFormat)" -ForegroundColor Magenta
+    }
   }
 
   function Write-ErrorMessage {
     param(
-      [string] $message
+      [string] $message,
+      [boolean] $quiet = $false
     )
 
-    Write-Host "ERROR: ${message}" -ForegroundColor Yellow
+    if ($quiet -eq $false) {
+      Write-Host "ERROR: ${message}" -ForegroundColor Yellow
+    }
   }
 
   function Write-ExceptionMessage {
     param(
-      [string] $message
+      [string] $message,
+      [boolean] $quiet = $false
     )
-    Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
+
+    if ($quiet -eq $false) {
+      Write-Host "EXCEPTION: ${message}" -ForegroundColor Red
+    }
   }
 
   function Write-InfoMessage {
     param(
-      [string] $message
+      [string] $message,
+      [boolean] $quiet = $false
     )
 
-    Write-Host "INFO: ${message}" -ForegroundColor Magenta
+    if ($quiet -eq $false) {
+      Write-Host "INFO: ${message}" -ForegroundColor Magenta
+    }
   }
 
   function Write-Header {
     param(
       $header,
-      $character = '-'
+      $character = '-',
+      [boolean] $quiet = $false
     )
+
     $length = $header.Length
     $line = ''.PadRight($length, $character) # $character * $length
 
-    Write-InfoMessage $line
-    Write-InfoMessage $header
-    Write-InfoMessage $line
+    Write-InfoMessage $line -quiet $quiet
+    Write-InfoMessage $header -quiet $quiet
+    Write-InfoMessage $line -quiet $quiet
   }
 
   function Write-Inputs {
@@ -361,8 +376,10 @@
       $productionRegex,
       $versionRegex,
       $developmentVersion,
-      $manifestFilePath
+      $manifestFilePath,
+      [boolean] $quiet = $false
     )
+
     $inputs = `
       ('version-number', $versionNumber), `
       ('git-ref', $gitRef), `
@@ -371,13 +388,15 @@
       ('development-version', $developmentVersion), `
       ('manifest-file-path', $manifestFilePath)
 
-    Write-NameValuePairs $inputs
+    Write-NameValuePairs $inputs -quiet $quiet
   }
 
   function Write-NameValuePairs {
     param(
-      [array]$params
+      [array]$params,
+      [boolean] $quiet = $false
     )
+
     $width = Get-MaxNameWidth $params
 
     foreach ($param in $params) {
@@ -389,7 +408,7 @@
         $value = Format-ParameterValue $value
         $line = " - $name = " + $value
 
-        Write-InfoMessage $line
+        Write-InfoMessage $line -quiet $quiet
       }
     }
   }
@@ -399,31 +418,37 @@
       $refType,
       $refValue,
       $versionType,
-      $versionValue
+      $versionValue,
+      [boolean] $quiet = $false
     )
+
     $values = `
       ($refType, $refValue), `
       ('type', $versionType), `
       ('version', $versionValue)
 
-    Write-NameValuePairs $values
+    Write-NameValuePairs $values -quiet $quiet
   }
 
   function Write-ManifestFileResults {
     param(
-      [array]$params
+      [array]$params,
+      [boolean] $quiet = $false
     )
-    Write-NameValuePairs $params
+
+    Write-NameValuePairs $params -quiet $quiet
   }
 
   function Write-CodeFileResults {
     param(
-      [array]$params
+      [array]$params,
+      [boolean] $quiet = $false
     )
+
     if ($codeFileExists -eq $true) {
-      Write-NameValuePairs $params
+        Write-NameValuePairs $params -quiet $quiet
+      }
     }
-  }
 
   function Test-IsProductionTag {
     param(
