@@ -252,7 +252,7 @@
     $content = [string]::join([environment]::newline, (get-content $codeFilePath))
     $regex = New-Object Regex $codeFileRegex
 
-    $newVersion = "Version = '$versionToSet'"
+    $newVersion = 'Version = "' + $versionToSet + '"'
     $regex.Replace($content, $newVersion) | Out-File $codeFilePath
 
     $codeVersionAfter = Get-CodeFileVersion $codeFilePath $codeFileRegex $versionRegex

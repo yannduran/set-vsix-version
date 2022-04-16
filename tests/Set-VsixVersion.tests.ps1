@@ -27,7 +27,8 @@ Describe "Set-VsixVersion" {
 
       $result = Set-VsixVersion @params
 
-      $result | Should -Be "::set-output name=version-number::$versionNumber"
+      $result | Should -Be "::set-output name=version-number::$versionNumber" `
+        -Because "the output variable should be set"
 
       $params = @{
         path = $manifestFilePath
@@ -36,7 +37,8 @@ Describe "Set-VsixVersion" {
 
       $result = Get-ManifestFileVersion @params
 
-      $result | Should -Be $versionNumber
+      $result | Should -Be $versionNumber `
+        -Because "the manifest file version should be set"
 
       $params = @{
         path = $codeFilePath
@@ -45,7 +47,8 @@ Describe "Set-VsixVersion" {
 
       $result = Get-CodeFileVersion @params
 
-      $result | Should -Be $versionNumber
+      $result | Should -Be $versionNumber `
+        -Because "the code file version should be set"
     }
   }
 
