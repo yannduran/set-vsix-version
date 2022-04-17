@@ -1,4 +1,4 @@
-#region usings
+﻿#region usings
   using namespace System
   using namespace System.IO
   using namespace System.IO.Path
@@ -245,7 +245,7 @@
 
       if ($isProduction -eq $true) {
         $versionType = 'production'
-        $versionToSet = Select-VersionNumber -source $tag -regex $versionRegex
+        $versionToSet = Get-VersionNumber -source $tag -regex $versionRegex
 
         $versionExtracted = Get-IsNotNullOrEmpty $versionToSet
 
@@ -329,7 +329,7 @@
     )
   }
 
-  function Select-VersionNumber {
+  function Get-VersionNumber {
     param(
       $source,
       $regex
@@ -519,9 +519,9 @@
       return $manifestFileExists
     }
     else {
-      $gitRefValid = Get-IsValidParameter $gitRef
-      $productionRegexValid = Get-IsValidParameter $productionRegex
-      $developmentVersionValid = Get-IsValidParameter $developmentVersion
+      $gitRefValid = Get-IsNotNullOrEmpty $gitRef
+      $productionRegexValid = Get-IsNotNullOrEmpty $productionRegex
+      $developmentVersionValid = Get-IsNotNullOrEmpty $developmentVersion
       $parametersAreValid = ( `
         ($gitRefValid -eq $true) -and `
         ($productionRegexValid -eq $true) -and `

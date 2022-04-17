@@ -1,14 +1,14 @@
-BeforeAll { 
+BeforeAll {
   . ./src/vsix-version-functions.ps1
 }
 
-Describe "Select-VersionNumber" {
+Describe "Get-VersionNumber" {
   Context "for source that matches regex" {
     It "returns the version number" {
       $source = '1.2.3'
       $regex = $XdotXdotX
 
-      Select-VersionNumber `
+      Get-VersionNumber `
         -source $source `
         -regex $regex `
       | Should -Be $source
@@ -21,7 +21,7 @@ Describe "Select-VersionNumber" {
       $source = "v$numericVersion"
       $regex = $XdotXdotX
 
-      Select-VersionNumber `
+      Get-VersionNumber `
         -source $source `
         -regex $regex `
       | Should -Be $numericVersion
@@ -33,7 +33,7 @@ Describe "Select-VersionNumber" {
       $source = 'abcde'
       $regex = $XdotXdotX
 
-      Select-VersionNumber `
+      Get-VersionNumber `
         -source $source `
         -regex $regex `
       | Should -Be ''
