@@ -42,7 +42,7 @@ function Set-VsixVersion {
     #endregion start
 
     #region process
-      $versionSpecified = Get-IsValidParameter $versionNumber
+      $versionSpecified = Get-IsNotNullOrEmpty $versionNumber
       $manifestFileExists = Test-Path $manifestFilePath
       $codeFileExists = Test-Path $codeFilePath
 

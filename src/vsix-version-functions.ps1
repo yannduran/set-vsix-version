@@ -1,4 +1,4 @@
-﻿#region usings
+#region usings
   using namespace System
   using namespace System.IO
   using namespace System.IO.Path
@@ -90,7 +90,7 @@
     param(
       $gitRef
     )
-    $valid = Get-IsValidParameter($gitRef)
+    $valid = Get-IsNotNullOrEmpty($gitRef)
     if ($valid -eq $false) { return '' }
 
     $valid = ($gitRef.StartsWith($heads))
@@ -105,7 +105,7 @@
     param(
       $gitRef
     )
-    $valid = Get-IsValidParameter($gitRef)
+    $valid = Get-IsNotNullOrEmpty($gitRef)
 
     if ($valid -eq $false) { return '' }
 
@@ -128,33 +128,12 @@
   function Get-IsNotNullOrEmpty {
     [OutputType([boolean])]
     param(
-      $value
-    )
-    return !(Get-IsNullOrEmpty($value))
-  }
-
-  function Get-IsProductionTag {
-    param(
-      $tag,
-      $regex = ''
-    )
-    $validTag = Get-IsValidParameter $tag
-    $validRegex = Get-IsValidParameter $regex
-    if (($validTag -eq $false) -or ($validRegex -eq $false))
-    {
-      return $false
-    }
-
-    return ($tag -match $regex)
-  }
-
-  function Get-IsValidParameter {
-    [OutputType([boolean])]
-    param(
       $value,
       $message = ''
     )
-    if (Get-IsNotNullOrEmpty $value) {
+    $result = !(Get-IsNullOrEmpty($value))
+
+    if ($result -eq $true) {
       return $true
     }
 
@@ -164,6 +143,21 @@
     else {
       Invoke-ArgumentException $message
     }
+  }
+
+  function Get-IsProductionTag {
+    param(
+      $tag,
+      $regex = ''
+    )
+    $validTag = Get-IsNotNullOrEmpty $tag
+    $validRegex = Get-IsNotNullOrEmpty $regex
+    if (($validTag -eq $false) -or ($validRegex -eq $false))
+    {
+      return $false
+    }
+
+    return ($tag -match $regex)
   }
 
   function Get-ManifestFileVersion {
@@ -226,7 +220,7 @@
     $isBranch = Get-IsNotNullOrEmpty $branch
     $tag = Get-GitTag $gitRef
     $isTag = Get-IsNotNullOrEmpty $tag
-    $valid = Get-IsValidParameter $versionNumber
+    $valid = Get-IsNotNullOrEmpty $versionNumber
 
     if ($valid -eq $true) {
       $refType = ''

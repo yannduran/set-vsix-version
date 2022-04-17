@@ -3,21 +3,43 @@ BeforeAll {
 }
 
 Describe "Get-IsNotNullOrEmpty" {
-  Context "parameter is null" {
+  Context "value is null and no message" {
     It "returns false" {
       Get-IsNotNullOrEmpty -value $null | Should -BeFalse
     }
   }
 
-  Context "parameter is empty" {
+  Context "value is null and message supplied" {
+    It "throws ArgumentException" {
+      {
+        Get-IsNotNullOrEmpty -value $null -message $message -ErrorAction Stop
+      } | Should -Throw -ExceptionType ArgumentException
+    }
+  }
+
+  Context "value is empty" {
     It "returns false" {
       Get-IsNotNullOrEmpty -value '' | Should -BeFalse
     }
   }
 
-  Context "parameter is not null or empty" {
+  Context "value is empty and message supplied" {
+    It "throws ArgumentException" {
+      {
+        Get-IsNotNullOrEmpty -value $null -message $message -ErrorAction Stop
+      } | Should -Throw -ExceptionType ArgumentException
+    }
+  }
+
+  Context "value is not null or empty and no message supplied" {
     It "returns true" {
       Get-IsNotNullOrEmpty -value 'test' | Should -BeTrue
+    }
+  }
+
+  Context "value is not null or empty and no message supplied" {
+    It "throws ArgumentException" {
+        Get-IsNotNullOrEmpty -value 'test' -message $message | Should -BeTrue
     }
   }
 }
