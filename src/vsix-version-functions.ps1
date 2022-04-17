@@ -78,18 +78,19 @@
       ForEach-Object { $_.Matches } |
       ForEach-Object { $_.Value }
 
-    $valid = Test-NotNullOrEmpty $value
+    $valid = Get-IsNotNullOrEmpty $value
     if ($valid -eq $false) {
       return ''
     }
 
     return $(Get-TextBetween($value))
   }
+
   function Get-GitBranch {
     param(
       $gitRef
     )
-    $valid = Test-ValidParameter($gitRef)
+    $valid = Get-IsValidParameter($gitRef)
     if ($valid -eq $false) { return '' }
 
     $valid = ($gitRef.StartsWith($heads))
@@ -104,7 +105,7 @@
     param(
       $gitRef
     )
-    $valid = Test-ValidParameter($gitRef)
+    $valid = Get-IsValidParameter($gitRef)
 
     if ($valid -eq $false) { return '' }
 
@@ -113,6 +114,55 @@
     }
     else {
       return ''
+    }
+  }
+
+  function Get-IsNullOrEmpty {
+    [OutputType([boolean])]
+    param(
+      $value
+    )
+    return (($null -eq $value) -or ($value -eq ''))
+  }
+
+  function Get-IsNotNullOrEmpty {
+    [OutputType([boolean])]
+    param(
+      $value
+    )
+    return !(Get-IsNullOrEmpty($value))
+  }
+
+  function Get-IsProductionTag {
+    param(
+      $tag,
+      $regex = ''
+    )
+    $validTag = Get-IsValidParameter $tag
+    $validRegex = Get-IsValidParameter $regex
+    if (($validTag -eq $false) -or ($validRegex -eq $false))
+    {
+      return $false
+    }
+
+    return ($tag -match $regex)
+  }
+
+  function Get-IsValidParameter {
+    [OutputType([boolean])]
+    param(
+      $value,
+      $message = ''
+    )
+    if (Get-IsNotNullOrEmpty $value) {
+      return $true
+    }
+
+    if ($message -eq '') {
+        return $false
+    }
+    else {
+      Invoke-ArgumentException $message
     }
   }
 
@@ -125,7 +175,7 @@
     $value = select-string -Path $path -Pattern $regex |
       ForEach-Object { $_.Matches } |
       ForEach-Object { $_.Value }
-    $valid = Test-NotNullOrEmpty $value
+    $valid = Get-IsNotNullOrEmpty $value
 
     if ($valid -eq $false) {
       return ''
@@ -173,10 +223,10 @@
       $developmentVersion
     )
     $branch = Get-GitBranch $gitRef
-    $isBranch = Test-NotNullOrEmpty $branch
+    $isBranch = Get-IsNotNullOrEmpty $branch
     $tag = Get-GitTag $gitRef
-    $isTag = Test-NotNullOrEmpty $tag
-    $valid = Test-ValidParameter $versionNumber
+    $isTag = Get-IsNotNullOrEmpty $tag
+    $valid = Get-IsValidParameter $versionNumber
 
     if ($valid -eq $true) {
       $refType = ''
@@ -196,14 +246,14 @@
       $refType = 'tag'
       $refValue = $tag
 
-      $isProduction = Test-IsProductionTag $tag $productionRegex
+      $isProduction = Get-IsProductionTag $tag $productionRegex
       $isDevelopment = (!$isProduction)
 
       if ($isProduction -eq $true) {
         $versionType = 'production'
         $versionToSet = Select-VersionNumber -source $tag -regex $versionRegex
 
-        $versionExtracted = Test-NotNullOrEmpty $versionToSet
+        $versionExtracted = Get-IsNotNullOrEmpty $versionToSet
 
         if ($versionExtracted -eq $false){
           $message = "Tag '$tag' does not contain a version number using '$versionRegex'"
@@ -403,7 +453,7 @@
       $text = $param[0]
       $value = $param[1]
 
-      if (Test-NotNullOrEmpty $text -eq $true) {
+      if (Get-IsNotNullOrEmpty $text -eq $true) {
         $name = Format-ParameterName $text $width
         $value = Format-ParameterValue $value
         $line = " - $name = " + $value
@@ -450,54 +500,13 @@
       }
     }
 
-  function Test-IsProductionTag {
-    param(
-      $tag,
-      $regex = ''
-    )
-    $validTag = Test-ValidParameter $tag
-    $validRegex = Test-ValidParameter $regex
-    if (($validTag -eq $false) -or ($validRegex -eq $false))
-    {
-      return $false
-    }
-
-    return ($tag -match $regex)
-  }
-
-  function Test-NotNullOrEmpty {
-    [OutputType([boolean])]
-    param(
-      $value
-    )
-    return (($null -ne $value) -and ($value -ne ''))
-  }
-
-  function Test-ManifestFileExists {
+    function Test-ManifestFileExists {
     param(
       [boolean] $manifestFileExists
     )
     if ($manifestFileExists -eq $false) {
       $missingManifestFile = "A valid 'manifest-file-path' MUST be specified to be able to set the VSIX version"
       Invoke-FileNotFoundException $missingManifestFile
-    }
-  }
-
-  function Test-ValidParameter {
-    [OutputType([boolean])]
-    param(
-      $value,
-      $message = ''
-    )
-    if (Test-NotNullOrEmpty $value) {
-      return $true
-    }
-
-    if ($message -eq '') {
-        return $false
-    }
-    else {
-      Invoke-ArgumentException $message
     }
   }
 
@@ -516,9 +525,9 @@
       return $manifestFileExists
     }
     else {
-      $gitRefValid = Test-ValidParameter $gitRef
-      $productionRegexValid = Test-ValidParameter $productionRegex
-      $developmentVersionValid = Test-ValidParameter $developmentVersion
+      $gitRefValid = Get-IsValidParameter $gitRef
+      $productionRegexValid = Get-IsValidParameter $productionRegex
+      $developmentVersionValid = Get-IsValidParameter $developmentVersion
       $parametersAreValid = ( `
         ($gitRefValid -eq $true) -and `
         ($productionRegexValid -eq $true) -and `

@@ -1,13 +1,13 @@
-BeforeAll { 
+BeforeAll {
   . ./src/vsix-version-functions.ps1
 }
 
-Describe "Test-IsProductionTag" {
+Describe "Get-IsProductionTag" {
   Context "supplied tag is null" {
     It "returns false" {
       $tag = $null
 
-      Test-IsProductionTag -tag $tag | Should -BeFalse
+      Get-IsProductionTag -tag $tag | Should -BeFalse
     }
   }
 
@@ -15,7 +15,7 @@ Describe "Test-IsProductionTag" {
     It "returns false" {
       $tag = ''
 
-      Test-IsProductionTag -tag $tag | Should -BeFalse
+      Get-IsProductionTag -tag $tag | Should -BeFalse
     }
   }
 
@@ -24,7 +24,7 @@ Describe "Test-IsProductionTag" {
       $tag = ''
       $regex = $null
 
-      Test-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
+      Get-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
     }
   }
 
@@ -32,7 +32,7 @@ Describe "Test-IsProductionTag" {
     It "returns false" {
       $tag = ''
       $regex = ''
-      Test-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
+      Get-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
     }
   }
 
@@ -41,7 +41,7 @@ Describe "Test-IsProductionTag" {
       $tag = "v1.2.3"
       $regex = $vXdotXdotX
 
-      Test-IsProductionTag -tag $tag -regex $regex | Should -BeTrue
+      Get-IsProductionTag -tag $tag -regex $regex | Should -BeTrue
     }
   }
 
@@ -50,7 +50,7 @@ Describe "Test-IsProductionTag" {
       $tag = "1.2.3"
       $regex = $vXdotXdotX
 
-      Test-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
+      Get-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
     }
   }
 
@@ -59,7 +59,7 @@ Describe "Test-IsProductionTag" {
       $tag = "1.0"
       $regex = $vXdotXdotX
 
-      Test-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
+      Get-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
     }
   }
 }

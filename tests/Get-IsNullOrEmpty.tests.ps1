@@ -1,23 +1,23 @@
-BeforeAll { 
+BeforeAll {
   . ./src/vsix-version-functions.ps1
 }
 
-Describe "Test-NotNullOrEmpty" {
+Describe "Get-IsNullOrEmpty" {
   Context "parameter is null" {
     It "returns false" {
-      Test-NotNullOrEmpty -value $null | Should -BeFalse
+      Get-IsNullOrEmpty -value $null | Should -BeTrue
     }
   }
 
   Context "parameter is empty" {
     It "returns false" {
-      Test-NotNullOrEmpty -value '' | Should -BeFalse
+      Get-IsNullOrEmpty -value '' | Should -BeTrue
     }
   }
 
   Context "parameter is not null or empty" {
     It "returns true" {
-      Test-NotNullOrEmpty -value 'test' | Should -BeTrue
+      Get-IsNullOrEmpty -value 'test' | Should -BeFalse
     }
   }
 }

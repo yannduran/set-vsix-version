@@ -42,7 +42,7 @@ function Set-VsixVersion {
     #endregion start
 
     #region process
-      $versionSpecified = Test-ValidParameter $versionNumber
+      $versionSpecified = Get-IsValidParameter $versionNumber
       $manifestFileExists = Test-Path $manifestFilePath
       $codeFileExists = Test-Path $codeFilePath
 
@@ -78,7 +78,7 @@ function Set-VsixVersion {
         -versionValue $versionToSet `
         -quiet $quiet
 
-      $valid = Test-NotNullOrEmpty($versionToSet)
+      $valid = Get-IsNotNullOrEmpty($versionToSet)
       if ($valid -eq $false) { Invoke-ArgumentException -message 'No version to set' }
 
       $manifestResults = Set-ManifestFileVersion `
