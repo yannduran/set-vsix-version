@@ -51,7 +51,7 @@ runs:
       shell: pwsh
 
       run: |
-        . "& ${{ env.GITHUB_ACTION_PATH }}/src/Set-VsixVersion.ps1"
+        . "& ${{ github.action_path }}/src/Set-VsixVersion.ps1"
         Set-VsixVersion `
           -versionNumber "${{ inputs.version-number }}" `
           -gitRef "${{ inputs.git-ref }}" `
