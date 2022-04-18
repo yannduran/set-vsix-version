@@ -494,7 +494,7 @@
       }
     }
 
-    function Test-ManifestFileExists {
+  function Test-ManifestFileExists {
     param(
       [boolean] $manifestFileExists
     )
