@@ -16,7 +16,7 @@ function Set-VsixVersion {
     [boolean] $quiet = $false
   )
 
-  . ./src/vsix-version-functions.ps1
+  # . ./src/vsix-version-functions.ps1
 
   $valid = $false
 
