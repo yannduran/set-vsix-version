@@ -15,7 +15,7 @@ jobs:
       - name: Has version number and manifest file path
         id: version-supplied
 
-        uses: ./
+        uses: yannduran/set-vsix-version@master
         with:
           version-number: 1.2.3
           manifest-file-path: ./tests/test.vsixmanifest
@@ -25,7 +25,7 @@ jobs:
       - name: Has no version number and branch ref
         id: branch
 
-        uses: ./
+        uses: yannduran/set-vsix-version@master #./
         with:
           version-number: ""
           git-ref: "refs/heads/master"
@@ -38,7 +38,7 @@ jobs:
       - name: Has no version number and non-production tag
         id: non-production-tag
 
-        uses: ./
+        uses: yannduran/set-vsix-version@master #./
         with:
           version-number: ""
           git-ref: "refs/tags/1.2.3"
@@ -51,7 +51,7 @@ jobs:
       - name: Has no version number and production tag
         id: production-tag
 
-        uses: ./
+        uses: yannduran/set-vsix-version@master #./
         with:
           version-number: ""
           git-ref: "refs/tags/v2.3.0"
