@@ -1,10 +1,10 @@
-BeforeAll { 
+BeforeAll {
   . ./src/vsix-version-functions.ps1
 }
 
 Describe "Get-Values" {
   Context "has version number" {
-    It "returns type=specified, versionToSet=1.2.3" {
+    It "returns refType='', refVaalue='', versionType=specified, versionValue=1.2.3" {
       $versionNumber = '1.2.3'
       $gitRef = ''
       $productionRegex = ''
@@ -26,13 +26,13 @@ Describe "Get-Values" {
   }
 
   Context "has no version number and branch ref" {
-    It "returns type=branch, versionToSet=1.0.0.1" {
+    It "returns refType=branch, refValue=master, verssionType=development, versionValue=1.0.0.1" {
       $versionNumber = ''
       $gitRef = 'refs/heads/master'
       $productionRegex = ''
       $versionRegex = ''
       $developmentVersion = '1.0.0.1'
-      
+
       $result = Get-Values `
         -versionNumber $versionNumber `
         -gitRef $gitRef `
@@ -48,13 +48,13 @@ Describe "Get-Values" {
   }
 
   Context "has no version number and non-production tag" {
-    It "returns type=tag, versionToSet=1.0.0.2" {
+    It "returns refType=tag, refValue=1.2.3, versionType=development, versionValue=1.0.0.2" {
       $versionNumber = ''
       $gitRef = 'refs/tags/1.2.3'
       $productionRegex = $vXdotXdotX
       $versionRegex = $XdotXdotX
       $developmentVersion = '1.0.0.2'
-      
+
       $result = Get-Values `
         -versionNumber $versionNumber `
         -gitRef $gitRef `
@@ -70,13 +70,13 @@ Describe "Get-Values" {
   }
 
   Context "has no version number and production tag" {
-    It "returns type=tag, versionToSet=2.3.0" {
+    It "refType=tag, refValue=v2.3.0, versionType=production, versionValue=2.3.0" {
       $versionNumber = ''
       $gitRef = 'refs/tags/v2.3.0'
       $productionRegex = $vXdotXdotX
       $versionRegex = $XdotXdotX
       $developmentVersion = '1.0.0.3'
-      
+
       $result = Get-Values `
         -versionNumber $versionNumber `
         -gitRef $gitRef `
