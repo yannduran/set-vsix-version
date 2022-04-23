@@ -25,6 +25,7 @@ function Set-VsixVersion {
       Write-DatedMessage "Started at" -quiet $quiet
 
       #region variable values
+        $versionType = ''
         $versionToSet = '0.1' #default value
       #endregion variable values
 
@@ -108,6 +109,7 @@ function Set-VsixVersion {
           Write-CodeFileResults $codeResults -quiet $quiet
         }
 
+        Set-Output "version-type" $versionType -quiet $quiet
         Set-Output "version-number" $versionToSet -quiet $quiet
       }
 

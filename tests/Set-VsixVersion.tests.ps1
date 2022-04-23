@@ -2,54 +2,59 @@ BeforeAll {
   . ./src/vsix-version-functions.ps1
   . ./src/Set-VsixVersion.ps1
 
-  $versionNumber = '1.2.3'
+  $specifiedVersion = '1.2.3'
 }
 
 Describe "Set-VsixVersion" {
- BeforeEach {
+  BeforeEach {
     Copy-Item $manifestFilePath $manifestFileBackup
 
     if (Test-Path $codeFilePath) {
       Copy-Item $codeFilePath $codeFileBackup
     }
- }
+  }
 
-  Context "has version number and manifest file" {
-    It "returns version-number output" {
-      $params = @{
-        versionNumber = $versionNumber
-        gitRef = ''
-        productionRegex = ''
-        versionRegex = ''
-        developmentVersion = ''
-        manifestFilePath = $manifestFilePath
-      }
-
-      $result = Set-VsixVersion @params -quiet $true
-
-      $result | Should -Be "::set-output name=version-number::$versionNumber" `
-        -Because "the output variable should be set"
-
-      $params = @{
-        path = $manifestFilePath
-        regex = $manifestFileRegex
-      }
-
-      $result = Get-ManifestFileVersion @params
-
-      $result | Should -Be $versionNumber `
-        -Because "the manifest file version should be set"
-
-      $params = @{
-        path = $codeFilePath
-        regex = $codeFileRegex
-      }
-
-      $result = Get-CodeFileVersion @params
-
-      $result | Should -Be $versionNumber `
-        -Because "the code file version should be set"
+  It "returns outputs version-type & version-number" {
+    $params = @{
+      versionNumber = $specifiedVersion
+      manifestFilePath = $manifestFilePath
     }
+    $expected = @(
+      "::set-output name=version-type::specified",
+      "::set-output name=version-number::$specifiedVersion"
+    )
+
+    $result = Set-VsixVersion @params -quiet $true
+
+    $result | Should -Be $expected `
+      -Because "two output variables should be set"
+  }
+
+  It "sets manifest file version" {
+    $params = @{
+      versionNumber = $specifiedVersion
+      manifestFilePath = $manifestFilePath
+    }
+
+    $output = Set-VsixVersion @params -quiet $true
+    $manifestFileVersion = Get-ManifestFileVersion $manifestFilePath $manifestFileRegex
+
+    $manifestFileVersion | Should -Be $specifiedVersion `
+      -Because "the manifest file version should be set"
+  }
+
+  It "sets code file version" {
+    $params = @{
+      versionNumber = $specifiedVersion
+      manifestFilePath = $manifestFilePath
+      codeFilePath = $codeFilePath
+    }
+
+    $output = Set-VsixVersion @params -quiet $true
+    $codeFileVersion = Get-CodeFileVersion $codeFilePath $codeFileRegex
+
+    $codeFileVersion | Should -Be $specifiedVersion `
+      -Because "the code file version should be set"
   }
 
   AfterEach {
