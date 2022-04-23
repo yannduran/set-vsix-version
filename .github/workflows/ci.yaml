@@ -20,8 +20,10 @@ jobs:
           version-number: 1.2.3
           manifest-file-path: ./tests/test.vsixmanifest
 
-      - run: echo "Version number is '${{ steps.version-supplied.outputs.version-number }}'"
-      - run: echo "Version type is '${{ steps.version-supplied.outputs.version-type }}'"
+      - name: Output results
+        run: |
+          echo "Version type is '${{ steps.branch.outputs.version-type }}'"
+          echo "Version number is '${{ steps.branch.outputs.version-number }}'"
 
       - name: Has no version number and branch ref
         id: branch
@@ -34,8 +36,10 @@ jobs:
           development-version: "1.0.0.1"
           manifest-file-path: ./tests/test.vsixmanifest
 
-      - run: echo "Version number is '${{ steps.branch.outputs.version-number }}'"
-      - run: echo "Version type is '${{ steps.version-supplied.outputs.version-type }}'"
+      - name: Output results
+        run: |
+          echo "Version type is '${{ steps.branch.outputs.version-type }}'"
+          echo "Version number is '${{ steps.branch.outputs.version-number }}'"
 
       - name: Has no version number and non-production tag
         id: non-production-tag
@@ -48,8 +52,10 @@ jobs:
           development-version: "1.0.0.2"
           manifest-file-path: ./tests/test.vsixmanifest
 
-      - run: echo "Version number is '${{ steps.non-production-tag.outputs.version-number }}'"
-      - run: echo "Version type is '${{ steps.version-supplied.outputs.version-type }}'"
+      - name: Output results
+        run: |
+          echo "Version type is '${{ steps.branch.outputs.version-type }}'"
+          echo "Version number is '${{ steps.branch.outputs.version-number }}'"
 
       - name: Has no version number and production tag
         id: production-tag
@@ -63,5 +69,7 @@ jobs:
           development-version: "1.0.0.3"
           manifest-file-path: ./tests/test.vsixmanifest
 
-      - run: echo "Version number is '${{ steps.production-tag.outputs.version-number }}'"
-      - run: echo "Version type is '${{ steps.version-supplied.outputs.version-type }}'"
+      - name: Output results
+        run: |
+          echo "Version type is '${{ steps.branch.outputs.version-type }}'"
+          echo "Version number is '${{ steps.branch.outputs.version-number }}'"
