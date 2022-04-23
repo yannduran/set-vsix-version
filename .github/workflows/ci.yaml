@@ -22,11 +22,11 @@ jobs:
 
       - name: Output results
         run: |
-          echo "Version type is '${{ steps.branch.outputs.version-type }}'"
-          echo "Version number is '${{ steps.branch.outputs.version-number }}'"
+          echo "Version type is '${{ steps.version-supplied.outputs.version-type }}'"
+          echo "Version number is '${{ steps.version-supplied.outputs.version-number }}'"
 
       - name: Has no version number and branch ref
-        id: branch
+        id: branch-ref
 
         uses: yannduran/set-vsix-version@master #./
         with:
@@ -38,8 +38,8 @@ jobs:
 
       - name: Output results
         run: |
-          echo "Version type is '${{ steps.branch.outputs.version-type }}'"
-          echo "Version number is '${{ steps.branch.outputs.version-number }}'"
+          echo "Version type is '${{ steps.branch-ref.outputs.version-type }}'"
+          echo "Version number is '${{ steps.branch-ref.outputs.version-number }}'"
 
       - name: Has no version number and non-production tag
         id: non-production-tag
@@ -54,8 +54,8 @@ jobs:
 
       - name: Output results
         run: |
-          echo "Version type is '${{ steps.branch.outputs.version-type }}'"
-          echo "Version number is '${{ steps.branch.outputs.version-number }}'"
+          echo "Version type is '${{ steps.non-production-tag.outputs.version-type }}'"
+          echo "Version number is '${{ steps.non-production-tag.outputs.version-number }}'"
 
       - name: Has no version number and production tag
         id: production-tag
@@ -71,5 +71,5 @@ jobs:
 
       - name: Output results
         run: |
-          echo "Version type is '${{ steps.branch.outputs.version-type }}'"
-          echo "Version number is '${{ steps.branch.outputs.version-number }}'"
+          echo "Version type is '${{ steps.production-tag.outputs.version-type }}'"
+          echo "Version number is '${{ steps.production-tag.outputs.version-number }}'"
