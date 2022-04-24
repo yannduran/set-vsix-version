@@ -4,7 +4,7 @@ BeforeAll {
 
 Describe "Get-Values" {
   Context "has version number" {
-    It "returns refType='', refVaalue='', versionType=specified, versionValue=1.2.3" {
+    It "returns refType='', refValue='', versionType=specified, versionValue=1.2.3" {
       $versionNumber = '1.2.3'
       $gitRef = ''
       $productionRegex = ''
@@ -26,11 +26,8 @@ Describe "Get-Values" {
   }
 
   Context "has no version number and branch ref" {
-    It "returns refType=branch, refValue=master, verssionType=development, versionValue=1.0.0.1" {
-      $versionNumber = ''
+    It "returns refType=branch, refValue=master, versionType=development, versionValue=1.0.0.1" {
       $gitRef = 'refs/heads/master'
-      $productionRegex = ''
-      $versionRegex = ''
       $developmentVersion = '1.0.0.1'
 
       $result = Get-Values `
@@ -49,7 +46,6 @@ Describe "Get-Values" {
 
   Context "has no version number and non-production tag" {
     It "returns refType=tag, refValue=1.2.3, versionType=development, versionValue=1.0.0.2" {
-      $versionNumber = ''
       $gitRef = 'refs/tags/1.2.3'
       $productionRegex = $vXdotXdotX
       $versionRegex = $XdotXdotX
@@ -71,7 +67,6 @@ Describe "Get-Values" {
 
   Context "has no version number and production tag" {
     It "refType=tag, refValue=v2.3.0, versionType=production, versionValue=2.3.0" {
-      $versionNumber = ''
       $gitRef = 'refs/tags/v2.3.0'
       $productionRegex = $vXdotXdotX
       $versionRegex = $XdotXdotX
