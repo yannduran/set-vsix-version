@@ -33,6 +33,9 @@
   $developmentVersionValue = 'development'
   $productionVersionValue = 'production'
 
+  $branchRefName = 'branch'
+  $tagRefName = 'tag'
+
 #endregion constant values
 
 #region functions
@@ -202,6 +205,14 @@
     }
 
     return $maxWidth
+  }
+
+  function Get-RefName {
+    param(
+      $values
+    )
+
+    return $values[0][0]
   }
 
   function Get-TextBetween {
