@@ -215,6 +215,13 @@
     return $values[0][0]
   }
 
+  function Get-RefValue {
+    param(
+      $values
+    )
+
+    return $values[0][1]
+  }
   function Get-TextBetween {
   # https://powershellone.wordpress.com/2021/02/24/using-powershell-and-regex-to-extract-text-between-delimiters/
 
@@ -249,14 +256,14 @@
     }
 
     if ($isBranch -eq $true) {
-      $refType = 'branch'
+      $refName = $branchRefName
       $refValue = $branch
       $versionTypeValue = 'development'
       $versionToSet = $developmentVersion
     }
 
     if ($isTag -eq $true) {
-      $refType = 'tag'
+      $refName = $tagRefName
       $refValue = $tag
 
       $isProduction = Get-IsProductionTag $tag $productionRegex
@@ -281,8 +288,11 @@
       }
     }
 
+      $refName = ''
+      $refValue = ''
       $versionTypeValue = 'specified'
       $versionToSet = $versionNumber
+      ($refType, $refValue), `
       ($versionTypeName, $versionTypeValue), `
       ($versionValueName, $versionToSet)
   function Get-VersionTypeName {
