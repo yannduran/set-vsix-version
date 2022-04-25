@@ -27,6 +27,12 @@
   $codeFileBackup = $codeFilePath + '.bak'
 
   $versionTypeName = 'type'
+  $versionValueName = 'version'
+
+  $specifiedVersionValue = 'specified'
+  $developmentVersionValue = 'development'
+  $productionVersionValue = 'production'
+
 #endregion constant values
 
 #region functions
@@ -234,7 +240,7 @@
     if ($isBranch -eq $true) {
       $refType = 'branch'
       $refValue = $branch
-      $versionType = 'development'
+      $versionTypeValue = 'development'
       $versionToSet = $developmentVersion
     }
 
@@ -246,7 +252,7 @@
       $isDevelopment = (!$isProduction)
 
       if ($isProduction -eq $true) {
-        $versionType = 'production'
+        $versionTypeValue = 'production'
         $versionToSet = Get-VersionNumber -source $tag -regex $versionRegex
 
         $versionExtracted = Get-IsNotNullOrEmpty $versionToSet
@@ -267,12 +273,20 @@
       $versionTypeValue = 'specified'
       $versionToSet = $versionNumber
       ($versionTypeName, $versionTypeValue), `
+      ($versionValueName, $versionToSet)
   function Get-VersionTypeName {
     param(
       $values
     )
 
     return $values[1][0]
+  }
+  function Get-VersionTypeValue {
+    param(
+      $values
+    )
+
+    return $values[1][1]
   }
   }
 
