@@ -1,4 +1,4 @@
-﻿#region usings
+#region usings
   using namespace System
   using namespace System.IO
   using namespace System.IO.Path
@@ -25,6 +25,8 @@
   $manifestFileBackup = $manifestFilePath + '.bak'
   $codeFilePath = [System.IO.Path]::ChangeExtension($manifestFilePath, '.cs')
   $codeFileBackup = $codeFilePath + '.bak'
+
+  $versionTypeName = 'type'
 #endregion constant values
 
 #region functions
@@ -257,17 +259,21 @@
       }
 
       if ($isDevelopment -eq $true) {
-        $versionType = 'development'
+        $versionTypeValue = 'development'
         $versionToSet = $developmentVersion
       }
     }
 
-    return @{
-      refType = $refType;
-      refValue = $refValue;
-      versionType = $versionType;
-      versionValue = $versionToSet;
-    }
+      $versionTypeValue = 'specified'
+      $versionToSet = $versionNumber
+      ($versionTypeName, $versionTypeValue), `
+  function Get-VersionTypeName {
+    param(
+      $values
+    )
+
+    return $values[1][0]
+  }
   }
 
   function Invoke-ArgumentException {
