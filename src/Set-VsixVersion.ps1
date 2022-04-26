@@ -60,24 +60,15 @@ function Set-VsixVersion {
 
       Write-Header 'Values' -quiet $quiet
 
-      $values = Get-Values `
-        -versionNumber $versionNumber `
-        -gitRef $gitRef `
-        -productionRegex $productionRegex `
-        -versionRegex $versionRegex `
-        -developmentVersion $developmentVersion
+      $params = @{
+        versionNumber = $versionNumber;
+        gitRef = $gitRef;
+        productionRegex = $productionRegex;
+        versionRegex = $versionRegex;
+        developmentVersion = $developmentVersion
+      }
 
-      $refType = $values.refType
-      $refValue = $values.refValue
-      $versionType = $values.versionType
-      $versionToSet = $values.versionValue
-
-      Write-Values `
-        -refType $refType `
-        -refValue $refValue `
-        -versionType $versionType `
-        -versionValue $versionToSet `
-        -quiet $quiet
+      Get-Values $params | Write-Values @values -quiet $quiet
 
       $valid = Get-IsNotNullOrEmpty($versionToSet)
       if ($valid -eq $false) { Invoke-ArgumentException -message 'No version to set' }

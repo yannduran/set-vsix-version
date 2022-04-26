@@ -222,6 +222,7 @@
 
     return $values[0][1]
   }
+
   function Get-TextBetween {
   # https://powershellone.wordpress.com/2021/02/24/using-powershell-and-regex-to-extract-text-between-delimiters/
 
@@ -236,24 +237,16 @@
 
   function Get-Values {
     param(
-      $versionNumber,
-      $gitRef,
-      $productionRegex,
-      $versionRegex,
-      $developmentVersion
+      $versionNumber = '',
+      $gitRef = '',
+      $productionRegex = '',
+      $versionRegex = '',
+      $developmentVersion = ''
     )
     $branch = Get-GitBranch $gitRef
     $isBranch = Get-IsNotNullOrEmpty $branch
     $tag = Get-GitTag $gitRef
     $isTag = Get-IsNotNullOrEmpty $tag
-    $valid = Get-IsNotNullOrEmpty $versionNumber
-
-    if ($valid -eq $true) {
-      $refType = ''
-      $refValue = ''
-      $versionType = 'specified'
-      $versionToSet = $versionNumber
-    }
 
     if ($isBranch -eq $true) {
       $refName = $branchRefName
@@ -288,13 +281,21 @@
       }
     }
 
+    $valid = Get-IsNotNullOrEmpty $versionNumber
+
+    if ($valid -eq $true) {
       $refName = ''
       $refValue = ''
       $versionTypeValue = 'specified'
       $versionToSet = $versionNumber
-      ($refType, $refValue), `
+    }
+
+    return `
+      ($refName, $refValue), `
       ($versionTypeName, $versionTypeValue), `
       ($versionValueName, $versionToSet)
+  }
+
   function Get-VersionTypeName {
     param(
       $values
@@ -302,6 +303,7 @@
 
     return $values[1][0]
   }
+
   function Get-VersionTypeValue {
     param(
       $values
