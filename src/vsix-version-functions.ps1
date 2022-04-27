@@ -209,6 +209,27 @@
     return $maxWidth
   }
 
+  function Get-Output {
+    param(
+      $name,
+      $outputs
+    )
+    $nameValue = "::set-output name=$name::"
+    $nameLength = $nameValue.Length
+    $value = ''
+
+    foreach($output in $outputs){
+      $index = $output.IndexOf($nameValue)
+
+      if ($index -ne -1){
+        $value = $output.Substring($index + $nameLength)
+        break;
+      }
+    }
+
+    return $value
+  }
+
   function Get-RefName {
     param(
       $values

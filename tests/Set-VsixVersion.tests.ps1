@@ -30,13 +30,39 @@ Describe "Set-VsixVersion" {
       -Because "two output variables should be set"
   }
 
+  It "returns version-type output" {
+    $params = @{
+      versionNumber = $specifiedVersion
+      manifestFilePath = $manifestFilePath
+    }
+    $versionType = $specifiedVersionString
+
+    $outputs = Set-VsixVersion @params -quiet $true
+    $result = Get-Output 'version-type' $outputs
+
+    $result | Should -Be $versionType
+  }
+
+  It "returns version-number output" {
+    $params = @{
+      versionNumber = $specifiedVersion
+      manifestFilePath = $manifestFilePath
+    }
+    $versionNumber = $specifiedVersion
+
+    $outputs = Set-VsixVersion @params -quiet $true
+    $result = Get-Output 'version-number' $outputs
+
+    $result | Should -Be $versionNumber
+  }
+
   It "sets manifest file version" {
     $params = @{
       versionNumber = $specifiedVersion
       manifestFilePath = $manifestFilePath
     }
 
-    $output = Set-VsixVersion @params -quiet $true
+    $result = Set-VsixVersion @params -quiet $true
     $manifestFileVersion = Get-ManifestFileVersion $manifestFilePath $manifestFileRegex
 
     $manifestFileVersion | Should -Be $specifiedVersion `
@@ -50,7 +76,7 @@ Describe "Set-VsixVersion" {
       codeFilePath = $codeFilePath
     }
 
-    $output = Set-VsixVersion @params -quiet $true
+    $result = Set-VsixVersion @params -quiet $true
     $codeFileVersion = Get-CodeFileVersion $codeFilePath $codeFileRegex
 
     $codeFileVersion | Should -Be $specifiedVersion `
