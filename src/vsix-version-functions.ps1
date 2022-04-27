@@ -264,7 +264,7 @@
 
       if ($isProduction -eq $true) {
         $versionTypeValue = 'production'
-        $versionToSet = Get-VersionNumber -source $tag -regex $versionRegex
+          $versionToSet = Select-VersionNumber -source $tag -regex $versionRegex
 
         $versionExtracted = Get-IsNotNullOrEmpty $versionToSet
 
@@ -306,6 +306,23 @@
 
     return $values[1][1]
   }
+  function Select-VersionNumber {
+    param(
+      $source,
+      $regex
+    )
+    $numericVersion = $source | Select-String -Pattern $regex
+
+    try {
+      $versionNumber = $numericVersion.Matches[0].Value
+    }
+    catch {
+      return ''
+    }
+
+    return $versionNumber
+  }
+
   function Invoke-Exception {
     param(
       $message
