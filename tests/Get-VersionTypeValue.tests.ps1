@@ -12,12 +12,12 @@ Describe "Get-VersionTypeValue" {
 
       $result = Get-VersionTypeValue $values
 
-      $result| Should -Be $specifiedVersionValue
+      $result| Should -Be $specifiedVersionString
     }
   }
 
   Context "has no version number and branch ref" {
-    It "returns '$developmentVersionValue'" {
+    It "returns '$developmentVersionString'" {
       $params = @{
         versionNumber = '';
         gitRef = 'refs/heads/master';
@@ -27,12 +27,12 @@ Describe "Get-VersionTypeValue" {
 
       $result = Get-VersionTypeValue $values
 
-      $result | Should -Be $developmentVersionValue
+      $result | Should -Be $developmentVersionString
     }
   }
 
   Context "has no version number and non-production tag" {
-    It "returns '$developmentVersionValue'" {
+    It "returns '$developmentVersionString'" {
       $params = @{
         versionNumber = '';
         gitRef = 'refs/tags/1.2.3';
@@ -44,12 +44,12 @@ Describe "Get-VersionTypeValue" {
 
       $result = Get-VersionTypeValue $values
 
-      $result | Should -Be $developmentVersionValue
+      $result | Should -Be $developmentVersionString
     }
   }
 
   Context "has no version number and production tag" {
-    It "returns '$productionVersionValue'" {
+    It "returns '$productionVersionString'" {
       $params = @{
         versionNumber = '';
         gitRef = 'refs/tags/v2.3.0';
@@ -61,7 +61,7 @@ Describe "Get-VersionTypeValue" {
 
       $result = Get-VersionTypeValue $values
 
-      $result | Should -Be $productionVersionValue
+      $result | Should -Be $productionVersionString
     }
   }
 }

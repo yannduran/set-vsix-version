@@ -4,37 +4,35 @@ BeforeAll {
 
 Describe "Get-VersionTypeName" {
   Context "has version number" {
-    It "returns '$versionTypeName'" {
+    It "returns '$versionTypeString'" {
       $params = @{
         versionNumber = '1.2.3'
       }
-      $type = $versionTypeName
       $values = Get-Values @params
 
       $result = Get-VersionTypeName $values
 
-      $result| Should -Be $type
+      $result| Should -Be $versionTypeString
     }
   }
 
   Context "has no version number and branch ref" {
-    It "returns '$versionTypeName'" {
+    It "returns '$versionTypeString'" {
       $params = @{
         versionNumber = '';
         gitRef = 'refs/heads/master';
         developmentVersion = '1.0.0.1'
       }
-      $type = $versionTypeName
       $values = Get-Values @params
 
       $result = Get-VersionTypeName $values
 
-      $result | Should -Be $type
+      $result | Should -Be $versionTypeString
     }
   }
 
   Context "has no version number and non-production tag" {
-    It "returns '$versionTypeName'" {
+    It "returns '$versionTypeString'" {
       $params = @{
         versionNumber = '';
         gitRef = 'refs/tags/1.2.3';
@@ -42,17 +40,16 @@ Describe "Get-VersionTypeName" {
         versionRegex = $XdotXdotX;
         developmentVersion = '1.0.0.2'
       }
-      $type = $versionTypeName
       $values = Get-Values @params
 
       $result = Get-VersionTypeName $values
 
-      $result | Should -Be $type
+      $result | Should -Be $versionTypeString
     }
   }
 
   Context "has no version number and production tag" {
-    It "return '$versionTypeName'" {
+    It "return '$versionTypeString'" {
       $params = @{
         versionNumber = '';
         gitRef = 'refs/tags/v2.3.0';
@@ -60,12 +57,11 @@ Describe "Get-VersionTypeName" {
         versionRegex = $XdotXdotX;
         developmentVersion = '1.0.0.3'
       }
-      $type = $versionTypeName
       $values = Get-Values @params
 
       $result = Get-VersionTypeName $values
 
-      $result | Should -Be $type
+      $result | Should -Be $versionTypeString
     }
   }
 }

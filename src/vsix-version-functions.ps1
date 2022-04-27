@@ -26,12 +26,12 @@
   $codeFilePath = [System.IO.Path]::ChangeExtension($manifestFilePath, '.cs')
   $codeFileBackup = $codeFilePath + '.bak'
 
-  $versionTypeName = 'type'
-  $versionValueName = 'version'
+  $versionTypeString = 'type'
+  $versionNameString = 'version'
 
-  $specifiedVersionValue = 'specified'
-  $developmentVersionValue = 'development'
-  $productionVersionValue = 'production'
+  $specifiedVersionString = 'specified'
+  $developmentVersionString = 'development'
+  $productionVersionString = 'production'
 
   $branchRefName = 'branch'
   $tagRefName = 'tag'

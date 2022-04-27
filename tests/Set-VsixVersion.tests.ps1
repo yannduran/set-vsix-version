@@ -20,7 +20,7 @@ Describe "Set-VsixVersion" {
       manifestFilePath = $manifestFilePath
     }
     $expected = @(
-      "::set-output name=version-type::specified",
+      "::set-output name=version-type::$specifiedVersionString",
       "::set-output name=version-number::$specifiedVersion"
     )
 
