@@ -1,4 +1,4 @@
-﻿#######################################
+#######################################
 #Script Title: Set VSIX Version
 #Script File Name: set-vsix-version.ps1
 #Author: Yann Duran
@@ -70,6 +70,7 @@ function Set-VsixVersion {
 
       Get-Values $params | Write-Values @values -quiet $quiet
 
+      $versionToSet = Get-VersionValue $values
       $valid = Get-IsNotNullOrEmpty($versionToSet)
       if ($valid -eq $false) { Invoke-ArgumentException -message 'No version to set' }
 
@@ -99,6 +100,9 @@ function Set-VsixVersion {
           Write-Header 'Code File' -quiet $quiet
           Write-CodeFileResults $codeResults -quiet $quiet
         }
+
+        $versionType = Get-VersionTypeValue $values
+        $versionValue = Get-VersionValue $values
 
         Set-Output "version-type" $versionType -quiet $quiet
         Set-Output "version-number" $versionToSet -quiet $quiet

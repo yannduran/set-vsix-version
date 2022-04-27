@@ -314,6 +314,15 @@
 
     return $values[2][0]
   }
+
+  function Get-VersionValue {
+    param(
+      $values
+    )
+
+    return $values[2][1]
+  }
+
   function Select-VersionNumber {
     param(
       $source,
