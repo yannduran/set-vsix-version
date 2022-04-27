@@ -1,54 +1,67 @@
-BeforeAll { 
+BeforeAll {
   . ./src/vsix-version-functions.ps1
 }
 
-# Context "debug test" {
-#   It "returns null" {
-#     $refType = 'branch'
-#     $refValue = 'master'
-#     $versionType = 'development'
-#     $versionValue = '1.0.0.1'
+# instead of returning null, return actual lines so they can be tested
 
-#     $result = Write-Values `
-#       $refType `
-#       $refValue `
-#       $versionType `
-#       $versionValue 
+Describe "Write-Values" {
+  Context "has version" {
+    It "returns null" {
+      $params = @{
+        versionNumber = '1.2.3'
+      }
+      $values = Get-Values @params
 
-#     $result | Should -Be $null
-#   }
-# }
+      $result = Write-Values @values -quiet $true
 
-# Context "debug test" {
-#   It "returns null" {
-#     $refType = 'branch'
-#     $refValue = 'master'
-#     $versionType = 'development'
-#     $versionValue = '1.0.0.1'
+      $result | Should -BeNullOrEmpty
+    }
+  }
 
-#     $result = Write-Values `
-#       $refType `
-#       $refValue `
-#       $versionType `
-#       $versionValue 
+  Context "has no version number and branch ref (& developmentVersion)" {
+    It "returns null" {
+      $params = @{
+        versionNumber = '';
+        gitRef = 'refs/heads/master';
+        developmentVersion = '1.0.0.1'
+      }
+      $values = Get-Values @params
 
-#     $result | Should -Be $null
-#   }
-# }
+      $result = Write-Values $values -quiet $true
 
-Context "debug test" {
-  It "returns null" {
-    # $refType = 'branch'
-    # $refValue = 'master'
-    # $versionType = 'development'
-    # $versionValue = '1.0.0.1'
+      $result | Should -BeNullOrEmpty
+    }
+  }
 
-    # $result = Write-Values `
-    #   $refType `
-    #   $refValue `
-    #   $versionType `
-    #   $versionValue 
+  Context "has no version number and non-production tag (& developmentVersion)" {
+    It "returns null" {
+      $params = @{
+        gitRef = 'refs/tags/1.2.3';
+        productionRegex = $vXdotXdotX;
+        versionRegex = $XdotXdotX;
+        developmentVersion = '1.0.0.2'
+      }
+      $values = Get-Values @params
 
-    $result | Should -Be $null
+      $result = Write-Values $values -quiet $true
+
+      $result | Should -BeNullOrEmpty
+    }
+  }
+
+  Context "has no version number and production tag (& developmentVersion)" {
+    It "refType=tag, refValue=v2.3.0, versionType=production, versionValue=2.3.0" {
+      $params = @{
+        gitRef = 'refs/tags/v2.3.0';
+        productionRegex = $vXdotXdotX;
+        versionRegex = $XdotXdotX;
+        developmentVersion = '1.0.0.3'
+      }
+      $values = Get-Values @params
+
+      $result = Write-Values $values -quiet $true
+
+      $result | Should -BeNullOrEmpty
+    }
   }
 }
