@@ -243,52 +243,65 @@
       $versionRegex = '',
       $developmentVersion = ''
     )
-    $branch = Get-GitBranch $gitRef
-    $isBranch = Get-IsNotNullOrEmpty $branch
-    $tag = Get-GitTag $gitRef
-    $isTag = Get-IsNotNullOrEmpty $tag
+    $isSpecified = Get-IsNotNullOrEmpty $versionNumber
 
-    if ($isBranch -eq $true) {
-      $refName = $branchRefName
-      $refValue = $branch
-      $versionTypeValue = 'development'
-      $versionToSet = $developmentVersion
+    if ($isSpecified -eq $true) {
+      $refName = ''
+      $refValue = ''
+      $versionTypeValue = 'specified'
+      $versionToSet = $versionNumber
     }
+    else {
+      $branch = Get-GitBranch $gitRef
+      $isBranch = Get-IsNotNullOrEmpty $branch
+      $tag = Get-GitTag $gitRef
+      $isTag = Get-IsNotNullOrEmpty $tag
 
-    if ($isTag -eq $true) {
-      $refName = $tagRefName
-      $refValue = $tag
-
-      $isProduction = Get-IsProductionTag $tag $productionRegex
-      $isDevelopment = (!$isProduction)
-
-      if ($isProduction -eq $true) {
-        $versionTypeValue = 'production'
-          $versionToSet = Select-VersionNumber -source $tag -regex $versionRegex
-
-        $versionExtracted = Get-IsNotNullOrEmpty $versionToSet
-
-        if ($versionExtracted -eq $false){
-          $message = "Tag '$tag' does not contain a version number using '$versionRegex'"
-
-          Invoke-ArgumentException $message
-        }
-      }
-
-      if ($isDevelopment -eq $true) {
+      if ($isBranch -eq $true) {
+        $refName = $branchRefName
+        $refValue = $branch
         $versionTypeValue = 'development'
         $versionToSet = $developmentVersion
       }
+
+      if ($isTag -eq $true) {
+        $refName = $tagRefName
+        $refValue = $tag
+
+        $isProduction = Get-IsProductionTag $tag $productionRegex
+        $isDevelopment = (!$isProduction)
+
+        if ($isProduction -eq $true) {
+          $versionTypeValue = 'production'
+          $versionToSet = Select-VersionNumber -source $tag -regex $versionRegex
+
+          $versionExtracted = Get-IsNotNullOrEmpty $versionToSet
+
+          if ($versionExtracted -eq $false){
+            $message = "Tag '$tag' does not contain a version number using '$versionRegex'"
+
+            Invoke-ArgumentException $message
+          }
+        }
+
+        if ($isDevelopment -eq $true) {
+          $versionTypeValue = 'development'
+          $versionToSet = $developmentVersion
+        }
+      }
     }
+    # $valid = Get-IsNotNullOrEmpty $versionToSet
 
     if (Get-IsNullOrEmpty $versionToSet) {
       Invoke-Exception '$versionToSet has no value!'
     }
 
-    return `
+    $values = `
       ($refName, $refValue), `
-      ($versionTypeName, $versionTypeValue), `
-      ($versionValueName, $versionToSet)
+      ($versionTypeString, $versionTypeValue), `
+      ($versionNameString, $versionToSet)
+
+    return $values
   }
 
   function Get-VersionTypeName {
