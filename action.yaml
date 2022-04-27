@@ -38,6 +38,9 @@ inputs:
     default: src/vsix/source.extension.vsixmanifest
 
 outputs:
+  version-type:
+    description: "The version type that was set in the VSIX manifest/code file(s)"
+    value: ${{ steps.set-vsix-version.outputs.version-type }}
   version-number:
     description: "The version that was set in the VSIX manifest/code file(s)"
     value: ${{ steps.set-vsix-version.outputs.version-number }}
