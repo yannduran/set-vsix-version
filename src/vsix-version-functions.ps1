@@ -281,13 +281,8 @@
       }
     }
 
-    $valid = Get-IsNotNullOrEmpty $versionNumber
-
-    if ($valid -eq $true) {
-      $refName = ''
-      $refValue = ''
-      $versionTypeValue = 'specified'
-      $versionToSet = $versionNumber
+    if (Get-IsNullOrEmpty $versionToSet) {
+      Invoke-Exception '$versionToSet has no value!'
     }
 
     return `
@@ -311,6 +306,11 @@
 
     return $values[1][1]
   }
+  function Invoke-Exception {
+    param(
+      $message
+    )
+    Write-Error -Exception ([ArgumentException]::new($message)) -ErrorAction Stop
   }
 
   function Invoke-ArgumentException {
