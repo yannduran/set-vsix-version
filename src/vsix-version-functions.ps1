@@ -1,4 +1,4 @@
-#region usings
+﻿#region usings
   using namespace System
   using namespace System.IO
   using namespace System.IO.Path
@@ -186,7 +186,9 @@
       return ''
     }
 
-    return $(Get-TextBetween($value.Replace(' Language=','')))
+    $version = Get-TextBetween($value.Replace(' Language=',''))
+
+    return $version
   }
 
   function Get-MaxNameWidth {
@@ -419,23 +421,6 @@
     )
   }
 
-  function Get-VersionNumber {
-    param(
-      $source,
-      $regex
-    )
-    $numericVersion = $source | Select-String -Pattern $regex
-
-    try {
-      $versionNumber = $numericVersion.Matches[0].Value
-    }
-    catch {
-      return ''
-    }
-
-    return $versionNumber
-  }
-
   function Set-Output {
     param(
       $name,
@@ -443,6 +428,17 @@
     )
     Write-Output "::set-output name=$name::$value"
   }
+
+  function Write-CodeFileResults {
+    param(
+      [array]$params,
+      [boolean] $quiet = $false
+    )
+
+    if ($codeFileExists -eq $true) {
+        Write-NameValuePairs $params -quiet $quiet
+      }
+    }
 
   function Write-DatedMessage {
     param(
@@ -525,6 +521,15 @@
     Write-NameValuePairs $inputs -quiet $quiet
   }
 
+  function Write-ManifestFileResults {
+    param(
+      [array]$params,
+      [boolean] $quiet = $false
+    )
+
+    Write-NameValuePairs $params -quiet $quiet
+  }
+
   function Write-NameValuePairs {
     param(
       [array]$params,
@@ -548,6 +553,7 @@
   }
 
   function Write-Values {
+    # this should now take $values directly
     param(
       $refType,
       $refValue,
@@ -563,26 +569,6 @@
 
     Write-NameValuePairs $values -quiet $quiet
   }
-
-  function Write-ManifestFileResults {
-    param(
-      [array]$params,
-      [boolean] $quiet = $false
-    )
-
-    Write-NameValuePairs $params -quiet $quiet
-  }
-
-  function Write-CodeFileResults {
-    param(
-      [array]$params,
-      [boolean] $quiet = $false
-    )
-
-    if ($codeFileExists -eq $true) {
-        Write-NameValuePairs $params -quiet $quiet
-      }
-    }
 
   function Test-ManifestFileExists {
     param(
