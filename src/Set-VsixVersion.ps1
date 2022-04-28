@@ -1,6 +1,6 @@
 ﻿#######################################
 #Script Title: Set VSIX Version
-#Script File Name: set-vsix-version.ps1
+#Script File Name: Set-VsixVersion.ps1
 #Author: Yann Duran
 #Date Created: 2022-03-28
 #######################################
@@ -15,8 +15,6 @@ function Set-VsixVersion {
     [string]  $manifestFilePath = '',
     [boolean] $quiet = $false
   )
-
-  # . ./src/vsix-version-functions.ps1
 
   $valid = $false
 
@@ -46,13 +44,14 @@ function Set-VsixVersion {
       $versionSpecified = Get-IsNotNullOrEmpty $versionNumber
       $manifestFileExists = Test-Path $manifestFilePath
       $codeFileExists = Test-Path $codeFilePath
-
-      $valid = Test-RequiredParameters `
-        -versionSpecified $versionSpecified, `
-        -gitRef $gitRef, `
-        -productionRegex $productionRegex, `
-        -developmentVersion $developmentVersion, `
-        -manifestFileExists $manifestFileExists
+      $params = @{
+        versionSpecified = $versionSpecified;
+        gitRef = $gitRef;
+        productionRegex = $productionRegex;
+        developmentVersion = $developmentVersion;
+        manifestFileExists =  $manifestFileExists
+      }
+      $valid = Test-RequiredParameters @params
 
       # if ($valid -eq $false) {
       #   Invoke-ArgumentException -message 'Validation failed'
@@ -75,24 +74,24 @@ function Set-VsixVersion {
       $valid = Get-IsNotNullOrEmpty($versionToSet)
       if ($valid -eq $false) { Invoke-ArgumentException -message 'No version to set' }
 
-      $manifestFileParams = @{
+      $params = @{
         manifestFilePath = $manifestFilePath;
         manifestFileRegex = $manifestFileRegex;
         versionRegex = $versionRegex;
         versionToSet = $versionToSet
       }
 
-      $manifestFileResults = Set-ManifestFileVersion @manifestFileParams
+      $manifestFileResults = Set-ManifestFileVersion @params
 
         if ($codeFileExists -eq $true) {
-          $codeFileParams = @{
+          $params = @{
             codeFilePath = $codeFilePath;
             codeFileRegex = $codeFileRegex;
             versionRegex = $versionRegex;
             versionToSet = $versionToSet
           }
 
-          $codeFileResults = Set-CodeFileVersion @codeFileParams
+          $codeFileResults = Set-CodeFileVersion @params
         }
     #endregion process
 
