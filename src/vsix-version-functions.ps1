@@ -13,7 +13,7 @@
   $heads = 'refs/heads/'
 
   $XdotXdotX = "[0-9]+.[0-9]+.[0-9]"
-  $productionRegex = "^v" + $XdotXdotX + "$"
+  $productionVersionRegex = "^v" + $XdotXdotX + "$"
 
   $versionRegex = '([0-9\\.]+)'
   $manifestFileRegex = 'Version="' + $versionRegex + '" Language='

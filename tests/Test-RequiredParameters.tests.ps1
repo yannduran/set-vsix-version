@@ -37,7 +37,7 @@ Describe "Test-RequiredParameters" {
       $result = Test-RequiredParameters `
         -versionSpecified $false `
         -gitRef 'refs/heads/master' `
-        -productionRegex $productionRegex `
+        -productionRegex $productionVersionRegex `
         -developmentVersion '1.0.0.0' `
         -manifestFileExists $true `
         -ErrorAction Stop
@@ -52,7 +52,7 @@ Describe "Test-RequiredParameters" {
         Test-RequiredParameters `
           -versionSpecified $false `
           -gitRef '' `
-          -productionRegex $productionRegex `
+          -productionRegex $productionVersionRegex `
           -developmentVersion '1.0.0.1' `
           -manifestFileExists $true `
           -ErrorAction Stop `
@@ -82,7 +82,7 @@ Describe "Test-RequiredParameters" {
         Test-RequiredParameters `
           -versionSpecified $false `
           -gitRef 'refs/heads/master' `
-          -productionRegex $productionRegex `
+          -productionRegex $productionVersionRegex `
           -developmentVersion '' `
           -manifestFileExists $true `
           -ErrorAction Stop `

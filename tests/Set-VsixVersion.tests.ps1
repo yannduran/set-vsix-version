@@ -48,7 +48,7 @@ Describe "Set-VsixVersion" {
       $params = @{
         versionNumber = ''
         gitRef = 'refs/heads/master';
-        productionRegex = $productionRegex;
+        productionRegex = $productionVersionRegex;
         developmentVersion = '1.0.0.1';
         manifestFilePath = $manifestFilePath
     }
@@ -59,19 +59,36 @@ Describe "Set-VsixVersion" {
     }
   }
 
-  Context "has no version number, branch ref, developmentVersion & manifest file" {
+  Context "has no version number, non-production tag & developmentVersion" {
     It "returns '$developmentVersionString'" {
       $params = @{
         versionNumber = ''
-        gitRef = 'refs/heads/master';
-        productionRegex = $productionRegex;
-        developmentVersion = '1.0.0.1';
+        gitRef = 'refs/tags/1.2.3';
+        productionRegex = $productionVersionRegex;
+        developmentVersion = '1.0.0.2';
         manifestFilePath = $manifestFilePath
     }
       $outputs = Set-VsixVersion @params -quiet $true
       $result = Get-Output 'version-type' $outputs
 
       $result | Should -Be $developmentVersionString
+    }
+  }
+
+  Context "has no version number, production tag & developmentVersion" {
+    It "returns '$developmentVersionString'" {
+      $params = @{
+        versionNumber = ''
+        gitRef = 'refs/tags/v2.3.0';
+        productionRegex = $productionVersionRegex;
+        versionRegex = $versionRegex;
+        developmentVersion = '1.0.0.2';
+        manifestFilePath = $manifestFilePath
+    }
+      $outputs = Set-VsixVersion @params -quiet $true
+      $result = Get-Output 'version-type' $outputs
+
+      $result | Should -Be $productionVersionString
     }
   }
 

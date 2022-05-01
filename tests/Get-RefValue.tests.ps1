@@ -36,7 +36,7 @@ Describe "Get-RefValue" {
       $params = @{
         versionNumber = '';
         gitRef = 'refs/tags/1.2.3';
-        productionRegex = $productionRegex;
+        productionRegex = $productionVersionRegex;
         versionRegex = $XdotXdotX;
         developmentVersion = '1.0.0.2'
       }
@@ -53,7 +53,7 @@ Describe "Get-RefValue" {
       $params = @{
         versionNumber = '';
         gitRef = 'refs/tags/v2.3.0';
-        productionRegex = $productionRegex;
+        productionRegex = $productionVersionRegex;
         versionRegex = $XdotXdotX;
         developmentVersion = '1.0.0.3'
       }

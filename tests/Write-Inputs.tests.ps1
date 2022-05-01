@@ -7,7 +7,7 @@
 #   It "returns null" {
 #     $versionNumber = '1.2.3'
 #     $gitRef = 'refs/heads/master'
-#     $productionRegex = ''
+#     $productionVersionRegex = ''
 #     $versionRegex = ''
 #     $developmentVersion = '1.0.0.1'
 #     $manifestFilePath = ''
@@ -15,7 +15,7 @@
 #     $result = Write-Inputs `
 #       $versionNumber `
 #       $gitRef `
-#       $productionRegex `
+#       $productionVersionRegex `
 #       $versionRegex `
 #       $developmentVersion `
 #       $manifestFilePath
