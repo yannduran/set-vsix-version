@@ -1,4 +1,4 @@
-#region usings
+﻿#region usings
   using namespace System
   using namespace System.IO
   using namespace System.IO.Path
@@ -631,7 +631,7 @@
           "'git-ref', 'production-regex' and 'development-version' " + `
           "are all required"
 
-        Invoke-ArgumentException -message $missingParameters
+        Invoke-Exception -message $missingParameters
       }
 
       return $true
