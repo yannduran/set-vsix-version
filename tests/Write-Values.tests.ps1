@@ -37,7 +37,7 @@ Describe "Write-Values" {
     It "returns null" {
       $params = @{
         gitRef = 'refs/tags/1.2.3';
-        productionRegex = $vXdotXdotX;
+        productionRegex = $productionRegex;
         versionRegex = $XdotXdotX;
         developmentVersion = '1.0.0.2'
       }
@@ -53,7 +53,7 @@ Describe "Write-Values" {
     It "refType=tag, refValue=v2.3.0, versionType=production, versionValue=2.3.0" {
       $params = @{
         gitRef = 'refs/tags/v2.3.0';
-        productionRegex = $vXdotXdotX;
+        productionRegex = $productionRegex;
         versionRegex = $XdotXdotX;
         developmentVersion = '1.0.0.3'
       }

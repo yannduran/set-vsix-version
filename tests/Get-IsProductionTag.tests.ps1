@@ -36,28 +36,28 @@ Describe "Get-IsProductionTag" {
     }
   }
 
-  Context "supplied tag matches regex" {
+  Context "supplied tag matches production regex" {
     It "returns true" {
       $tag = "v1.2.3"
-      $regex = $vXdotXdotX
+      $regex = $productionRegex
 
       Get-IsProductionTag -tag $tag -regex $regex | Should -BeTrue
     }
   }
 
-  Context "supplied tag does not match regex" {
+  Context "supplied tag does not match production regex" {
     It "returns false" {
       $tag = "1.2.3"
-      $regex = $vXdotXdotX
+      $regex = $productionRegex
 
       Get-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
     }
   }
 
-  Context "supplied tag does not match regex" {
+  Context "supplied tag does not match production regex" {
     It "returns false" {
       $tag = "1.0"
-      $regex = $vXdotXdotX
+      $regex = $productionRegex
 
       Get-IsProductionTag -tag $tag -regex $regex | Should -BeFalse
     }

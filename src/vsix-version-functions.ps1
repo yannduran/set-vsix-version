@@ -1,4 +1,4 @@
-﻿#region usings
+#region usings
   using namespace System
   using namespace System.IO
   using namespace System.IO.Path
@@ -13,7 +13,7 @@
   $heads = 'refs/heads/'
 
   $XdotXdotX = "[0-9]+.[0-9]+.[0-9]"
-  $vXdotXdotX = "^v" + $XdotXdotX + "$"
+  $productionRegex = "^v" + $XdotXdotX + "$"
 
   $versionRegex = '([0-9\\.]+)'
   $manifestFileRegex = 'Version="' + $versionRegex + '" Language='

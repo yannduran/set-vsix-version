@@ -1,4 +1,4 @@
-BeforeAll { 
+BeforeAll {
   . ./src/vsix-version-functions.ps1
 }
 
@@ -27,7 +27,7 @@ Describe "Test-RequiredParameters" {
         -developmentVersion '' `
         -manifestFileExists $true `
         -ErrorAction Stop
-      
+
       $result | Should -BeTrue
     }
   }
@@ -37,33 +37,33 @@ Describe "Test-RequiredParameters" {
       $result = Test-RequiredParameters `
         -versionSpecified $false `
         -gitRef 'refs/heads/master' `
-        -productionRegex $vXdotXdotX `
+        -productionRegex $productionRegex `
         -developmentVersion '1.0.0.0' `
         -manifestFileExists $true `
         -ErrorAction Stop
-      
+
         $result | Should -BeTrue
     }
   }
 
   Context "has no versionNumber and no gitRef" {
     It "throws an ArgumentException" {
-      $result = { 
+      $result = {
         Test-RequiredParameters `
           -versionSpecified $false `
           -gitRef '' `
-          -productionRegex $vXdotXdotX `
+          -productionRegex $productionRegex `
           -developmentVersion '1.0.0.1' `
           -manifestFileExists $true `
           -ErrorAction Stop `
-      } 
+      }
       $result | Should -Throw -ExceptionType ArgumentException
     }
   }
 
   Context "has no versionNumber and no productionRegex" {
     It "throws an ArgumentException" {
-      $result = { 
+      $result = {
         Test-RequiredParameters `
           -versionSpecified $false `
           -gitRef '/refs/heads/master' `
@@ -71,22 +71,22 @@ Describe "Test-RequiredParameters" {
           -developmentVersion '1.0.0.2' `
           -manifestFileExists $true `
           -ErrorAction Stop `
-      } 
+      }
       $result | Should -Throw -ExceptionType ArgumentException
     }
   }
 
   Context "has no versionNumber and no developmentVersion" {
     It "throws an ArgumentException" {
-      $result = { 
+      $result = {
         Test-RequiredParameters `
           -versionSpecified $false `
           -gitRef 'refs/heads/master' `
-          -productionRegex $vXdotXdotX `
+          -productionRegex $productionRegex `
           -developmentVersion '' `
           -manifestFileExists $true `
           -ErrorAction Stop `
-      } 
+      }
       $result | Should -Throw -ExceptionType ArgumentException
     }
   }

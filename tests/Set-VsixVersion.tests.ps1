@@ -30,17 +30,49 @@ Describe "Set-VsixVersion" {
       -Because "two output variables should be set"
   }
 
-  It "returns version-type output" {
-    $params = @{
-      versionNumber = $specifiedVersion
-      manifestFilePath = $manifestFilePath
+  Context "has version number & manifest file" {
+    It "returns '$specifiedVersion'" {
+      $params = @{
+        versionNumber = $specifiedVersion
+        manifestFilePath = $manifestFilePath
+      }
+      $outputs = Set-VsixVersion @params -quiet $true
+      $result = Get-Output 'version-type' $outputs
+
+      $result | Should -Be $specifiedVersionString
     }
-    $versionType = $specifiedVersionString
+  }
 
-    $outputs = Set-VsixVersion @params -quiet $true
-    $result = Get-Output 'version-type' $outputs
+  Context "has no version number, branch ref, developmentVersion & manifest file" {
+    It "returns '$developmentVersionString'" {
+      $params = @{
+        versionNumber = ''
+        gitRef = 'refs/heads/master';
+        productionRegex = $productionRegex;
+        developmentVersion = '1.0.0.1';
+        manifestFilePath = $manifestFilePath
+    }
+      $outputs = Set-VsixVersion @params -quiet $true
+      $result = Get-Output 'version-type' $outputs
 
-    $result | Should -Be $versionType
+      $result | Should -Be $developmentVersionString
+    }
+  }
+
+  Context "has no version number, branch ref, developmentVersion & manifest file" {
+    It "returns '$developmentVersionString'" {
+      $params = @{
+        versionNumber = ''
+        gitRef = 'refs/heads/master';
+        productionRegex = $productionRegex;
+        developmentVersion = '1.0.0.1';
+        manifestFilePath = $manifestFilePath
+    }
+      $outputs = Set-VsixVersion @params -quiet $true
+      $result = Get-Output 'version-type' $outputs
+
+      $result | Should -Be $developmentVersionString
+    }
   }
 
   It "returns version-number output" {
